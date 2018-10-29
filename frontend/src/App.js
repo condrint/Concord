@@ -1,20 +1,44 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import Login from './Login.js';
 class App extends Component {
+  constructor()
+  {
+    super();
+    this.state = {
+      username :"",
+      password : "",
+      isLoggedIn : false,
+    }
+  }
+  validateForm()
+    {
+        return this.state.username.length > 0 && this.state.password.length > 0;
+    }
+
+    handleLoginChange = event => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
+    }
+
+    handleLoginSubmit = event => {
+        event.preventDefault();
+    }
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+    let loggedIn = this.state.isLoggedIn;
+    let username = this.state.username;
+    let password = this.state.password;
+    return (    
+      <div id="appWrapper">
+        <Login 
+          loginSubmit={this.props.handleLoginSubmit} 
+          loginChange={this.props.handleLoginChange}
+          loggedIn={loggedIn}
+          username={username}
+          password={password}
+        />
       </div>
-    );
+    )
   }
 }
 
