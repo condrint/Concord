@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import Login from './Login.js';
 class App extends Component {
-  constructor()
-  {
+  constructor() {
     super();
     this.state = {
       username :"",
