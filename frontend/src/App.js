@@ -24,17 +24,14 @@ class App extends Component {
   }
 
   render() {
-    let loggedIn = this.state.isLoggedIn;
-    let loginUsernameInput = this.state.loginUsernameInput;
-    let loginPasswordInput = this.state.loginPasswordInput;
     return (    
       <div id="appWrapper">
         <Login 
           loginSubmit={this.handleLoginSubmit} 
           loginChange={this.handleLoginChange}
-          loggedIn={loggedIn}
-          loginUsernameInput={loginUsernameInput}
-          loginPasswordInput={loginPasswordInput}
+          loggedIn={this.state.isLoggedIn}
+          loginUsernameInput={this.state.loginUsernameInput}
+          loginPasswordInput={this.state.loginPasswordInput}
         />
       </div>
     )
