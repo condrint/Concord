@@ -1,29 +1,26 @@
 import React, { Component } from 'react';
 import Login from './Login.js';
 class App extends Component {
-  constructor()
-  {
+  constructor() {
     super();
     this.state = {
       username :"",
       password : "",
       isLoggedIn : false,
     }
+
   }
-  validateForm()
-    {
-        return this.state.username.length > 0 && this.state.password.length > 0;
-    }
 
-    handleLoginChange = event => {
-        this.setState({
-            [event.target.id]: event.target.value
-        });
-    }
+  handleLoginChange = event => {
+    this.setState({
+        [event.target.id]: event.target.value
+    });
+  } 
 
-    handleLoginSubmit = event => {
-        event.preventDefault();
-    }
+  handleLoginSubmit = event => {
+      event.preventDefault();
+  }
+
   render() {
     let loggedIn = this.state.isLoggedIn;
     let username = this.state.username;
