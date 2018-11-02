@@ -12,7 +12,7 @@ import React, { Component } from 'react';
     {
         return (
           <div>
-            <form id = "loginForm" onSubmit={this.props.loginSubmit}>
+            <form id = "loginForm" onSubmit={()=>this.props.loginSubmit}>
               Username <br/>
               <input id="loginUsernameInput" type="text" onChange={this.props.loginChange} value={this.props.loginUsernameInput}/> <br/>
               Password <br/>
