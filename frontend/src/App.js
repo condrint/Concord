@@ -4,36 +4,37 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      username :"",
-      password : "",
+      loginUsernameInput :"",
+      loginPasswordInput : "",
       isLoggedIn : false,
     }
     this.handleLoginChange = this.handleLoginChange.bind(this);
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
   }
   
-    handleLoginChange = event => {
-        this.setState({
-            [event.target.id]: event.target.value
-        });
-    }
+  handleLoginChange = event => {
+    this.setState({
+      [event.target.id]: event.target.value
+    });
+  }
 
-    handleLoginSubmit = event => {
-        event.preventDefault();
-        console.Log("hi");
-    }
+  handleLoginSubmit = event => {
+    event.preventDefault();
+    console.table(this.state);
+  }
+
   render() {
     let loggedIn = this.state.isLoggedIn;
-    let username = this.state.username;
-    let password = this.state.password;
+    let loginUsernameInput = this.state.loginUsernameInput;
+    let loginPasswordInput = this.state.loginPasswordInput;
     return (    
       <div id="appWrapper">
         <Login 
-          loginSubmit={this.props.handleLoginSubmit} 
-          loginChange={this.props.handleLoginChange}
+          loginSubmit={this.handleLoginSubmit} 
+          loginChange={this.handleLoginChange}
           loggedIn={loggedIn}
-          username={username}
-          password={password}
+          loginUsernameInput={loginUsernameInput}
+          loginPasswordInput={loginPasswordInput}
         />
       </div>
     )
