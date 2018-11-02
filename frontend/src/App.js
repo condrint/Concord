@@ -9,12 +9,10 @@ class App extends Component {
       password : "",
       isLoggedIn : false,
     }
+    this.handleLoginChange = this.handleLoginChange.bind(this);
+    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
   }
-  validateForm()
-    {
-        return this.state.username.length > 0 && this.state.password.length > 0;
-    }
-
+  
     handleLoginChange = event => {
         this.setState({
             [event.target.id]: event.target.value
@@ -23,6 +21,7 @@ class App extends Component {
 
     handleLoginSubmit = event => {
         event.preventDefault();
+        console.Log("hi");
     }
   render() {
     let loggedIn = this.state.isLoggedIn;
