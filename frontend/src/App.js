@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Login from './Login.js';
+const axios = require('axios');
 class App extends Component {
   constructor() {
     super();
@@ -30,27 +31,33 @@ class App extends Component {
     });
   }
 
-  handleLoginSubmit = event => {
-    event.preventDefault();
-    console.table(this.state);
-    axios.post('/api/login', {
-      loginUsernameInput,
-      loginPasswordInput,
-    });
-  }
-
   handleRegisterSubmit = event => {
     event.preventDefault();
     let password = this.state.registerPasswordInput;
     let username = this.state.registerUsernameInput;
     if(!password || !username)
-      alert("fuck you doin, bitch?");
+      alert("Invalid input");
     console.table(this.state);
     axios.post('/api/register', {
-      registerUsernameInput,
-      registerPasswordInput,
+      "password" : password,
+      "username" : username,
     });
   }
+
+  handleLoginSubmit = event => {
+    event.preventDefault();
+    let password = this.state.loginPasswordInput;
+    let username = this.state.loginUsernameInput;
+    if(!password || !username)
+      alert("Invalid input");
+    console.table(this.state);
+    axios.post('/api/login', {
+      "password" : password,
+      "username" : username,
+    });
+  }
+
+  
 
   render() {
     return (    
