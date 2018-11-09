@@ -9,8 +9,8 @@ const app = express();
 // configure middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true }));
-app.set('views', path.join(__dirname, '../client/build')); 
-app.use(express.static(path.join(__dirname, '../client/build'))); 
+app.set('views', path.join(__dirname, '../frontend/build')); 
+app.use(express.static(path.join(__dirname, '../frontend/build'))); 
 
 // set the port
 const port = process.env.PORT || 3001;
