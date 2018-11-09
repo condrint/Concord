@@ -33,7 +33,7 @@ class App extends Component {
   handleLoginSubmit = event => {
     event.preventDefault();
     console.table(this.state);
-    axios.post('/api/login',{
+    axios.post('/api/login', {
       loginUsernameInput,
       loginPasswordInput,
     });
@@ -46,8 +46,7 @@ class App extends Component {
     if(!password || !username)
       alert("fuck you doin, bitch?");
     console.table(this.state);
-    axios.post('/api/register',
-    {
+    axios.post('/api/register', {
       registerUsernameInput,
       registerPasswordInput,
     });
