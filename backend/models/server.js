@@ -7,9 +7,12 @@ var serverSchema = new Schema({
     members: [{member: _id}],
     chatHistory: [{
         user: _id,
-        message: string,
-        time: int
+        message: String,
+        time: { type : Date } //, default: Date.now }
     }]
 })
 
 serverSchema.plugin(uniqueValidator);
+
+const Server = mongoose.model('Server', serverSchema);
+module.exports = Server;

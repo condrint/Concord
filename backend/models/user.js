@@ -4,19 +4,19 @@ var uniqueValidator = require('mongoose-unique-validator');
 
 var userSchema = new Schema({
     username: {
-        type: string,
+        type: String,
         required: true,
         unique: true
     },
     password: {
-        type: string,
+        type: String,
         required: true
     },
     friends: [{
         friend: _id,
         history: [{
-            message: string,
-            time: int
+            message: String,
+            time: { type : Date } //, default: Date.now }
         }]
     }],
     servers: [{server: _id}],
@@ -24,3 +24,6 @@ var userSchema = new Schema({
 })
 
 userSchema.plugin(uniqueValidator);
+
+const User = mongoose.model('User', userSchema);
+module.exports = User;
