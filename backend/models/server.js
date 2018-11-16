@@ -3,10 +3,10 @@ var Schema = mongoose.Schema;
 var uniqueValidator = require('mongoose-unique-validator');
 
 var serverSchema = new Schema({
-    owner: _id,
-    members: [{member: _id}],
+    ownerName: String,
+    members: [{memberName: String}],
     chatHistory: [{
-        user: _id,
+        userName: String,
         message: String,
         time: { type : Date } //, default: Date.now }
     }]
@@ -14,5 +14,4 @@ var serverSchema = new Schema({
 
 serverSchema.plugin(uniqueValidator);
 
-const Server = mongoose.model('Server', serverSchema);
-module.exports = Server;
+module.exports = mongoose.model('Server', serverSchema);

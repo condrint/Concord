@@ -13,17 +13,16 @@ var userSchema = new Schema({
         required: true
     },
     friends: [{
-        friend: _id,
+        username: String,
         history: [{
             message: String,
             time: { type : Date } //, default: Date.now }
         }]
     }],
-    servers: [{server: _id}],
-    avatarColor: int
+    servers: [{servername: String}],
+    avatarColor: Number
 })
 
 userSchema.plugin(uniqueValidator);
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);
