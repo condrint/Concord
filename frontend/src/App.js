@@ -20,6 +20,7 @@ class App extends Component {
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this);
   }
+
   handleFormChange = event => {
     (this.state.form === "login") ? this.setState({form : "register"}) : this.setState({form : "login"});
   }
@@ -56,8 +57,6 @@ class App extends Component {
       "username" : username,
     });
   }
-
-  
 
   render() {
     return (    
