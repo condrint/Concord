@@ -25,6 +25,7 @@ class App extends Component {
   }
 
   handleFormChange = event => {
+    event.preventDefault();
     (this.state.form === "login") ? this.setState({form : "register"}) : this.setState({form : "login"});
   }
   
