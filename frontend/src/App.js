@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Login from './Login.js';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Redirect} from "react-router-dom";
 const axios = require('axios');
 
 class App extends Component {
@@ -47,17 +47,24 @@ class App extends Component {
     });
   }
 
-  handleLoginSubmit = event => {
+  async handleLoginSubmit() {
     event.preventDefault();
     let password = this.state.loginPasswordInput;
     let username = this.state.loginUsernameInput;
     if(!password || !username)
       alert("Invalid input");
     console.table(this.state);
-    axios.post('/api/login', {
-      "password" : password,
-      "username" : username,
-    });
+    try {
+        let loginResult = axios.post('/api/login', {
+        "password" : password,
+        "username" : username,
+      });
+      if (loginResult.data.success)
+        return <Redirect to='/main/friend/0000'/>
+    }
+    catch(e) {
+      console.error(e);
+    }
   }
 
   render() {
