@@ -2,14 +2,19 @@ var User = require('../models/user.js');
 
 const userController = {};
 
-userController.registerUser = (req , res) => {
+userController.registerUser = async (req , res) => {
     const {username, password} = req.body;
     const newUser = new User({username, password});
-    newUser.save(function(err){
-        if(err) return console.error(err);
-        console.log(newUser.username + " saved to User collection with password: " + newUser.password);
+    
+    try {
+        let newUser = await newUser.save();
+        res.status(201).send({
+            success: true
         })
-    //console.log(newUser.username + " saved to User collection with password: " + newUser.password);
+
+    } catch(error) {
+        res.status(500).send(error)
+    }
 }
 
 userController.loginUser = (req , res) => {
