@@ -68,6 +68,7 @@ class App extends Component {
         "password" : password,
         "username" : username,
       });
+      console.log(loginResult)
       if (loginResult.data.success)
         return <Redirect to='/main/friend/0000'/>
     } catch(e) {
