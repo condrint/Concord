@@ -36,17 +36,23 @@ class App extends Component {
     });
   }
 
-  handleRegisterSubmit = event => {
+  handleRegisterSubmit = async event => {
     event.preventDefault();
     let password = this.state.registerPasswordInput;
     let username = this.state.registerUsernameInput;
     if(!password || !username)
       alert("Invalid input");
     console.table(this.state);
-    axios.post('/api/register', {
-      "password" : password,
-      "username" : username,
-    });
+    try {
+      axios.post('/api/register', {
+        "password" : password,
+        "username" : username,
+      });
+      this.handleFormChange();
+    }
+    catch(e){
+      console.log(e);
+    }
   }
 
   handleLoginSubmit = async event => {
