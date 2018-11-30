@@ -44,11 +44,12 @@ class App extends Component {
       alert("Invalid input");
     console.table(this.state);
     try {
-      axios.post('/api/register', {
+      let registerResult = await axios.post('/api/register', {
         "password" : password,
         "username" : username,
       });
-      this.handleFormChange();
+      if (registerResult.data.success)
+         return this.handleFormChange();
     }
     catch(e){
       console.log(e);
@@ -63,14 +64,13 @@ class App extends Component {
       alert("Invalid input");
     console.table(this.state);
     try {
-        let loginResult = axios.post('/api/login', {
+      let loginResult = await axios.post('/api/login', {
         "password" : password,
         "username" : username,
       });
       if (loginResult.data.success)
         return <Redirect to='/main/friend/0000'/>
-    }
-    catch(e) {
+    } catch(e) {
       console.error(e);
     }
   }
