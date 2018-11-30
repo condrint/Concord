@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import Login from './Login.js';
+<<<<<<< HEAD
 import { BrowserRouter as Router, Route, Link, Redirect} from "react-router-dom";
+=======
+import Main from './Main.js';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+>>>>>>> e4607859c5808e7aeaf73b2bb223b840f748f996
 const axios = require('axios');
 
 class App extends Component {
@@ -86,26 +91,11 @@ class App extends Component {
                 form={this.state.form}
               />}
             />
-            <Route path='/main/:type/:id' component = { ({match}) =>
-              <div id="mainWrapper">
-                <div id="settingsWrapper">
-
-                  Settings
-                </div>
-                <div id="friendsWrapper">
-
-                  Friends
-                </div>
-                <div id="serverWrapper">
-
-                  Server
-                </div>
-                <div id="dashboardWrapper">
-
-                  {match.params.type}
-                  {match.params.id}
-                </div>
-              </div>}
+            <Route path='/main/:type/:id' render = { ({match}) =>
+            <Main
+            match = {match}
+            />
+            }
             />
           </div>
         </Router>
