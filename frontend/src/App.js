@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Login from './Login.js';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 const axios = require('axios');
+
 class App extends Component {
   constructor() {
     super();
@@ -61,18 +63,45 @@ class App extends Component {
   render() {
     return (    
       <div id="appWrapper">
-        <Login 
-          loginSubmit={this.handleLoginSubmit} 
-          change={this.handleChange}
-          loggedIn={this.state.isLoggedIn}
-          loginUsernameInput={this.state.loginUsernameInput}
-          loginPasswordInput={this.state.loginPasswordInput}
-          registerPasswordInput={this.state.registerPasswordInput}
-          registerUsernameInput={this.state.registerUsernameInput}
-          registerSubmit={this.handleRegisterSubmit}
-          formChange={this.handleFormChange}
-          form={this.state.form}
-        />
+        <Router>
+          <div id='routesWrapper'>
+            <Route path='/login' render = { () =>
+              <Login 
+                loginSubmit={this.handleLoginSubmit} 
+                change={this.handleChange}
+                loggedIn={this.state.isLoggedIn}
+                loginUsernameInput={this.state.loginUsernameInput}
+                loginPasswordInput={this.state.loginPasswordInput}
+                registerPasswordInput={this.state.registerPasswordInput}
+                registerUsernameInput={this.state.registerUsernameInput}
+                registerSubmit={this.handleRegisterSubmit}
+                formChange={this.handleFormChange}
+                form={this.state.form}
+              />}
+            />
+            <Route path='/main/:type/:id' component = { ({match}) =>
+              <div id="mainWrapper">
+                <div id="settingsWrapper">
+
+                  Settings
+                </div>
+                <div id="friendsWrapper">
+
+                  Friends
+                </div>
+                <div id="serverWrapper">
+
+                  Server
+                </div>
+                <div id="dashboardWrapper">
+
+                  {match.params.type}
+                  {match.params.id}
+                </div>
+              </div>}
+            />
+          </div>
+        </Router>
       </div>
     )
   }
