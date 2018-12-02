@@ -70,11 +70,13 @@ class App extends Component {
         'username': username,
         'password': password,
       });
-      console.log(loginResult)
+
       if (loginResult.data.success) {
-        this.setState({ isLoggedIn: loginResult.data.success });
+        this.setState({ 
+          isLoggedIn: loginResult.data.success,
+          me: loginResult.data.me,
+        });
       }
-      console.table(loginResult.data.logme);
     } catch(e) {
       console.error(e);
     }
