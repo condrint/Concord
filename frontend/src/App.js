@@ -14,7 +14,7 @@ class App extends Component {
       //login states
       loginUsernameInput : '',
       loginPasswordInput : '',
-      isLoggedIn : false,
+      isLoggedIn : true,
       //register states
       registerUsernameInput : '',
       registerPasswordInput : '',
@@ -24,6 +24,7 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this);
+    this.showNewFriendPrompt = this.showNewFriendPrompt.bind(this);
   }
 
   handleLoginFormChange = (event) => {
@@ -70,7 +71,6 @@ class App extends Component {
         'username': username,
         'password': password,
       });
-
       if (loginResult.data.success) {
         this.setState({ 
           isLoggedIn: loginResult.data.success,
@@ -82,15 +82,17 @@ class App extends Component {
     }
   }
 
+  showNewFriendPrompt (){
+    alert('new friend')
+  }
+
   render() {
-    let isLoggedIn = this.state.isLoggedIn;
-    console.log(isLoggedIn)
     return (    
       <div id="appWrapper">
         <Router>
           <div id="routesWrapper">
             <Route exact path="/login" render={() => (
-              isLoggedIn ? (
+              this.state.isLoggedIn ? (
                 <Redirect to="/main/dashboard/me"/>
               ) : (
                 <Login 
@@ -108,10 +110,13 @@ class App extends Component {
             
               )
             )}/>
-            <Route path="/main/:type/:id" render={ ({match}) =>
+            <Route path="/main/:type/:id" render={({match}) =>
               <div>
-              <Main match={match} />
-              <button onClick={()=>{this.setState({haha:'hehe'})}}/>
+                <Main 
+                  match={match} 
+                  showNewFriendPrompt={this.showNewFriendPrompt}
+                />
+                <button onClick={()=>{this.setState({haha:'hehe'})}}/>
               </div>
             }/>
           </div>
