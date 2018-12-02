@@ -28,7 +28,9 @@ userController.loginUser = async (req , res) => {
                 password: password,
              });
             return res.status(200).json({
-                success: true
+                success: true,
+                logme: loginUser,
+
             })
     
         } catch(error) {
