@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import New_Friend from './New_Friend.js';
-import Friends from './Friends.js';
+import { Friends } from './Friends.js';
+import { NewFriend } from './NewFriend.js';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class Main extends Component {
@@ -18,7 +18,7 @@ class Main extends Component {
         <div id="friendsWrapper">
           Friends
           <Friends/>
-          <New_Friend showNewFriendPrompt={this.props.showNewFriendPrompt}/>
+          <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
         </div>
 
         <div id="serverWrapper">

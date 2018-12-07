@@ -1,38 +1,47 @@
 import React, { Component } from 'react';
 import Login from './Login.js';
 import Main from './Main.js';
-import { BrowserRouter as Router, Route, Link, Redirect} from "react-router-dom";
+import  Popup  from './Popups.js';
+import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
 const axios = require('axios');
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      form : "login",
+      form: 'login',
       me: '',
 
-      //login states
-      loginUsernameInput : '',
-      loginPasswordInput : '',
+      // login 
+      loginUsernameInput: '',
+      loginPasswordInput: '',
       isLoggedIn : true,
-      //register states
-      registerUsernameInput : '',
-      registerPasswordInput : '',
 
+      // register
+      registerUsernameInput: '',
+      registerPasswordInput: '',
+      
+      // popups
+      showNewFriendPopup: false,
+      newFriendInput: '',
     }
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this);
-    this.showNewFriendPrompt = this.showNewFriendPrompt.bind(this);
+    this.showNewFriendPopup = this.showNewFriendPopup.bind(this);
+    this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
+    this.newFriendSubmit = this.newFriendSubmit.bind(this);
   }
 
+
+  // login / register functions
   handleLoginFormChange = (event) => {
     event.preventDefault();
     (this.state.form === 'login') ? this.setState({form : 'register'}) : this.setState({form : 'login'});
   }
   
-  //dynamic function that can handle changes for both login and register forms
+  // dynamic function that can handle changes for both login and register forms
   handleChange = (event) => {
     this.setState({
       [event.target.id]: event.target.value
@@ -82,15 +91,23 @@ class App extends Component {
     }
   }
 
-  showNewFriendPrompt (){
-    alert('new friend')
+  showNewFriendPopup(){
+    this.setState({ showNewFriendPopup: true });
   }
 
+  hideNewFriendPopup(){
+    this.setState({ showNewFriendPopup: false });
+  }
+
+  newFriendSubmit(){
+    console.log(this.state.newFriendInput);
+  }
   render() {
     return (    
       <div id="appWrapper">
         <Router>
           <div id="routesWrapper">
+            {/* Login and register page */}
             <Route exact path="/login" render={() => (
               this.state.isLoggedIn ? (
                 <Redirect to="/main/dashboard/me"/>
@@ -107,16 +124,26 @@ class App extends Component {
                   formChange={this.handleLoginFormChange}
                   form={this.state.form}
                 />
-            
               )
             )}/>
+            {/* Main page */}
             <Route path="/main/:type/:id" render={({match}) =>
               <div>
+                <div id="popupWrapper">
+                  {this.state.showNewFriendPopup &&
+                    <Popup 
+                      type={'New friend'}
+                      change={this.handleChange} 
+                      newFriendSubmit={this.newFriendSubmit} 
+                      newFriendInput={this.state.newFriendInput}
+                    />
+                  }
+                </div>
                 <Main 
                   match={match} 
-                  showNewFriendPrompt={this.showNewFriendPrompt}
+                  showNewFriendPopup={this.showNewFriendPopup}
                 />
-                <button onClick={()=>{this.setState({haha:'hehe'})}}/>
+                <button onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component</button>
               </div>
             }/>
           </div>
