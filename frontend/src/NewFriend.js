@@ -9,7 +9,7 @@ class NewFriend extends Component {
     return(
       <div id="newFriendWrapper">
         <button onClick={this.props.showNewFriendPopup}>
-          <span>+asd</span>
+          <span>+</span>
         </button>
       </div>
     )

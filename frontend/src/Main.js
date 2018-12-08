@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Friends } from './Friends.js';
 import { NewFriend } from './NewFriend.js';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+//import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class Main extends Component {
   constructor() {
@@ -17,7 +17,7 @@ class Main extends Component {
 
         <div id="friendsWrapper">
           Friends
-          <Friends/>
+          <Friends/> showNewFriendPopup
           <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
         </div>
 

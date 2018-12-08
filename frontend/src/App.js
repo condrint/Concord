@@ -15,7 +15,7 @@ class App extends Component {
       // login 
       loginUsernameInput: '',
       loginPasswordInput: '',
-      isLoggedIn : true,
+      isLoggedIn : false, //keep as true for testing using npm run start
 
       // register
       registerUsernameInput: '',
@@ -52,19 +52,23 @@ class App extends Component {
     event.preventDefault();
     let password = this.state.registerPasswordInput;
     let username = this.state.registerUsernameInput;
-    if(!password || !username)
+    if(!password || !username){
       alert('Invalid input');
-    console.table(this.state);
+      return;
+    }
     try {
       let registerResult = await axios.post('/api/register', {
         'username': username,
         'password': password,
       });
       if (registerResult.data.success)
-         return this.handleFormChange();
+         return this.handleLoginFormChange();
+      else{
+        alert('register problem')
+      }
     }
     catch(e){
-      console.log(e);
+      alert(e);
     }
   }
 
@@ -72,9 +76,10 @@ class App extends Component {
     event.preventDefault();
     let password = this.state.loginPasswordInput;
     let username = this.state.loginUsernameInput;
-    if(!password || !username)
+    if(!password || !username){
       alert('Invalid input');
-    console.table(this.state);
+      return;
+    }
     try {
       let loginResult = await axios.post('/api/login', {
         'username': username,
@@ -86,27 +91,52 @@ class App extends Component {
           me: loginResult.data.me,
         });
       }
+      else{
+        alert('login problem')
+      }
     } catch(e) {
-      console.error(e);
+      alert(e);
     }
   }
 
   showNewFriendPopup(){
-    this.setState({ showNewFriendPopup: true });
+    this.setState({ showNewFriendPopup: !this.state.showNewFriendPopup }); //remove toggle functionality eventually, its convienent now
   }
 
   hideNewFriendPopup(){
     this.setState({ showNewFriendPopup: false });
   }
 
-  newFriendSubmit(){
-    console.log(this.state.newFriendInput);
+  newFriendSubmit = async (event) => {
+    event.preventDefault();
+    let newFriend = this.state.newFriendInput;
+    let me = this.state.me;
+    if (!newFriend){
+      alert('Invalid Input');
+    }
+    try {
+      let newFriendResult = await axios.post('/api/newFriend', {
+        'newFriend': newFriend,
+        'me': me,
+      });
+      if (newFriendResult.data.success) {
+        alert('friend added');
+        this.hideNewFriendPopup;
+      }
+      else{
+        alert('login problem')
+      }
+    } catch(e) {
+      alert(e);
+    }
   }
+
   render() {
     return (    
       <div id="appWrapper">
         <Router>
           <div id="routesWrapper">
+
             {/* Login and register page */}
             <Route exact path="/login" render={() => (
               this.state.isLoggedIn ? (
@@ -126,9 +156,12 @@ class App extends Component {
                 />
               )
             )}/>
+
             {/* Main page */}
             <Route path="/main/:type/:id" render={({match}) =>
               <div>
+
+                {/* Pop ups */}
                 <div id="popupWrapper">
                   {this.state.showNewFriendPopup &&
                     <Popup 
@@ -139,13 +172,19 @@ class App extends Component {
                     />
                   }
                 </div>
+
+                {/* Main content */}
                 <Main 
                   match={match} 
+
+                  // button functions
                   showNewFriendPopup={this.showNewFriendPopup}
                 />
+
                 <button onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component</button>
               </div>
             }/>
+            
           </div>
         </Router>
       </div>

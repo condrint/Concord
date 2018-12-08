@@ -10,5 +10,7 @@ const router = express();
 router.post('/login', userController.loginUser);
 router.post('/register', userController.registerUser);
 
+router.post('/newFriend', userController.newFriend);
+
 module.exports = router;
 
