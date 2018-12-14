@@ -29,13 +29,14 @@ mongoose.connect('mongodb://localhost/')
 
 app.set('view engine', 'ejs');
 
-router.get('/', (req, res, next) => {
-  res.render('index.html');
-});
-
 app.use('/api', router);
 
-// catch 404
-app.use((req, res, next) => {
-  res.status(404).send('<h2 align=center>Page does not exist</h2>');
+app.get('/*', (req, res, next) => {
+  res.sendFile(path.join(__dirname,'../frontend/build/index.html'));
 });
+
+
+// catch 404
+/*app.use((req, res, next) => {
+  res.status(404).send('<h2 align=center>Page does not exist</h2>');
+}); */
