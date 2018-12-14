@@ -45,11 +45,11 @@ userController.newFriend = async(req, res) => {
         
         let newFriendID = newFriendDocument._id;
 
-        let addFriendToMe = await User.find({
+        let meDocument = await User.find({
             _id: me,
         })
 
-        for (let friend of addFriendToMe.friends){
+        for (let friend of meDocument.friends){
             if(friend._id == newFriendID){
                 return res.status(304).json({
                     success: false,
@@ -63,8 +63,8 @@ userController.newFriend = async(req, res) => {
             history: [],
         }
 
-        addFriendToMe.friends.push(newFriend);
-        addFriendToMe.save();
+        meDocument.friends.push(newFriend);
+        meDocument.save();
         /*
         let addFriendToMe = await User.updateOne(
             { _id: me },

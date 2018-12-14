@@ -113,6 +113,7 @@ class App extends Component {
     let me = this.state.me;
     if (!newFriend){
       alert('Invalid Input');
+      return;
     }
     try {
       let newFriendResult = await axios.post('/api/newFriend', {
