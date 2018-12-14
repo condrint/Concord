@@ -8,7 +8,8 @@ userController.registerUser = async (req , res) => {
     try {
         let registeredUser = await newUser.save();
         return res.status(201).json({
-            success: true
+            success: true,
+            message: '',
         })
 
     } catch(error) {
@@ -27,6 +28,7 @@ userController.loginUser = async (req , res) => {
         return res.status(200).json({
             success: true,
             me: loginUser._id,
+            message: '',
         })
     } catch(error) {
         console.log(error);
@@ -35,12 +37,35 @@ userController.loginUser = async (req , res) => {
 }
 
 userController.newFriend = async(req, res) => {
-    const { newFriend, me } = req.body;
     try{
+        const { newFriendUsername, me } = req.body;
         let newFriendDocument = await User.find({ 
-            username: newFriend,
-         });
+            username: newFriendUsername,
+        });
+        
+        let newFriendID = newFriendDocument._id;
 
+        let addFriendToMe = await User.find({
+            _id: me,
+        })
+
+        for (let friend of addFriendToMe.friends){
+            if(friend._id == newFriendID){
+                return res.status(304).json({
+                    success: false,
+                    message: "You're already friends with this user.",
+                });
+            }
+        }
+
+        let newFriend = {
+            id: newFriendID,
+            history: [],
+        }
+
+        addFriendToMe.friends.push(newFriend);
+        addFriendToMe.save();
+        /*
         let addFriendToMe = await User.updateOne(
             { _id: me },
             { $push: {
@@ -49,15 +74,12 @@ userController.newFriend = async(req, res) => {
                     history:[]
                 }
             }}
-        );
-
+        );*/
         return res.status(201).json({
             success: true,
+            message: '',
         })
         
-         console.table(newFriendDocument);
-         console.log(newFriendDocument);
-
     } catch(error) {
         console.log(error)
         return res.status(500).send(error);

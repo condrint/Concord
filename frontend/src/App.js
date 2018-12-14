@@ -124,7 +124,7 @@ class App extends Component {
         this.hideNewFriendPopup;
       }
       else{
-        alert('login problem')
+        alert(newFriendResult.data.message);
       }
     } catch(e) {
       alert(e);
