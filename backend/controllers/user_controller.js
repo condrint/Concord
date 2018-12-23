@@ -48,13 +48,15 @@ userController.newFriend = async(req, res) => {
         let meDocument = await User.find({
             _id: me,
         })
-
-        for (let friend of meDocument.friends){
-            if(friend._id == newFriendID){
-                return res.status(304).json({
-                    success: false,
-                    message: "You're already friends with this user.",
-                });
+        
+        if (meDocument){
+            for (let friend of meDocument.friends){
+                if(friend._id == newFriendID){
+                    return res.status(304).json({
+                        success: false,
+                        message: "You're already friends with this user.",
+                    });
+                }
             }
         }
 
