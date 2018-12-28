@@ -2,14 +2,14 @@ var User = require('../models/user.js');
 
 const userController = {};
 
-userController.registerUser = async (req , res) => {
+userController.registerUser = async (req, res) => {
     const {username, password} = req.body;
     const newUser = new User({username, password});
     try {
         let registeredUser = await newUser.save();
         return res.status(201).json({
             success: true,
-            message: 'User successfully registered.',
+            message: 'Registration successful!',
         })
 
     } catch(error) {
@@ -31,11 +31,14 @@ userController.loginUser = async (req , res) => {
         return res.status(200).json({
             success: true,
             me: loginUser._id,
-            message: '',
+            message: 'Logged in.',
         })
     } catch(error) {
         console.log(error);
-        return res.status(500).send(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        })
     }
 }
 
@@ -48,18 +51,16 @@ userController.newFriend = async(req, res) => {
         
         let newFriendID = newFriendDocument._id;
 
-        let meDocument = await User.find({
+        let meDocument = await User.findOne({
             _id: me,
         })
         
-        if (meDocument){
-            for (let friend of meDocument.friends){
-                if(friend._id == newFriendID){
-                    return res.status(304).json({
-                        success: false,
-                        message: "You're already friends with this user.",
-                    });
-                }
+        for (let friend of meDocument.friends){
+            if(friend._id == newFriendID){
+                return res.status(304).json({
+                    success: false,
+                    message: "You're already friends with this user.",
+                });
             }
         }
 
@@ -82,14 +83,16 @@ userController.newFriend = async(req, res) => {
         );*/
         return res.status(201).json({
             success: true,
-            message: '',
+            message: 'Friend added',
         })
         
     } catch(error) {
-        console.log(error)
-        return res.status(500).send(error);
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        })
     }
-    
-
 }
+
 module.exports = userController;

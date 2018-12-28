@@ -59,7 +59,7 @@ class App extends Component {
         'password': password,
       });
       if (registerResult.data.success){
-        console.log('i get here');
+        alert(registerResult.data.message)
         this.handleLoginFormChange();
       }
       else{
@@ -67,7 +67,6 @@ class App extends Component {
       }
     }
     catch(error){
-      console.log(error)
       alert(error);
     }
   }
@@ -89,13 +88,14 @@ class App extends Component {
         'password': password,
       });
       if (loginResult.data.success) {
+        alert(loginResult.data.message)
         this.setState({ 
           isLoggedIn: loginResult.data.success,
           me: loginResult.data.me,
         });
       }
       else{
-        alert('login problem')
+        alert(registerResult.data.message);
       }
     } catch(error) {
         alert(error);
@@ -119,20 +119,22 @@ class App extends Component {
 
   newFriendSubmit = async (event) => {
     event.preventDefault();
+
     let newFriend = this.state.newFriendInput;
     let me = this.state.me;
     if (!newFriend){
       alert('Invalid Input');
       return;
     }
+
     try {
       let newFriendResult = await axios.post('/api/newFriend', {
         'newFriend': newFriend,
         'me': me,
       });
       if (newFriendResult.data.success) {
-        alert('friend added');
-        this.hideNewFriendPopup;
+        alert(newFriendResult.data.message);
+        this.hideNewFriendPopup();
       }
       else{
         alert(newFriendResult.data.message);
@@ -181,7 +183,7 @@ class App extends Component {
               <Route path="/main/:type/:id" render={({match}) =>
                 this.state.isLoggedIn ? (
                   <div>
-                    
+
                     {/* Pop ups */}
                     <div id="popupWrapper">
                       {this.state.showNewFriendPopup &&
