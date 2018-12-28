@@ -157,6 +157,7 @@ class App extends Component {
         <Router>
           <div id="routesWrapper">
             <Switch>
+
               {/* Login and register page */}
               <Route exact path="/login" render={() => (
                 this.state.isLoggedIn ? (
@@ -174,13 +175,13 @@ class App extends Component {
                     formChange={this.handleLoginFormChange}
                     form={this.state.form}
                   />
-                )
-              )}/>
+              ))}/>
 
               {/* Main page */}
               <Route path="/main/:type/:id" render={({match}) =>
                 this.state.isLoggedIn ? (
                   <div>
+                    
                     {/* Pop ups */}
                     <div id="popupWrapper">
                       {this.state.showNewFriendPopup &&
@@ -192,6 +193,7 @@ class App extends Component {
                         />
                       }
                     </div>
+
                     {/* Main content */}
                     <Main 
                       match={match} 
@@ -202,14 +204,14 @@ class App extends Component {
                   </div>
                 ) : (
                   <Redirect to="/login"/>
-                )
-              }/>         
+              )}/>         
 
               <Route>
                 <div id="404">
                   404 - Page Not Found
                 </div>
-              </Route>  
+              </Route>
+
             </Switch>
           </div>
         </Router>
