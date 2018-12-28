@@ -29,18 +29,27 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this);
+    this.clearUsernameAndPasswordFields = this.clearUsernameAndPasswordFields.bind(this);
     this.showNewFriendPopup = this.showNewFriendPopup.bind(this);
     this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
     this.newFriendSubmit = this.newFriendSubmit.bind(this);
+  
   }
 
-
-  // login / register functions
-  handleLoginFormChange = (event) => {
-    event.preventDefault();
+  handleLoginFormChange(){
     (this.state.form === 'login') ? this.setState({form : 'register'}) : this.setState({form : 'login'});
   }
   
+  clearUsernameAndPasswordFields(){
+    console.log(' i got called ')
+    this.setState({
+      registerPasswordInput: '',
+      registerUsernameInput: '',
+      loginUsernameInput: '',
+      loginPasswordInput: '',
+    })
+  }
+
   // dynamic function that can handle changes for both login and register forms
   handleChange = (event) => {
     this.setState({
@@ -56,19 +65,24 @@ class App extends Component {
       alert('Invalid input');
       return;
     }
+    this.clearUsernameAndPasswordFields();
+
     try {
       let registerResult = await axios.post('/api/register', {
         'username': username,
         'password': password,
       });
-      if (registerResult.data.success)
-         return this.handleLoginFormChange();
+      if (registerResult.data.success){
+        console.log('i get here');
+        this.handleLoginFormChange();
+      }
       else{
-        alert('register problem')
+        alert(registerResult.data.message);
       }
     }
-    catch(e){
-      alert(e);
+    catch(error){
+      console.log(error)
+      alert(error);
     }
   }
 
@@ -80,6 +94,9 @@ class App extends Component {
       alert('Invalid input');
       return;
     }
+
+    this.clearUsernameAndPasswordFields();
+
     try {
       let loginResult = await axios.post('/api/login', {
         'username': username,
@@ -94,8 +111,8 @@ class App extends Component {
       else{
         alert('login problem')
       }
-    } catch(e) {
-      alert(e);
+    } catch(error) {
+        alert(error);
     }
   }
 
@@ -127,8 +144,8 @@ class App extends Component {
       else{
         alert(newFriendResult.data.message);
       }
-    } catch(e) {
-      alert(e);
+    } catch(error) {
+        alert(error);
     }
   }
 
@@ -181,13 +198,13 @@ class App extends Component {
                   // button functions
                   showNewFriendPopup={this.showNewFriendPopup}
                 />
-
-                <button onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component</button>
               </div>
-            }/>
-            
+            }/>            
           </div>
         </Router>
+        <br></br>
+        <button onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
+        <button onClick={()=>{console.table(this.state)}}>log state</button>
       </div>
     )
   }

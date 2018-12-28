@@ -9,19 +9,22 @@ userController.registerUser = async (req , res) => {
         let registeredUser = await newUser.save();
         return res.status(201).json({
             success: true,
-            message: '',
+            message: 'User successfully registered.',
         })
 
     } catch(error) {
         console.log(error);
-        return res.status(500).send(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        })
     }
 }
 
 userController.loginUser = async (req , res) => {
     const {username, password} = req.body;
     try {
-        let loginUser = await User.find({ 
+        let loginUser = await User.findOne({ 
             username: username,
             password: password,
         });
