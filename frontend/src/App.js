@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Login from './Login.js';
 import Main from './Main.js';
 import  Popup  from './Popups.js';
-import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
 const axios = require('axios');
 
 class App extends Component {
@@ -36,21 +36,6 @@ class App extends Component {
   
   }
 
-  handleLoginFormChange(){
-    (this.state.form === 'login') ? this.setState({form : 'register'}) : this.setState({form : 'login'});
-  }
-  
-  clearUsernameAndPasswordFields(){
-    console.log(' i got called ')
-    this.setState({
-      registerPasswordInput: '',
-      registerUsernameInput: '',
-      loginUsernameInput: '',
-      loginPasswordInput: '',
-    })
-  }
-
-  // dynamic function that can handle changes for both login and register forms
   handleChange = (event) => {
     this.setState({
       [event.target.id]: event.target.value
@@ -65,6 +50,7 @@ class App extends Component {
       alert('Invalid input');
       return;
     }
+
     this.clearUsernameAndPasswordFields();
 
     try {
@@ -116,12 +102,19 @@ class App extends Component {
     }
   }
 
-  showNewFriendPopup(){
-    this.setState({ showNewFriendPopup: !this.state.showNewFriendPopup }); //remove toggle functionality eventually, its convienent now
+  
+  handleLoginFormChange(){
+    (this.state.form === 'login') ? this.setState({form : 'register'}) : this.setState({form : 'login'});
   }
-
-  hideNewFriendPopup(){
-    this.setState({ showNewFriendPopup: false });
+  
+  clearUsernameAndPasswordFields(){
+    console.log(' i got called ')
+    this.setState({
+      registerPasswordInput: '',
+      registerUsernameInput: '',
+      loginUsernameInput: '',
+      loginPasswordInput: '',
+    })
   }
 
   newFriendSubmit = async (event) => {
@@ -149,60 +142,80 @@ class App extends Component {
     }
   }
 
+  showNewFriendPopup(){
+    this.setState({ showNewFriendPopup: !this.state.showNewFriendPopup }); //remove toggle functionality eventually, its convienent now
+  }
+
+  hideNewFriendPopup(){
+    this.setState({ showNewFriendPopup: false });
+  }
+
+
   render() {
     return (    
       <div id="appWrapper">
         <Router>
           <div id="routesWrapper">
+            <Switch>
+              {/* Login and register page */}
+              <Route exact path="/login" render={() => (
+                this.state.isLoggedIn ? (
+                  <Redirect to="/main/dashboard/me"/>
+                ) : (
+                  <Login 
+                    loginSubmit={this.handleLoginSubmit} 
+                    change={this.handleChange}
+                    loggedIn={this.state.isLoggedIn}
+                    loginUsernameInput={this.state.loginUsernameInput}
+                    loginPasswordInput={this.state.loginPasswordInput}
+                    registerPasswordInput={this.state.registerPasswordInput}
+                    registerUsernameInput={this.state.registerUsernameInput}
+                    registerSubmit={this.handleRegisterSubmit}
+                    formChange={this.handleLoginFormChange}
+                    form={this.state.form}
+                  />
+                )
+              )}/>
 
-            {/* Login and register page */}
-            <Route exact path="/login" render={() => (
-              this.state.isLoggedIn ? (
-                <Redirect to="/main/dashboard/me"/>
-              ) : (
-                <Login 
-                  loginSubmit={this.handleLoginSubmit} 
-                  change={this.handleChange}
-                  loggedIn={this.state.isLoggedIn}
-                  loginUsernameInput={this.state.loginUsernameInput}
-                  loginPasswordInput={this.state.loginPasswordInput}
-                  registerPasswordInput={this.state.registerPasswordInput}
-                  registerUsernameInput={this.state.registerUsernameInput}
-                  registerSubmit={this.handleRegisterSubmit}
-                  formChange={this.handleLoginFormChange}
-                  form={this.state.form}
-                />
-              )
-            )}/>
+              {/* Main page */}
+              <Route path="/main/:type/:id" render={({match}) =>
+                this.state.isLoggedIn ? (
+                  <div>
+                    {/* Pop ups */}
+                    <div id="popupWrapper">
+                      {this.state.showNewFriendPopup &&
+                        <Popup 
+                          type={'New friend'}
+                          change={this.handleChange} 
+                          newFriendSubmit={this.newFriendSubmit} 
+                          newFriendInput={this.state.newFriendInput}
+                        />
+                      }
+                    </div>
+                    {/* Main content */}
+                    <Main 
+                      match={match} 
 
-            {/* Main page */}
-            <Route path="/main/:type/:id" render={({match}) =>
-              <div>
-
-                {/* Pop ups */}
-                <div id="popupWrapper">
-                  {this.state.showNewFriendPopup &&
-                    <Popup 
-                      type={'New friend'}
-                      change={this.handleChange} 
-                      newFriendSubmit={this.newFriendSubmit} 
-                      newFriendInput={this.state.newFriendInput}
+                      // button functions
+                      showNewFriendPopup={this.showNewFriendPopup}
                     />
-                  }
+                  </div>
+                ) : (
+                  <Redirect to="/login"/>
+                )
+              }/>         
+
+              <Route>
+                <div id="404">
+                  404 - Page Not Found
                 </div>
-
-                {/* Main content */}
-                <Main 
-                  match={match} 
-
-                  // button functions
-                  showNewFriendPopup={this.showNewFriendPopup}
-                />
-              </div>
-            }/>            
+              </Route>  
+            </Switch>
           </div>
         </Router>
+
         <br></br>
+
         <button onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
         <button onClick={()=>{console.table(this.state)}}>log state</button>
       </div>
