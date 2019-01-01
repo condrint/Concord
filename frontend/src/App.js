@@ -95,7 +95,7 @@ class App extends Component {
         });
       }
       else{
-        alert(registerResult.data.message);
+        alert(loginResult.data.message);
       }
     } catch(error) {
         alert(error);

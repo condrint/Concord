@@ -20,7 +20,7 @@ import React, { Component } from 'react';
               <br/>
               <button id="loginButton" type="submit" value="Submit" onClick={this.props.loginSubmit}>Login</button>
               <br/>
-              <button id="changeForm" onClick={this.props.formChange}>Click here to Register</button>
+              <button type="button" onClick={this.props.formChange}>Click here to Register</button>
             </form>
             <br/>
           </div>
@@ -35,9 +35,9 @@ import React, { Component } from 'react';
               Password <br/>
               <input id="registerPasswordInput" type="password" onChange={this.props.change} value={this.props.registerPasswordInput}/>
               <br/>
-              <button id="loginButton" type="submit" value="Submit" onClick={this.props.registerSubmit}>Register</button>
+              <button id="registerButton" type="submit" value="Submit" onClick={this.props.registerSubmit}>Register</button>
               <br/>
-              <button id="changeForm" onClick={this.props.formChange}>Click here to Login</button>
+              <button type="button" onClick={this.props.formChange}>Click here to Login</button>
             </form>
           </div>
         );
