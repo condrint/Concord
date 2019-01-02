@@ -28,13 +28,21 @@ userController.loginUser = async (req , res) => {
             username: username,
             password: password,
         });
-        return res.status(200).json({
-            success: true,
-            me: loginUser._id,
-            message: 'Logged in.',
-        })
+        if(loginUser){
+            return res.status(200).json({
+                success: true,
+                me: loginUser._id,
+                message: 'Logged in.',
+            })
+        }
+        else{
+            return res.status(200).json({
+                success: false,
+                message: 'Incorrect username or password.',
+            })
+        }
+       
     } catch(error) {
-        console.log(error);
         return res.status(500).json({
             success: false,
             message: error.message,
@@ -44,12 +52,27 @@ userController.loginUser = async (req , res) => {
 
 userController.newFriend = async(req, res) => {
     try{
-        const { newFriendUsername, me } = req.body;
-        let newFriendDocument = await User.find({ 
-            username: newFriendUsername,
+        const { newFriend, me } = req.body;
+
+        let newFriendDocument = await User.findOne({ 
+            username: newFriend,
         });
-        
-        let newFriendID = newFriendDocument._id;
+
+        if (!newFriendDocument) {
+            return res.status(200).json({
+                success: false,
+                message: "User doesn't exist.",
+            });
+        }
+
+        let newFriendID = newFriendDocument._id.toString();
+
+        if (me == newFriendID) {
+            return res.status(200).json({
+                success: false,
+                message: "You can't add yourself.",
+            });
+        };
 
         let meDocument = await User.findOne({
             _id: me,
@@ -57,31 +80,22 @@ userController.newFriend = async(req, res) => {
         
         for (let friend of meDocument.friends){
             if(friend._id == newFriendID){
-                return res.status(304).json({
+                return res.status(200).json({
                     success: false,
                     message: "You're already friends with this user.",
                 });
             }
         }
 
-        let newFriend = {
-            id: newFriendID,
+        let newFriendEntry = {
+            _id: newFriendID,
             history: [],
         }
 
-        meDocument.friends.push(newFriend);
+        meDocument.friends.push(newFriendEntry);
         meDocument.save();
-        /*
-        let addFriendToMe = await User.updateOne(
-            { _id: me },
-            { $push: {
-                friends:{
-                    id: newFriendDocument._id,
-                    history:[]
-                }
-            }}
-        );*/
-        return res.status(201).json({
+
+        return res.status(200).json({
             success: true,
             message: 'Friend added',
         })

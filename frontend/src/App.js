@@ -136,20 +136,26 @@ class App extends Component {
         alert(newFriendResult.data.message);
         this.hideNewFriendPopup();
       }
-      else{
+      else {
         alert(newFriendResult.data.message);
       }
-    } catch(error) {
+    } catch (error) {
         alert(error);
     }
   }
 
   showNewFriendPopup(){
-    this.setState({ showNewFriendPopup: !this.state.showNewFriendPopup }); //remove toggle functionality eventually, its convienent now
+    this.setState({ 
+      showNewFriendPopup: true,
+      newFriendInput: '',
+    });
   }
 
   hideNewFriendPopup(){
-    this.setState({ showNewFriendPopup: false });
+    this.setState({ 
+      showNewFriendPopup: false,
+      newFriendInput: '',
+    });
   }
 
 
