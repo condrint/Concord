@@ -6,7 +6,7 @@ userController.registerUser = async (req, res) => {
     const {username, password} = req.body;
     const newUser = new User({username, password});
     try {
-        let registeredUser = await newUser.save();
+        let registeredUser = await newUser.save(); 
         return res.status(201).json({
             success: true,
             message: 'Registration successful!',

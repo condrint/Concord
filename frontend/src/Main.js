@@ -10,22 +10,26 @@ class Main extends Component {
 
   render() {
     return(
-      <div id="mainWrapper">
-        <div id="settingsWrapper">
+      <div id="main">
+        <div id="settings">
           Settings
         </div>
 
-        <div id="friendsWrapper">
+        <div id="servers">
+          Server
+          servers
+          serv
+          <br></br>
+          ser
+        </div>
+
+        <div id="friends">
           Friends
-          <Friends/> showNewFriendPopup
+          <Friends/> 
           <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
         </div>
 
-        <div id="serverWrapper">
-          Server
-        </div>
-
-        <div id="dashboardWrapper">
+        <div id="dashboard">
           {this.props.match.params.type}
           {this.props.match.params.id}
         </div>

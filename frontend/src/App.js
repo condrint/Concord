@@ -15,7 +15,7 @@ class App extends Component {
       // login 
       loginUsernameInput: '',
       loginPasswordInput: '',
-      isLoggedIn : false, //keep as true for testing using npm run start
+      isLoggedIn : true, //keep as true for testing using npm run start
 
       // register
       registerUsernameInput: '',
@@ -119,9 +119,9 @@ class App extends Component {
 
   newFriendSubmit = async (event) => {
     event.preventDefault();
-
     let newFriend = this.state.newFriendInput;
     let me = this.state.me;
+    
     if (!newFriend){
       alert('Invalid Input');
       return;
@@ -134,7 +134,6 @@ class App extends Component {
       });
       if (newFriendResult.data.success) {
         alert(newFriendResult.data.message);
-        this.hideNewFriendPopup();
       }
       else {
         alert(newFriendResult.data.message);
@@ -142,6 +141,7 @@ class App extends Component {
     } catch (error) {
         alert(error);
     }
+    this.hideNewFriendPopup();
   }
 
   showNewFriendPopup(){
