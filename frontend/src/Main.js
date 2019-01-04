@@ -8,6 +8,10 @@ class Main extends Component {
     super();
   }
 
+  componentDidMount(){
+    this.props.getFriendsAndServers();
+  }
+
   render() {
     return(
       <div id="main">

@@ -15,7 +15,7 @@ class App extends Component {
       // login 
       loginUsernameInput: '',
       loginPasswordInput: '',
-      isLoggedIn : true, //keep as true for testing using npm run start
+      isLoggedIn : false, //keep as true for testing using npm run start
 
       // register
       registerUsernameInput: '',
@@ -24,6 +24,10 @@ class App extends Component {
       // popups
       showNewFriendPopup: false,
       newFriendInput: '',
+
+      // main
+      friends: [],
+      servers: [],
     }
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -33,6 +37,7 @@ class App extends Component {
     this.showNewFriendPopup = this.showNewFriendPopup.bind(this);
     this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
     this.newFriendSubmit = this.newFriendSubmit.bind(this);
+    this.getFriendsAndServers = this.getFriendsAndServers.bind(this);
   
   }
 
@@ -121,7 +126,7 @@ class App extends Component {
     event.preventDefault();
     let newFriend = this.state.newFriendInput;
     let me = this.state.me;
-    
+
     if (!newFriend){
       alert('Invalid Input');
       return;
@@ -157,7 +162,27 @@ class App extends Component {
       newFriendInput: '',
     });
   }
-
+  
+  async getFriendsAndServers(){
+    let me = this.state.me;
+    
+    try{
+      let friendsResult = await axios.post('/api/getFriends', {
+        'me': me
+      });
+      if (friendsResult.data.success){
+        this.setState({
+          friends: friendsResult.data.friends
+        });
+      }
+      else {
+        alert(friendsResult.data.message);
+      }
+    }
+    catch (error) {
+      alert(error);
+    }
+  }
 
   render() {
     return (    
@@ -208,6 +233,11 @@ class App extends Component {
 
                       // button functions
                       showNewFriendPopup={this.showNewFriendPopup}
+
+                      // content
+                      getFriendsAndServers={this.getFriendsAndServers}
+                      friends={this.state.friends}
+                      servers={this.state.servers}
                     />
                   </div>
                 ) : (
@@ -225,9 +255,11 @@ class App extends Component {
         </Router>
 
         <br></br>
-
+        
+        {/* Testing Buttons */}
         <button onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
         <button onClick={()=>{console.table(this.state)}}>log state</button>
+      
       </div>
     )
   }

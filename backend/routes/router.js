@@ -12,5 +12,6 @@ router.post('/register', userController.registerUser);
 
 router.post('/newFriend', userController.newFriend);
 
+router.post('/getFriends', userController.getFriends);
 module.exports = router;
 

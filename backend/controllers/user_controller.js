@@ -50,7 +50,29 @@ userController.loginUser = async (req , res) => {
     }
 }
 
-userController.newFriend = async(req, res) => {
+userController.getFriends = async (req, res) => {
+    const {me} = req.body;
+    try {
+        let meDocument = await User.findOne({
+            _id: me,
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Friends got.',
+            friends: meDocument.friends,
+        });     
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+userController.newFriend = async (req, res) => {
     try{
         const { newFriend, me } = req.body;
 
@@ -76,7 +98,7 @@ userController.newFriend = async(req, res) => {
 
         let meDocument = await User.findOne({
             _id: me,
-        })
+        });
         
         for (let friend of meDocument.friends){
             if(friend._id == newFriendID){
@@ -98,14 +120,14 @@ userController.newFriend = async(req, res) => {
         return res.status(200).json({
             success: true,
             message: 'Friend added',
-        })
+        });
         
     } catch(error) {
         console.log(error);
         return res.status(500).json({
             success: false,
             message: error.message,
-        })
+        });
     }
 }
 
