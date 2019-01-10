@@ -9,7 +9,7 @@ class Main extends Component {
   }
 
   componentDidMount(){
-    this.props.getFriendsAndServers();
+    this.props.getFriends();
   }
 
   render() {
@@ -29,7 +29,7 @@ class Main extends Component {
 
         <div id="friends">
           Friends
-          <Friends/> 
+          <Friends friends={this.props.friends}/> 
           <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
         </div>
 

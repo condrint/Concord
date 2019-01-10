@@ -29,6 +29,7 @@ class App extends Component {
       friends: [],
       servers: [],
     }
+    
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
@@ -37,7 +38,7 @@ class App extends Component {
     this.showNewFriendPopup = this.showNewFriendPopup.bind(this);
     this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
     this.newFriendSubmit = this.newFriendSubmit.bind(this);
-    this.getFriendsAndServers = this.getFriendsAndServers.bind(this);
+    this.getFriends = this.getFriends.bind(this);
   
   }
 
@@ -138,6 +139,7 @@ class App extends Component {
         'me': me,
       });
       if (newFriendResult.data.success) {
+        this.getFriends();
         alert(newFriendResult.data.message);
       }
       else {
@@ -163,7 +165,7 @@ class App extends Component {
     });
   }
   
-  async getFriendsAndServers(){
+  async getFriends(){
     let me = this.state.me;
     
     try{
@@ -235,7 +237,7 @@ class App extends Component {
                       showNewFriendPopup={this.showNewFriendPopup}
 
                       // content
-                      getFriendsAndServers={this.getFriendsAndServers}
+                      getFriends={this.getFriends}
                       friends={this.state.friends}
                       servers={this.state.servers}
                     />

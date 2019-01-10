@@ -88,6 +88,7 @@ userController.newFriend = async (req, res) => {
         }
 
         let newFriendID = newFriendDocument._id.toString();
+        let newFriendUsername = newFriendDocument.username.toString();
 
         if (me == newFriendID) {
             return res.status(200).json({
@@ -111,6 +112,8 @@ userController.newFriend = async (req, res) => {
 
         let newFriendEntry = {
             _id: newFriendID,
+            username: newFriendUsername,
+            // chatID : 02394203948234,
             history: [],
         }
 
