@@ -111,7 +111,7 @@ userController.newFriend = async (req, res) => {
         }
 
         let newFriendEntry = {
-            _id: newFriendID,
+            id: newFriendID,
             username: newFriendUsername,
         }
         console.log(newFriendEntry);
