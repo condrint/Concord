@@ -14,11 +14,13 @@ var userSchema = new Schema({
     },
     friends: [{
         id: String,
+        username: String
+        /*
         history: [{
             sender: Boolean, // True = me, False = friend - the intuitiveness of this may need to be reevauluated as time goes on
             message: String,
             time: { type : Date } // default: Date.now }
-        }]
+        }]*/
     }],
     servers: [{servername: String}],
     avatarColor: Number
