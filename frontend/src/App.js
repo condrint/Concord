@@ -199,6 +199,8 @@ class App extends Component {
   }
 
   componentDidMount(){
+    // when redirect is true, the redirect component will change the URL and rerender the page
+    // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
     this.setState({
       redirect: false,
       redirectTo: '',
