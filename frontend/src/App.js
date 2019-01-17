@@ -11,6 +11,8 @@ class App extends Component {
     this.state = {
       form: 'login',
       me: '',
+      redirect: false,
+      redirectTo: '',
 
       // login 
       loginUsernameInput: '',
@@ -39,6 +41,7 @@ class App extends Component {
     this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
     this.newFriendSubmit = this.newFriendSubmit.bind(this);
     this.getFriends = this.getFriends.bind(this);
+    this.redirect = this.redirect.bind(this);
   
   }
 
@@ -186,13 +189,33 @@ class App extends Component {
     }
   }
 
+  
+  redirect(type, friendID){
+    let path = '/main/' + type + '/' + friendID;
+    this.setState({
+      redirect: true,
+      redirectTo: path
+    })
+  }
+
+  componentDidMount(){
+    this.setState({
+      redirect: false,
+      redirectTo: '',
+    })
+  }
+
   render() {
     return (    
       <div id="appWrapper">
         <Router>
           <div id="routesWrapper">
+            { this.state.redirect && 
+              <div id="redirect">
+                <Redirect push to={this.state.redirectTo}/>
+              </div>
+            }
             <Switch>
-
               {/* Login and register page */}
               <Route exact path="/login" render={() => (
                 this.state.isLoggedIn ? (
@@ -235,6 +258,7 @@ class App extends Component {
 
                       // button functions
                       showNewFriendPopup={this.showNewFriendPopup}
+                      redirect={this.redirect}
 
                       // content
                       getFriends={this.getFriends}

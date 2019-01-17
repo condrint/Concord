@@ -56,7 +56,7 @@ userController.getFriends = async (req, res) => {
         let meDocument = await User.findOne({
             _id: me,
         });
-        console.log(meDocument.friends)
+        
         return res.status(200).json({
             success: true,
             message: 'Friends got.',
@@ -111,10 +111,10 @@ userController.newFriend = async (req, res) => {
         }
 
         let newFriendEntry = {
-            id: newFriendID,
+            friendId: newFriendID,
             username: newFriendUsername,
         }
-        console.log(newFriendEntry);
+
         meDocument.friends.push(newFriendEntry);
         meDocument.save();
 

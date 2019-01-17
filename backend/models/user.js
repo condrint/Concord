@@ -13,7 +13,7 @@ var userSchema = new Schema({
         required: true
     },
     friends: [{
-        id: String,
+        friendId: String,
         username: String,
         chatId: String,
         /*

@@ -4,8 +4,8 @@ import { NewFriend } from './NewFriend.js';
 //import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class Main extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   componentDidMount(){
@@ -29,7 +29,7 @@ class Main extends Component {
 
         <div id="friends">
           Friends
-          <Friends friends={this.props.friends}/> 
+          <Friends friends={this.props.friends} redirect={this.props.redirect}/> 
           <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
         </div>
 
