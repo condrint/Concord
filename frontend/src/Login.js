@@ -12,14 +12,12 @@ import React, { Component } from 'react';
       if(this.props.form === "login"){
         return (
           <div>
-            <form id = "loginForm" /*onSubmit={this.props.loginSubmit}*/>
-              Username <br/>
-              <input id="loginUsernameInput" type="text" onChange={this.props.change} value={this.props.loginUsernameInput}/> <br/>
-              Password <br/>
+            <form id = "loginForm">
+              <label for="loginUsernameInput">Username</label>
+              <input id="loginUsernameInput" type="text" onChange={this.props.change} value={this.props.loginUsernameInput}/> 
+              <label for="loginPasswordInput">Password</label>
               <input id="loginPasswordInput" type="password" onChange={this.props.change} value={this.props.loginPasswordInput}/>
-              <br/>
               <button id="loginButton" type="submit" value="Submit" onClick={this.props.loginSubmit}>Login</button>
-              <br/>
               <button type="button" onClick={this.props.formChange}>Click here to Register</button>
             </form>
             <br/>
@@ -29,14 +27,12 @@ import React, { Component } from 'react';
       else if(this.props.form === "register"){
         return (
         <div>
-            <form id = "registerForm" /*onSubmit={this.props.registerSubmit}*/>
-              Username <br/>
-              <input id="registerUsernameInput" type="text" onChange={this.props.change} value={this.props.registerUsernameInput}/> <br/>
-              Password <br/>
+            <form id = "registerForm">
+            <label for="registerUsernameInput">Username</label>
+              <input id="registerUsernameInput" type="text" onChange={this.props.change} value={this.props.registerUsernameInput}/> 
+              <label for="registerPasswordInput">Password</label>
               <input id="registerPasswordInput" type="password" onChange={this.props.change} value={this.props.registerPasswordInput}/>
-              <br/>
               <button id="registerButton" type="submit" value="Submit" onClick={this.props.registerSubmit}>Register</button>
-              <br/>
               <button type="button" onClick={this.props.formChange}>Click here to Login</button>
             </form>
           </div>
