@@ -12,7 +12,9 @@ userController.registerUser = async (req, res) => {
             message: 'Registration successful!',
         })
 
-    } catch(error) {
+    } 
+    
+    catch(error) {
         console.log(error);
         return res.status(500).json({
             success: false,
@@ -35,14 +37,16 @@ userController.loginUser = async (req , res) => {
                 message: 'Logged in.',
             })
         }
-        else{
+        else {
             return res.status(200).json({
                 success: false,
                 message: 'Incorrect username or password.',
             })
         }
        
-    } catch(error) {
+    } 
+
+    catch(error) {
         return res.status(500).json({
             success: false,
             message: error.message,
@@ -63,6 +67,7 @@ userController.getFriends = async (req, res) => {
             friends: meDocument.friends,
         });     
     }
+
     catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -110,9 +115,21 @@ userController.newFriend = async (req, res) => {
             }
         }
 
+        newMessageId = messageController.createNewMessage([me, newFriendID]);
+
+        // this should really be taken care of inside of the messageController
+        // return the error there, instead of remembering to check for -1 here (and elsewhere)
+        if (newMessageId == -1){
+            return res.status(200).json({
+                success: false,
+                message: "Error creating mutual message log between you and your new friend.",
+            });
+        }
+
         let newFriendEntry = {
             friendId: newFriendID,
             username: newFriendUsername,
+            chatId: newMessageId
         }
 
         meDocument.friends.push(newFriendEntry);
@@ -122,8 +139,9 @@ userController.newFriend = async (req, res) => {
             success: true,
             message: 'Friend added',
         });
-        
-    } catch(error) {
+    } 
+
+    catch(error) {
         console.log(error);
         return res.status(500).json({
             success: false,
