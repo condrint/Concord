@@ -12,7 +12,7 @@ import React, { Component } from 'react';
       if(this.props.form === "login"){
         return (
           <div>
-            <form id = "loginForm">
+            <form id="loginForm">
               <label for="loginUsernameInput">Username</label>
               <input id="loginUsernameInput" type="text" onChange={this.props.change} value={this.props.loginUsernameInput}/> 
               <label for="loginPasswordInput">Password</label>

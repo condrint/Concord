@@ -20,11 +20,7 @@ class Main extends Component {
         </div>
 
         <div id="servers">
-          Server
           servers
-          serv
-          <br></br>
-          ser
         </div>
 
         <div id="friends">
@@ -36,6 +32,13 @@ class Main extends Component {
         <div id="dashboard">
           {this.props.match.params.type}
           {this.props.match.params.id}
+          <div id="sendMessageForm">
+            <form>
+              <input type="text" placeholder="Send a message!"/>
+              <input type="submit" value="Send"/>
+            </form>
+          </div>
+
         </div>
       </div>
     )

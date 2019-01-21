@@ -2,11 +2,14 @@ body {
   font-family: sans-serif;
 }
 
-#main > div{
+
+/* Main.js */
+
+#main > div {
   background-color: grey;
 }
 
-#main{
+#main {
   display: grid;
   grid-gap: 10px;
   grid-template-columns: 10% 80%;
@@ -16,4 +19,13 @@ body {
     "friends dashboard";
   background-color: black;
   width: 90%;
+}
+
+#dashboard {
+  position: relative;
+}
+
+#sendMessageForm {
+  position: absolute;
+  bottom: 0;
 }

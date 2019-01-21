@@ -190,8 +190,8 @@ class App extends Component {
   }
 
   
-  redirect(type, friendID){
-    let path = '/main/' + type + '/' + friendID;
+  redirect(type, ID){
+    let path = '/main/' + type + '/' +  ID;
     this.setState({
       redirect: true,
       redirectTo: path
