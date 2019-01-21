@@ -1,4 +1,5 @@
-var User = require('../models/user.js');
+const User = require('../models/user.js');
+const messageController = require('../controllers/message_controller');
 
 const userController = {};
 
@@ -115,7 +116,8 @@ userController.newFriend = async (req, res) => {
             }
         }
 
-        newMessageId = messageController.createNewMessage([me, newFriendID]);
+        newMessageId = await messageController.createNewMessage([me, newFriendID]);
+        console.log(newMessageId);
 
         // this should really be taken care of inside of the messageController
         // return the error there, instead of remembering to check for -1 here (and elsewhere)

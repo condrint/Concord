@@ -34,4 +34,4 @@ convertListToObjectsWithIds = (participants) => {
     });
 }
 
-module.exports = userController;
+module.exports = messageController;

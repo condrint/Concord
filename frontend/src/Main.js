@@ -13,7 +13,10 @@ class Main extends Component {
   }
 
   render() {
-    return(
+    const urlType = this.props.match.params.type;
+    const urlMessageId = this.props.match.params.id;
+
+    return (
       <div id="main">
         <div id="settings">
           Settings
@@ -30,15 +33,16 @@ class Main extends Component {
         </div>
 
         <div id="dashboard">
-          {this.props.match.params.type}
-          {this.props.match.params.id}
-          <div id="sendMessageForm">
-            <form>
-              <input type="text" placeholder="Send a message!"/>
-              <input type="submit" value="Send"/>
-            </form>
-          </div>
 
+          {/* don't add html below the sendMessageForm - this comment 
+            can be removed when this fact is more obvious in the future*/}
+
+          {(urlType == 'user' || urlType == 'server') && 
+            <div id="sendMessageForm">
+              <input id="sendMessageInput" onChange={this.props.change} type="text" placeholder="Send a message!"/>
+              <button onClick={() => this.props.sendMessage(urlType, urlMessageId)}> Send </button>
+            </div>
+          }
         </div>
       </div>
     )

@@ -10,7 +10,7 @@ class Friends extends Component {
     return(
       <ul>
         { this.props.friends && this.props.friends.map((friend, index) => 
-          <li key={index} onClick={() => {this.props.redirect('friend', friend.friendId)}}> 
+          <li key={index} onClick={() => {this.props.redirect('user', friend.chatId)}}> 
             <button>
               {friend.username}
             </button>

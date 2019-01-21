@@ -9,6 +9,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      // multiple use & misc.
       form: 'login',
       me: '',
       redirect: false,
@@ -27,6 +28,9 @@ class App extends Component {
       showNewFriendPopup: false,
       newFriendInput: '',
 
+      // sending message
+      sendMessageInput: '',
+
       // main
       friends: [],
       servers: [],
@@ -42,7 +46,7 @@ class App extends Component {
     this.newFriendSubmit = this.newFriendSubmit.bind(this);
     this.getFriends = this.getFriends.bind(this);
     this.redirect = this.redirect.bind(this);
-  
+    this.sendMessage = this.sendMessage.bind(this);
   }
 
   handleChange = (event) => {
@@ -198,6 +202,44 @@ class App extends Component {
     })
   }
 
+  sendMessage(type, messageId){
+    console.log(type, messageId);
+    if (type != 'server' && type != 'user'){
+      alert("You can only send a message to a user or a server - this isn't your fault.")
+      return;
+    }
+    
+    // event.preventDefault();
+    let message = this.state.sendMessageInput;
+    if(!message){
+      alert("You can't send an empty message");
+      return;
+    }
+    alert("sending " + message + " to " + messageId);
+    return;
+
+    /*
+    try {
+      let sendMessageResult = await axios.post('/api/login', {
+        'username': username,
+        'password': password,
+      });
+      if (loginResult.data.success) {
+        alert(loginResult.data.message)
+        this.setState({ 
+          isLoggedIn: loginResult.data.success,
+          me: loginResult.data.me,
+        });
+      }
+      else{
+        alert(loginResult.data.message);
+      }
+    } catch(error) {
+        alert(error);
+    }*/
+
+  }
+
   componentDidMount(){
     // when redirect is true, the redirect component will change the URL and rerender the page
     // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
@@ -260,6 +302,8 @@ class App extends Component {
 
                       // button functions
                       showNewFriendPopup={this.showNewFriendPopup}
+                      change={this.change}
+                      sendMessage={this.sendMessage}
                       redirect={this.redirect}
 
                       // content
