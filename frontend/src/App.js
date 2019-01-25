@@ -31,6 +31,7 @@ class App extends Component {
       // popups
       showNewFriendPopup: false,
       newFriendInput: '',
+      serverInput: '',
 
       // sending message
       sendMessageInput: '',
@@ -49,6 +50,8 @@ class App extends Component {
     this.showNewFriendPopup = this.showNewFriendPopup.bind(this);
     this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
     this.newFriendSubmit = this.newFriendSubmit.bind(this);
+    this.newServerSubmit = this.newServerSubmit.bind(this);
+    this.joinServerSubmit = this.joinServerSubmit.bind(this);
     this.getFriends = this.getFriends.bind(this);
     this.redirect = this.redirect.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
