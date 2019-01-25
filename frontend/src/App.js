@@ -4,6 +4,9 @@ import Main from './Main.js';
 import  Popup  from './Popups.js';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
 const axios = require('axios');
+import io from 'socket.io-client';
+
+const socket = io('http://localhost');
 
 class App extends Component {
   constructor() {
@@ -14,6 +17,7 @@ class App extends Component {
       me: '',
       redirect: false,
       redirectTo: '',
+      redirectId: '',
 
       // login 
       loginUsernameInput: '',
@@ -34,6 +38,7 @@ class App extends Component {
       // main
       friends: [],
       servers: [],
+      messages: [], 
     }
     
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
@@ -193,59 +198,45 @@ class App extends Component {
     }
   }
 
-  
   redirect(type, ID){
     let path = '/main/' + type + '/' +  ID;
     this.setState({
       redirect: true,
-      redirectTo: path
+      redirectTo: path,
+      redirectId: ID,
     })
   }
 
   sendMessage(type, messageId){
-    console.log(type, messageId);
     if (type != 'server' && type != 'user'){
-      alert("You can only send a message to a user or a server - this isn't your fault.")
+      alert("You can only send a message to a user or a server.")
       return;
     }
-    
-    // event.preventDefault();
     let message = this.state.sendMessageInput;
     if(!message){
-      alert("You can't send an empty message");
+      alert("You can't send an empty message.");
       return;
     }
-    alert("sending " + message + " to " + messageId);
-    return;
-
-    /*
-    try {
-      let sendMessageResult = await axios.post('/api/login', {
-        'username': username,
-        'password': password,
-      });
-      if (loginResult.data.success) {
-        alert(loginResult.data.message)
-        this.setState({ 
-          isLoggedIn: loginResult.data.success,
-          me: loginResult.data.me,
-        });
-      }
-      else{
-        alert(loginResult.data.message);
-      }
-    } catch(error) {
-        alert(error);
-    }*/
-
+    socket.emit('messageToServer', {
+      message: message,
+      messageId: messageId,
+    })
   }
 
   componentDidMount(){
     // when redirect is true, the redirect component will change the URL and rerender the page
     // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
+
+    //connect to new room
+    const chatRoomId = this.state.redirectId;
+    if(chatRoomId){
+      socket.join(chatRoomId);
+    }
+
     this.setState({
       redirect: false,
       redirectTo: '',
+      redirectId: '',
     })
   }
 
@@ -310,6 +301,7 @@ class App extends Component {
                       getFriends={this.getFriends}
                       friends={this.state.friends}
                       servers={this.state.servers}
+                      messages={this.state.messages}
                     />
                   </div>
                 ) : (
