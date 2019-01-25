@@ -19,11 +19,15 @@ class Popup extends Component {
         }
         
         {this.props.type == 'New/Join Server' &&
-          <div id="newFriendPopup">
-            <header>Add a new friend by username</header>
-            <form id="newFriendForm">
-              <input id="newFriendInput" type="text" onChange={this.props.change} value={this.props.newFriendInput}/>
-              <button type="submit" onClick={this.props.newFriendSubmit}>Add</button>
+          <div id="newServerPopup">
+            <header>Join or create server</header>
+            <form id="createServerForm">
+              <input id="createServerInput" type="text" onChange={this.props.change} value={this.props.ServerInput}/>
+              <button type="submit" onClick={this.props.createServerSubmit}>Create</button>
+            </form>
+            <form id="joinServerForm">
+              <input id="joinServerInput" type="text" onChange={this.props.change} value={this.props.ServerInput}/>
+              <button type="submit" onClick={this.props.joinServerSubmit}>Join</button>
             </form>
           </div>
         }
