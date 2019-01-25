@@ -4,9 +4,9 @@ import Main from './Main.js';
 import  Popup  from './Popups.js';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
 const axios = require('axios');
-import io from 'socket.io-client';
+//import io from 'socket.io-client';
 
-const socket = io('http://localhost');
+//const socket = io('http://localhost');
 
 class App extends Component {
   constructor() {
@@ -208,6 +208,7 @@ class App extends Component {
   }
 
   sendMessage(type, messageId){
+    /*
     if (type != 'server' && type != 'user'){
       alert("You can only send a message to a user or a server.")
       return;
@@ -220,18 +221,18 @@ class App extends Component {
     socket.emit('messageToServer', {
       message: message,
       messageId: messageId,
-    })
+    })*/
   }
 
   componentDidMount(){
     // when redirect is true, the redirect component will change the URL and rerender the page
     // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
 
-    //connect to new room
+    /*connect to new room
     const chatRoomId = this.state.redirectId;
     if(chatRoomId){
       socket.join(chatRoomId);
-    }
+    }*/
 
     this.setState({
       redirect: false,

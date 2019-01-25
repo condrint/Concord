@@ -14,9 +14,7 @@ class Main extends Component {
   componentDidMount(){
     this.props.getFriends();
 
-    const urlType = this.props.match.params.type;
-    const urlMessageId = this.props.match.params.id;
-    this.getMessages(urlType, urlMessageId);
+    //this.getMessages(urlType, urlMessageId);
   }
 
   getMessages(urlType, urlMessageId){
@@ -35,6 +33,10 @@ class Main extends Component {
   }
 
   render() {
+
+    const urlType = this.props.match.params.type;
+    const urlMessageId = this.props.match.params.id;
+
     return (
       <div id="main">
         <div id="settings">

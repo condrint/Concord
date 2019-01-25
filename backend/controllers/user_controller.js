@@ -127,6 +127,7 @@ userController.newFriend = async (req, res) => {
             });
         }
 
+        //updating friend into user's friend-list
         let newFriendEntry = {
             friendId: newFriendID,
             username: newFriendUsername,
@@ -135,6 +136,16 @@ userController.newFriend = async (req, res) => {
 
         meDocument.friends.push(newFriendEntry);
         meDocument.save();
+
+        //updating user into the friend's friend-list
+        let meAsFriend = {
+            friendId: me._id,
+            username: me.username,
+            chatId: newMessageId
+        }
+
+        newFriendDocument.friends.push(meAsFriend);
+        newFriendDocument.save();
 
         return res.status(200).json({
             success: true,

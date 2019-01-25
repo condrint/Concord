@@ -6,7 +6,7 @@ const router = require('./routes/router');
 const app = express();
 const server = require('http').Server(app);
 const socketIo = require("socket.io")(server);
-const messageController = require('../controllers/message_controller');
+const messageController = require('/controllers/message_controller');
 
 // configure middleware
 app.use(bodyParser.json());
