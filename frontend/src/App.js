@@ -4,9 +4,9 @@ import Main from './Main.js';
 import  Popup  from './Popups.js';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
 const axios = require('axios');
-//import io from 'socket.io-client';
+import io from 'socket.io-client';
 
-//const socket = io('http://localhost');
+const socket = io('http://localhost');
 
 class App extends Component {
   constructor() {
@@ -46,15 +46,17 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this);
-    this.clearUsernameAndPasswordFields = this.clearUsernameAndPasswordFields.bind(this);
-    this.showNewFriendPopup = this.showNewFriendPopup.bind(this);
-    this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
     this.newFriendSubmit = this.newFriendSubmit.bind(this);
     this.newServerSubmit = this.newServerSubmit.bind(this);
     this.joinServerSubmit = this.joinServerSubmit.bind(this);
+
+    this.showNewFriendPopup = this.showNewFriendPopup.bind(this);
+    this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
+
     this.getFriends = this.getFriends.bind(this);
     this.redirect = this.redirect.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.clearUsernameAndPasswordFields = this.clearUsernameAndPasswordFields.bind(this);
   }
 
   handleChange = (event) => {
@@ -178,6 +180,14 @@ class App extends Component {
       showNewFriendPopup: false,
       newFriendInput: '',
     });
+  }
+  
+  createServerSubmit(){
+    return;
+  }
+
+  joinServerSubmit(){
+    return;
   }
   
   async getFriends(){
