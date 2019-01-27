@@ -242,9 +242,8 @@ class App extends Component {
     })
   }
 
-  updateCurrentlyViewedMessages(){
+  updateCurrentlyViewedMessages(messageId){
     console.log('getCurrentlyViewedMessages');
-    let messageId = this.state.redirectId;
     let currentMessages = this.state.messages;
     let currentlyViewedMessages = []
       
@@ -280,6 +279,8 @@ class App extends Component {
         this.setState({
           messages: currentMessages
         });
+
+        this.updateCurrentlyViewedMessages(messageId);
       }
       else {
         alert(messagesResult.data.message);
@@ -298,14 +299,13 @@ class App extends Component {
     if (this.state.redirect){
       const chatRoomId = this.state.redirectId;
       this.getMessages(chatRoomId);
-      this.updateCurrentlyViewedMessages()
-
       this.setState({
         redirect: false,
         redirectTo: '',
         redirectId: '',
-      })
+      });
     }
+    
   }
 
   componentDidMount(){
@@ -325,7 +325,7 @@ class App extends Component {
         messages: currentMessages
       })
       
-      this.updateCurrentlyViewedMessages()
+      this.updateCurrentlyViewedMessages(messageId)
     })
   }
 
