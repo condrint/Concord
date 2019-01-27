@@ -9,13 +9,11 @@ class Messages extends Component {
     return(
       <ul>
         { this.props.messages && this.props.messages.map((message, index) => 
-            'hi'
-            /*
-          <li key={index} onClick={() => {this.props.redirect('user', friend.chatId)}}> 
-            <button>
-              {friend.username}
-            </button>
-          </li>*/
+          <li key={index}> 
+            <ul>
+              {message.senderUsername} : {message.message}
+            </ul>
+          </li>
         )}
       </ul>
     )

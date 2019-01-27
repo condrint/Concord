@@ -31,13 +31,16 @@ userController.loginUser = async (req , res) => {
             username: username,
             password: password,
         });
+
         if(loginUser){
             return res.status(200).json({
                 success: true,
                 me: loginUser._id,
+                myUsername: loginUser.username,
                 message: 'Logged in.',
             })
         }
+
         else {
             return res.status(200).json({
                 success: false,
@@ -58,14 +61,14 @@ userController.loginUser = async (req , res) => {
 userController.getFriends = async (req, res) => {
     const {me} = req.body;
     try {
-        let meDocument = await User.findOne({
-            _id: me,
-        });
+        let meDocument = await User.findById(me);
         
+        let listOfFriendObjects = convertToClientFriendObjects(meDocument.friends);
+
         return res.status(200).json({
             success: true,
             message: 'Friends got.',
-            friends: meDocument.friends,
+            friends: listOfFriendObjects,
         });     
     }
 
@@ -76,6 +79,19 @@ userController.getFriends = async (req, res) => {
             message: error.message,
         });
     }
+}
+
+convertToClientFriendObjects = (friends) => {
+    listOfFriendObjects = []
+    for (let friend of friends){
+        let friendObject = {
+            chatId: friend.chatId,
+            friendId: friend.friendId,
+            username: friend.username
+        }
+        listOfFriendObjects.push(friendObject);
+    }
+    return listOfFriendObjects;
 }
 
 userController.newFriend = async (req, res) => {
@@ -118,9 +134,7 @@ userController.newFriend = async (req, res) => {
 
         newMessageId = await messageController.createNewMessage([me, newFriendID]);
 
-        // this should really be taken care of inside of the messageController
-        // return the error there, instead of remembering to check for -1 here (and elsewhere)
-        if (newMessageId == -1){
+        if (!newMessageId){
             return res.status(200).json({
                 success: false,
                 message: "Error creating mutual message log between you and your new friend.",
@@ -139,8 +153,8 @@ userController.newFriend = async (req, res) => {
 
         //updating user into the friend's friend-list
         let meAsFriend = {
-            friendId: me._id,
-            username: me.username,
+            friendId: meDocument._id,
+            username: meDocument.username,
             chatId: newMessageId
         }
 

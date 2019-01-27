@@ -3,18 +3,18 @@ import Login from './Login.js';
 import Main from './Main.js';
 import  Popup  from './Popups.js';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
-const axios = require('axios');
 import io from 'socket.io-client';
-
-const socket = io('http://localhost');
+const axios = require('axios');
+const socket = io('http://localhost:3001');
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      // multiple use & misc.
+      // multiple use & misc
       form: 'login',
       me: '',
+      myUsername: '',
       redirect: false,
       redirectTo: '',
       redirectId: '',
@@ -40,6 +40,7 @@ class App extends Component {
       friends: [],
       servers: [],
       messages: [], 
+      currentlyViewedMessages: []
     }
     
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
@@ -47,8 +48,6 @@ class App extends Component {
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this);
     this.newFriendSubmit = this.newFriendSubmit.bind(this);
-    this.newServerSubmit = this.newServerSubmit.bind(this);
-    this.joinServerSubmit = this.joinServerSubmit.bind(this);
 
     this.showNewFriendPopup = this.showNewFriendPopup.bind(this);
     this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
@@ -57,6 +56,9 @@ class App extends Component {
     this.redirect = this.redirect.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.clearUsernameAndPasswordFields = this.clearUsernameAndPasswordFields.bind(this);
+    this.getMessages = this.getMessages.bind(this);
+    this.updateCurrentlyViewedMessages = this.updateCurrentlyViewedMessages.bind(this);
+    
   }
 
   handleChange = (event) => {
@@ -115,6 +117,7 @@ class App extends Component {
         this.setState({ 
           isLoggedIn: loginResult.data.success,
           me: loginResult.data.me,
+          myUsername: loginResult.data.myUsername,
         });
       }
       else{
@@ -182,21 +185,17 @@ class App extends Component {
     });
   }
   
-  createServerSubmit(){
-    return;
-  }
 
-  joinServerSubmit(){
-    return;
-  }
-  
   async getFriends(){
+    console.log('getFriends');
+
     let me = this.state.me;
     
     try{
       let friendsResult = await axios.post('/api/getFriends', {
-        'me': me
+        me: me
       });
+
       if (friendsResult.data.success){
         this.setState({
           friends: friendsResult.data.friends
@@ -212,6 +211,7 @@ class App extends Component {
   }
 
   redirect(type, ID){
+    console.log('redirect');
     let path = '/main/' + type + '/' +  ID;
     this.setState({
       redirect: true,
@@ -221,36 +221,111 @@ class App extends Component {
   }
 
   sendMessage(type, messageId){
-    /*
+    console.log('sendMessage');
     if (type != 'server' && type != 'user'){
       alert("You can only send a message to a user or a server.")
       return;
     }
+
     let message = this.state.sendMessageInput;
+
     if(!message){
       alert("You can't send an empty message.");
       return;
     }
+
     socket.emit('messageToServer', {
+      senderId: this.state.me,
+      senderUsername: this.state.myUsername,
       message: message,
       messageId: messageId,
-    })*/
+    })
+  }
+
+  updateCurrentlyViewedMessages(){
+    console.log('getCurrentlyViewedMessages');
+    let messageId = this.state.redirectId;
+    let currentMessages = this.state.messages;
+    let currentlyViewedMessages = []
+      
+    for (let messageObject of currentMessages){
+      if (messageObject.messageId == messageId){
+        currentlyViewedMessages = messageObject.history;
+      }
+    }
+
+    this.setState({
+      currentlyViewedMessages: currentlyViewedMessages
+    })
+  }
+
+  getMessages = async (messageId) => {
+    console.log('getMessages');
+    let currentMessages = this.state.messages;
+    for (let messageObject of currentMessages){
+      if (messageObject.messageId == messageId){
+        return;
+      }
+    }
+
+    try{
+      let messagesResult = await axios.post('/api/getMessages', {
+        messageId: messageId
+      });
+
+      if (messagesResult.data.success){
+        let currentMessages = this.state.messages
+        currentMessages.push(messagesResult.data.messageObject)
+
+        this.setState({
+          messages: currentMessages
+        });
+      }
+      else {
+        alert(messagesResult.data.message);
+      }
+    }
+    catch (error) {
+      alert(error);
+    }
+  }
+
+
+  componentDidUpdate(){
+    console.log('App did update called');
+    // when redirect is true, the redirect component will change the URL and rerender the page
+    // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
+    if (this.state.redirect){
+      const chatRoomId = this.state.redirectId;
+      this.getMessages(chatRoomId);
+      this.updateCurrentlyViewedMessages()
+
+      this.setState({
+        redirect: false,
+        redirectTo: '',
+        redirectId: '',
+      })
+    }
   }
 
   componentDidMount(){
-    // when redirect is true, the redirect component will change the URL and rerender the page
-    // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
+    socket.on('messageToClient', (data) => {
+      console.log('client received message')
+      let messageId = data.messageId;
+      let newMessage = data.message;
+      let currentMessages = this.state.messages;
+      
+      for (let messageHistoryObject of currentMessages){
+        if (messageHistoryObject.messageId == messageId){
+          messageHistoryObject.history.push(newMessage);
+        }
+      }
 
-    /*connect to new room
-    const chatRoomId = this.state.redirectId;
-    if(chatRoomId){
-      socket.join(chatRoomId);
-    }*/
-
-    this.setState({
-      redirect: false,
-      redirectTo: '',
-      redirectId: '',
+      this.setState({
+        messages: currentMessages
+      })
+      
+      this.updateCurrentlyViewedMessages()
     })
   }
 
@@ -271,14 +346,15 @@ class App extends Component {
                   <Redirect to="/main/dashboard/me"/>
                 ) : (
                   <Login 
-                    loginSubmit={this.handleLoginSubmit} 
                     change={this.handleChange}
-                    loggedIn={this.state.isLoggedIn}
                     loginUsernameInput={this.state.loginUsernameInput}
                     loginPasswordInput={this.state.loginPasswordInput}
                     registerPasswordInput={this.state.registerPasswordInput}
                     registerUsernameInput={this.state.registerUsernameInput}
+
                     registerSubmit={this.handleRegisterSubmit}
+                    loginSubmit={this.handleLoginSubmit} 
+
                     formChange={this.handleLoginFormChange}
                     form={this.state.form}
                   />
@@ -288,7 +364,6 @@ class App extends Component {
               <Route path="/main/:type/:id" render={({match}) =>
                 this.state.isLoggedIn ? (
                   <div>
-
                     {/* Pop ups */}
                     <div id="popupWrapper">
                       {this.state.showNewFriendPopup &&
@@ -307,7 +382,7 @@ class App extends Component {
 
                       // button functions
                       showNewFriendPopup={this.showNewFriendPopup}
-                      change={this.change}
+                      change={this.handleChange}
                       sendMessage={this.sendMessage}
                       redirect={this.redirect}
 
@@ -315,7 +390,7 @@ class App extends Component {
                       getFriends={this.getFriends}
                       friends={this.state.friends}
                       servers={this.state.servers}
-                      messages={this.state.messages}
+                      messages={this.state.currentlyViewedMessages}
                     />
                   </div>
                 ) : (

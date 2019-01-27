@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 const router = require('./routes/router');
 const app = express();
 const server = require('http').Server(app);
-const socketIo = require("socket.io")(server);
-const messageController = require('/controllers/message_controller');
+const socketIo = require('socket.io')(server, { origins: '*:*'});
+const messageController = require('./controllers/message_controller');
 
 // configure middleware
 app.use(bodyParser.json());
@@ -39,17 +39,38 @@ socketIo.on('connection', function(socket){
 
   socket.on('messageToServer', async (data) => {
     const message = data.message;
+    const senderId = data.senderId;
+    const senderUsername = data.senderUsername;
     const messageId = data.messageId;
+
     try {
-      await messageController.addMessage(message, messageId);
+      console.log('new message');/*
+      if(socket.adapter.rooms.indexOf(chatRoom) == -1){
+        await socket.join(chatRoom);
+      }*/
+
+      const messageEntry = await messageController.addMessage(senderId, senderUsername, message, messageId);
+      
+      if (!messageEntry){
+        socket.emit('messageToClientError', {
+          error: 'Could not add message to database.',
+        });
+      }
+      else{
+        console.log('trying to emit to client');
+        const chatRoom = messageId;
+        socket.emit('messageToClient', {
+          message: messageEntry,
+          messageId: messageId,
+        });
+        
+      }
     }
+
     catch(error){
       socket.emit('messageToClientError', {
         error: error,
       });
     }
-    socket.to(messageId).emit('messageToClient', {
-      message: message
-    });
   });
 });
