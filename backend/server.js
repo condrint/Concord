@@ -59,7 +59,7 @@ socketIo.on('connection', function(socket){
       else{
         console.log('trying to emit to client');
         const chatRoom = messageId;
-        socket.emit('messageToClient', {
+        socketIo.emit('messageToClient', {
           message: messageEntry,
           messageId: messageId,
         });
