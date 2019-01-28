@@ -119,6 +119,10 @@ class App extends Component {
           me: loginResult.data.me,
           myUsername: loginResult.data.myUsername,
         });
+        
+        socket.emit('newClient', {
+          id: loginResult.data.me
+        });
       }
       else{
         alert(loginResult.data.message);

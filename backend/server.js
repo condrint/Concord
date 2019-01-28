@@ -35,7 +35,14 @@ app.get('/*', (req, res, next) => {
 });
 
 // chat events - this should be in a seperate file ideally
+let clients = {}
+
 socketIo.on('connection', function(socket){
+
+  socket.on('newClient', (data) => {
+    const clientId = data.id;
+    clients[clientId] = socket.id;
+  });
 
   socket.on('messageToServer', async (data) => {
     const message = data.message;
