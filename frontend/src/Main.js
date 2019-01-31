@@ -46,6 +46,9 @@ class Main extends Component {
               <div id="sendMessageForm">
                 <input id="sendMessageInput" onChange={this.props.change} type="text" placeholder="Send a message!"/>
                 <button onClick={() => this.props.sendMessage(urlType, urlMessageId)}> Send </button>
+                {(urlType == 'user' &&
+                  <button onClick={() => this.props.callUser(urlMessageId)}> Call </button>
+                )}
               </div>
             </div>
           }

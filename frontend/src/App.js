@@ -38,8 +38,26 @@ class App extends Component {
 
       // main
       friends: [],
+      /* friends form ->
+        {
+          chatId,
+          friendId,
+          username
+        }
+       */
       servers: [],
       messages: [], 
+      /* messages form ->
+        {
+          messageId,
+          history: [{
+            senderId: String,
+            senderUsername: String, 
+            message: String,
+            time: { type : Date } // default: Date.now 
+          }]
+        }
+      */
       currentlyViewedMessages: []
     }
     
@@ -295,7 +313,6 @@ class App extends Component {
     }
   }
 
-
   componentDidUpdate(){
     console.log('App did update called');
     // when redirect is true, the redirect component will change the URL and rerender the page
@@ -309,9 +326,9 @@ class App extends Component {
         redirectId: '',
       });
     }
-    
   }
 
+  // declaring socket events 
   componentDidMount(){
     socket.on('messageToClient', (data) => {
       console.log('client received message')
