@@ -17,7 +17,6 @@ class Popup extends Component {
             </form>
           </div>
         }
-        {/*
         {this.props.type == 'New Server' &&
           <div id="newServerPopup">
             Join or create server
@@ -27,7 +26,7 @@ class Popup extends Component {
               <button type="submit" onClick={this.props.joinServerSubmit}>Join</button>
             </form>
           </div>
-        }*/}
+        }
       </div>
     )
   }

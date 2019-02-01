@@ -30,6 +30,7 @@ class App extends Component {
       
       // popups
       showNewFriendPopup: false,
+      showServerPopup: false,
       newFriendInput: '',
       serverInput: '',
 
@@ -66,11 +67,16 @@ class App extends Component {
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this);
     this.newFriendSubmit = this.newFriendSubmit.bind(this);
+    this.createServerSubmit = this.createServerSubmit.bind(this);
+    this.joinServerSubmit = this.joinServerSubmit.bind(this);
 
     this.showNewFriendPopup = this.showNewFriendPopup.bind(this);
     this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
+    this.showServerPopup = this.showServerPopup.bind(this);
+    this.hideServerPopup = this.hideServerPopup.bind(this);
 
     this.getFriends = this.getFriends.bind(this);
+    this.getServers = this.getServers.bind(this);
     this.redirect = this.redirect.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.clearUsernameAndPasswordFields = this.clearUsernameAndPasswordFields.bind(this);
@@ -193,6 +199,62 @@ class App extends Component {
     this.hideNewFriendPopup();
   }
 
+  joinServerSubmit = async (event) =>{
+  event.preventDefault();
+  let joinServer = this.state.serverInput;
+  let me = this.state.me;
+  
+  if(!joinServer){
+    alert('Invalid Input');
+    return;
+  }
+
+  try {
+    let joinServerResult = await axios.post('/api/joinServer', {
+      'joinServer': joinServer,
+      'me': me,
+    });
+    if(joinServerResult.data.success){
+      this.getServers();
+      alert(joinServerResult.data.message)
+    }
+    else{
+      alert(joinServerResult.data.message)
+    }
+  } catch (error) {
+    alert(error);
+  }
+  this.hideServerPopup();
+  }
+
+  createServerSubmit = async (event) =>{
+  event.preventDefault();
+  let createServer = this.state.serverInput;
+  let me = this.state.me;
+  
+  if(!createServer){
+    alert('Invalid Input');
+    return;
+  }
+
+  try {
+    let createServerResult = await axios.post('/api/createServer', {
+      'createServer': createServer,
+      'me': me,
+    });
+    if(createServerResult.data.success){
+      this.getServers();
+      alert(createServerResult.data.message)
+    }
+    else{
+      alert(createServerResult.data.message)
+    }
+  } catch (error) {
+    alert(error);
+  }
+  this.hideServerPopup();
+  }
+
   showNewFriendPopup(){
     this.setState({ 
       showNewFriendPopup: true,
@@ -207,6 +269,19 @@ class App extends Component {
     });
   }
   
+  showServerPopup(){
+    this.setState({ 
+      showServerPopup: true,
+      serverInput: '',
+    });
+  }
+
+  hideServerPopup(){
+    this.setState({ 
+      showServerPopup: false,
+      serverInput: '',
+    });
+  }
 
   async getFriends(){
     console.log('getFriends');
@@ -228,6 +303,30 @@ class App extends Component {
       }
     }
     catch (error) {
+      alert(error);
+    }
+  }
+
+  async getServers(){
+    console.log('getServers');
+
+    let me = this.state.me;
+
+    try{
+      let serversResult = await axios.post('api/getServers', {
+        me: me
+      });
+
+      if(serversResult.data.success){
+        this.setState({
+          servers = serversResult.data.servers
+        });
+      }
+      else{
+        alert(serversResult.data.message);
+      }
+    }
+    catch(error){
       alert(error);
     }
   }
@@ -396,6 +495,17 @@ class App extends Component {
                         />
                       }
                     </div>
+                    <div id="popupWrapper">
+                      {this.state.showServerPopup &&
+                        <Popup 
+                          type={'Join/Create Server'}
+                          change={this.handleChange} 
+                          joinServerSubmit={this.joinServerSubmit}
+                          createServerSubmit={this.createServerSubmit}  
+                          serverInput={this.state.serverInput}
+                        />
+                      }
+                    </div>
 
                     {/* Main content */}
                     <Main 
@@ -403,12 +513,14 @@ class App extends Component {
 
                       // button functions
                       showNewFriendPopup={this.showNewFriendPopup}
+                      showServerPopup ={this.showServerPopup}
                       change={this.handleChange}
                       sendMessage={this.sendMessage}
                       redirect={this.redirect}
 
                       // content
                       getFriends={this.getFriends}
+                      getServers={this.getServers}
                       friends={this.state.friends}
                       servers={this.state.servers}
                       messages={this.state.currentlyViewedMessages}

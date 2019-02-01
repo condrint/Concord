@@ -6,12 +6,10 @@ var serverSchema = new Schema({
     serverName: String,
     ownerName: String,
     members: [{memberName: String}],
-    chatHistory: [{
-        userName: String,
-        message: String,
-        time: { type : Date } //, default: Date.now }
-    }]
+    chatId: String,
 })
+
+
 
 serverSchema.plugin(uniqueValidator);
 
