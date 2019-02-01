@@ -320,7 +320,7 @@ class App extends Component {
 
       if(serversResult.data.success){
         this.setState({
-          servers = serversResult.data.servers
+          servers: serversResult.data.servers
         });
       }
       else{
