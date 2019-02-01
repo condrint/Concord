@@ -15,7 +15,7 @@ var userSchema = new Schema({
     friends: [{
         friendId: String,
         username: String,
-        chatId: String,
+        messageId: String,
     }],
     servers: [{servername: String}],
     avatarColor: Number
