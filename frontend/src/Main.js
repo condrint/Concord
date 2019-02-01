@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Friends } from './Friends.js';
+import { Servers } from './Servers.js';
 import { NewFriend } from './NewFriend.js';
+import { CreateJoinServer } from './CreateJoinServer';
 import { Messages } from './Messages.js';
 
 
@@ -27,6 +29,8 @@ class Main extends Component {
 
         <div id="servers">
           servers
+          <Servers servers={this.props.servers} redirect={this.props.redirect}/>
+          <CreateJoinServer showServerPopup ={this.props.showServerPopup}/>
         </div>
 
         <div id="friends">

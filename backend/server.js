@@ -55,7 +55,6 @@ socketIo.on('connection', function(socket){
       if(socket.adapter.rooms.indexOf(chatRoom) == -1){
         await socket.join(chatRoom);
       }*/
-
       const messageEntry = await messageController.addMessage(senderId, senderUsername, message, messageId);
       
       if (!messageEntry){
@@ -70,7 +69,6 @@ socketIo.on('connection', function(socket){
           message: messageEntry,
           messageId: messageId,
         });
-        
       }
     }
 
@@ -80,4 +78,40 @@ socketIo.on('connection', function(socket){
       });
     }
   });
+
+  socket.on('initiateCall', async (data) => {
+    const initator = data.initiator;
+    const messageIdToLookupReceiver = data.messageId;
+
+    // look up receiver by seeing the other userId with the associated messageId
+    // this 100% could be avoided by smarter clientside code
+    try {
+      console.log('new call');
+
+      const receiver = await messageController.findOtherParticipant(messageId, initiator);
+      
+      if (!receiver){
+        socket.emit('messageToClientError', {
+          error: 'Could not call user.',
+        });
+      }
+      else{
+        console.log('trying to call client');
+        const chatRoom = messageId;
+        socketIo.emit('messageToClient', {
+          message: messageEntry,
+          messageId: messageId,
+        });
+        
+      }
+    }
+
+    catch(error){
+      socket.emit('messageToClientError', {
+        error: error,
+      });
+    }
+
+
+  })
 });
