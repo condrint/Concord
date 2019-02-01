@@ -4,7 +4,7 @@ import Main from './Main.js';
 import  Popup  from './Popups.js';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
 import io from 'socket.io-client';
-import './Login.css';
+//import './Login.css';
 const axios = require('axios');
 const socket = io('http://localhost:3001');
 
