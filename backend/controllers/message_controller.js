@@ -20,6 +20,33 @@ messageController.createNewMessage = async (listOfParticipants) => {
     }
 }
 
+// not called by client
+messageController.findOtherParticipant = async (messageId, userId) => {
+    try {
+        let messageDocument = await Message.findById(messageId);
+
+        if (!messageDocument || messageDocument.participants.length != 2){
+            return '';
+        }
+
+        let [firstParticipant, secondParticipant] = messageDocument.participants;
+        
+        if (firstParticipant == userId){
+            return secondParticipant;
+        }
+        else if (secondParticipant == userId){
+            return firstParticipant;
+        }
+        
+        return '';
+    }
+
+    catch(error){
+        console.log(error);
+        return '';
+    }
+}
+
 messageController.addMessage = async (senderId, senderUseranme, message, messageId) => {
     try {
         console.log(messageId);

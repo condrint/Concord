@@ -82,6 +82,7 @@ class App extends Component {
     this.clearUsernameAndPasswordFields = this.clearUsernameAndPasswordFields.bind(this);
     this.getMessages = this.getMessages.bind(this);
     this.updateCurrentlyViewedMessages = this.updateCurrentlyViewedMessages.bind(this);
+    this.callUser = this.callUser.bind(this);
     
   }
 
@@ -379,7 +380,7 @@ class App extends Component {
     })
   }
 
-  getMessages = async (messageId) => {
+  async getMessages (messageId){
     console.log('getMessages');
     let currentMessages = this.state.messages;
     for (let messageObject of currentMessages){
@@ -410,6 +411,13 @@ class App extends Component {
     catch (error) {
       alert(error);
     }
+  }
+
+  callUser(messageId){
+    socket.emit('initiateCall', {
+      initator: this.state.me,
+      messageId: messageId,
+    })
   }
 
   componentDidUpdate(){
@@ -517,6 +525,7 @@ class App extends Component {
                       change={this.handleChange}
                       sendMessage={this.sendMessage}
                       redirect={this.redirect}
+                      callUser={this.callUser}
 
                       // content
                       getFriends={this.getFriends}
