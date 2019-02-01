@@ -320,7 +320,7 @@ class App extends Component {
 
       if(serversResult.data.success){
         this.setState({
-          servers = serversResult.data.servers
+          servers: serversResult.data.servers
         });
       }
       else{
@@ -506,7 +506,7 @@ class App extends Component {
                     <div id="popupWrapper">
                       {this.state.showServerPopup &&
                         <Popup 
-                          type={'Join/Create Server'}
+                          type={'New Server'}
                           change={this.handleChange} 
                           joinServerSubmit={this.joinServerSubmit}
                           createServerSubmit={this.createServerSubmit}  

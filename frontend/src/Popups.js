@@ -21,7 +21,7 @@ class Popup extends Component {
           <div id="newServerPopup">
             Join or create server
             <form id="newServerForm">
-              <input id="createServerInput" type="text" onChange={this.props.change} value={this.props.serverInput}/>
+              <input id="serverInput" type="text" onChange={this.props.change} value={this.props.serverInput}/>
               <button type="submit" onClick={this.props.createServerSubmit}>Create</button>
               <button type="submit" onClick={this.props.joinServerSubmit}>Join</button>
             </form>
