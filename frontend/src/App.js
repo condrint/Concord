@@ -41,7 +41,7 @@ class App extends Component {
       friends: [],
       /* friends form ->
         {
-          chatId,
+          messageId,
           friendId,
           username
         }
