@@ -12,13 +12,14 @@ import React, { Component } from 'react';
       if(this.props.form === "login"){
         return (
           <div>
+            <div class = "filler"></div>
             <form id="loginForm">
-              <label for="loginUsernameInput">Username</label>
-              <input id="loginUsernameInput" type="text" onChange={this.props.change} value={this.props.loginUsernameInput}/> 
-              <label for="loginPasswordInput">Password</label>
-              <input id="loginPasswordInput" type="password" onChange={this.props.change} value={this.props.loginPasswordInput}/>
-              <button id="loginButton" type="submit" value="Submit" onClick={this.props.loginSubmit}>Login</button>
-              <button type="button" onClick={this.props.formChange}>Click here to Register</button>
+              <label class = "header" for="loginUsernameInput">Username</label>
+              <input class = "form" id="loginUsernameInput" type="text" onChange={this.props.change} value={this.props.loginUsernameInput}/> 
+              <label class = "header" for="loginPasswordInput">Password</label>
+              <input class = "form" id="loginPasswordInput" type="password" onChange={this.props.change} value={this.props.loginPasswordInput}/>
+              <button class = "button" id="loginButton" type="submit" value="Submit" onClick={this.props.loginSubmit}>Login</button>
+              <button class = "button" type="button" onClick={this.props.formChange}>Click here to Register</button>
             </form>
             <br/>
           </div>
@@ -27,13 +28,14 @@ import React, { Component } from 'react';
       else if(this.props.form === "register"){
         return (
         <div>
+            <div class = "filler"></div>
             <form id = "registerForm">
-            <label for="registerUsernameInput">Username</label>
-              <input id="registerUsernameInput" type="text" onChange={this.props.change} value={this.props.registerUsernameInput}/> 
-              <label for="registerPasswordInput">Password</label>
-              <input id="registerPasswordInput" type="password" onChange={this.props.change} value={this.props.registerPasswordInput}/>
-              <button id="registerButton" type="submit" value="Submit" onClick={this.props.registerSubmit}>Register</button>
-              <button type="button" onClick={this.props.formChange}>Click here to Login</button>
+            <label class = "header" for="registerUsernameInput">Username</label>
+              <input class = "form" id="registerUsernameInput" type="text" onChange={this.props.change} value={this.props.registerUsernameInput}/> 
+              <label class = "header" for="registerPasswordInput">Password</label>
+              <input class = "form" id="registerPasswordInput" type="password" onChange={this.props.change} value={this.props.registerPasswordInput}/>
+              <button class = "button" id="registerButton" type="submit" value="Submit" onClick={this.props.registerSubmit}>Register</button>
+              <button class = "button" type="button" onClick={this.props.formChange}>Click here to Login</button>
             </form>
           </div>
         );

@@ -4,6 +4,7 @@ import Main from './Main.js';
 import  Popup  from './Popups.js';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
 import io from 'socket.io-client';
+import './Login.css';
 const axios = require('axios');
 const socket = io('http://localhost:3001');
 
@@ -548,12 +549,9 @@ class App extends Component {
             </Switch>
           </div>
         </Router>
-
-        <br></br>
-        
         {/* Testing Buttons */}
-        <button onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
-        <button onClick={()=>{console.table(this.state)}}>log state</button>
+        <button class = "test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
+        <button class = "test" onClick={()=>{console.table(this.state)}}>log state</button>
       
       </div>
     )
