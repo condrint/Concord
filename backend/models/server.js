@@ -5,7 +5,11 @@ var uniqueValidator = require('mongoose-unique-validator');
 var serverSchema = new Schema({
     serverName: String,
     ownerName: String,
-    members: [{memberName: String}],
+    members: [{
+        memberId: String,
+        username: String,
+        chatId: String,
+    }],
     chatHistory: [{
         userName: String,
         message: String,
