@@ -28,12 +28,10 @@ class Popup extends Component {
           </div>
         }
         {this.props.type == 'New Call' &&
-          <div id="newServerPopup">
+          <div id="newCallPopup">
             Incoming Call
-            <form id="incomingCallForm">
-              <button type="submit" onClick={this.props.answerCall}>Answer</button>
-              <button type="submit" onClick={this.props.rejectCall}>Reject</button>
-            </form>
+            <button onClick={() => this.props.callPermissionResponse(true)}>Answer</button>
+            <button onClick={() => this.props.callPermissionResponse(false)}>Reject</button>
           </div>
         }
       </div>

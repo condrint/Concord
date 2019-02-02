@@ -88,7 +88,7 @@ socketIo.on('connection', function(socket){
     try {
       console.log('new call');
 
-      const receiver = await messageController.findOtherParticipant(messageId, initiator);
+      const receiver = await messageController.findOtherParticipant(messageIdToLookupReceiver, initiator);
       
       if (!receiver){
         socket.emit('messageToClientError', {
@@ -106,8 +106,9 @@ socketIo.on('connection', function(socket){
     }
 
     catch(error){
+      console.log(error)
       socket.emit('messageToClientError', {
-        error: error,
+        error: error.message,
       });
     }
 
@@ -121,14 +122,14 @@ socketIo.on('connection', function(socket){
     const messageId = data.messageId;
 
     if (permission){
-      socket.emit('startCall', {
+      socketIo.emit('startCall', {
         participants: [initiator, receiver],
         messageId: messageId
       })
     }
     else{
-      socket.emit('deniedCall', {
-        initator: initiator
+      socketIo.emit('deniedCall', {
+        initiator: initiator
       })
     }
   })

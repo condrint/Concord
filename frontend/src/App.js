@@ -66,8 +66,8 @@ class App extends Component {
 
       // calls
       inCall: false,
-      beingCalled: false,
-  
+      callParticipant: '',
+      callMessageId: '',
     }
     
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
@@ -91,8 +91,7 @@ class App extends Component {
     this.getMessages = this.getMessages.bind(this);
     this.updateCurrentlyViewedMessages = this.updateCurrentlyViewedMessages.bind(this);
     this.callUser = this.callUser.bind(this);
-    this.rejectCall = this.rejectCall.bind(this);
-    this.answerCall = this.answerCall.bind(this);
+    this.callPermissionResponse = this.callPermissionResponse.bind(this);
     
   }
 
@@ -294,18 +293,6 @@ class App extends Component {
     });
   }
 
-  showServerPopup(){
-    this.setState({ 
-      showCallPopup: true,
-    });
-  }
-
-  hideServerPopup(){
-    this.setState({ 
-      showCallPopup: false,
-    });
-  }
-
   async getFriends(){
     console.log('getFriends');
 
@@ -443,17 +430,23 @@ class App extends Component {
 
   callUser(messageId){
     socket.emit('initiateCall', {
-      initator: this.state.me,
+      initiator: this.state.me,
       messageId: messageId,
     })
   }
 
-  answerCall(){
+  callPermissionResponse(permission){
+    console.log(permission);
+    this.setState({
+      showCallPopup: false,
+    })
 
-  }
-
-  rejectCall(){
-
+    socket.emit('callPermissionResult', {
+      permission: permission,
+      initiator: this.state.callParticipant,
+      receiver: this.state.me,
+      messageId: this.state.callMessageId
+    })
   }
 
   componentDidUpdate(){
@@ -471,7 +464,6 @@ class App extends Component {
     }
   }
 
-  // declaring socket events 
   componentDidMount(){
     socket.on('messageToClient', (data) => {
       console.log('client received message')
@@ -497,14 +489,53 @@ class App extends Component {
     socket.on('callPermission', (data) => {
       const initiator = data.initiator;
       const receiver = data.receiver;
+      const messageId = data.messageId;
 
       // this should be solved with chatrooms
       if (this.state.me != receiver){
         return;
       }
 
-      
-    })
+      this.setState({
+        showCallPopup: true,
+        callParticipant: initiator,
+        callMessageId: messageId,
+      });
+    });
+
+    socket.on('deniedCall', (data) => {
+      // this check should Not be needed in the future
+      if (data.initiator == this.state.me){
+        alert('User denied call');
+      }
+    });
+
+    socket.on('startCall', (data) => {
+      let [firstParticipant, secondParticipant] = data.participants;
+      let me = this.state.me;
+
+      if (firstParticipant == me){
+          this.setState({
+            inCall: true,
+            callParticipant: secondParticipant,
+            callMessageId: data.messageId
+          });
+      }
+      else if (secondParticipant == me){
+          this.setState({
+            inCall: true,
+            callParticipant: firstParticipant,
+            callMessageId: data.messageId
+          });
+      }
+      else {
+        alert("call started but you're neither participant lmao");
+      }
+    });
+
+    socket.on('messageToClientError', (data) => {
+      alert(data.error);
+    });
   }
 
   render() {
@@ -566,8 +597,7 @@ class App extends Component {
                       {this.state.showCallPopup &&
                         <Popup 
                           type={'New Call'}
-                          answerCall={this.answerCall}
-                          rejectCall={this.rejectCall}
+                          callPermissionResponse={this.callPermissionResponse}
                         />
                       }
                     </div>
