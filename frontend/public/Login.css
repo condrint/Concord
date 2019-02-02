@@ -35,13 +35,19 @@
     font-size: 25px;
 }
 
+#loginPage {
+    background-color: grey;
+    justify-content: center;
+    height: 100%;
+}
+
 .form {
     border-color: transparent;
     background-color: lightgray;
     border-radius: 5px;
 }
 
-div > .form{
+div > form{
     height: 25vh;
     width: 25vw;
     margin: 0 25vw;

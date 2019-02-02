@@ -479,19 +479,21 @@ class App extends Component {
                 this.state.isLoggedIn ? (
                   <Redirect to="/main/dashboard/me"/>
                 ) : (
-                  <Login 
-                    change={this.handleChange}
-                    loginUsernameInput={this.state.loginUsernameInput}
-                    loginPasswordInput={this.state.loginPasswordInput}
-                    registerPasswordInput={this.state.registerPasswordInput}
-                    registerUsernameInput={this.state.registerUsernameInput}
-
-                    registerSubmit={this.handleRegisterSubmit}
-                    loginSubmit={this.handleLoginSubmit} 
-
-                    formChange={this.handleLoginFormChange}
-                    form={this.state.form}
-                  />
+                  <div id="loginPage">
+                    <Login 
+                      change={this.handleChange}
+                      loginUsernameInput={this.state.loginUsernameInput}
+                      loginPasswordInput={this.state.loginPasswordInput}
+                      registerPasswordInput={this.state.registerPasswordInput}
+                      registerUsernameInput={this.state.registerUsernameInput}
+                  
+                      registerSubmit={this.handleRegisterSubmit}
+                      loginSubmit={this.handleLoginSubmit} 
+                  
+                      formChange={this.handleLoginFormChange}
+                      form={this.state.form}
+                    />
+                  </div>
               ))}/>
 
               {/* Main page */}
