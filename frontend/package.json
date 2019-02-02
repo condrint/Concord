@@ -10,6 +10,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.5",
     "run": "^1.4.0",
+    "simple-peer": "^9.2.1",
     "socket.io-client": "^2.2.0"
   },
   "scripts": {

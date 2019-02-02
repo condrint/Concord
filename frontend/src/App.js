@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Login from './Login.js';
 import Main from './Main.js';
-import  Popup  from './Popups.js';
+import Popup  from './Popups.js';
+import Voice from './Voice.js';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
 import io from 'socket.io-client';
 //import './Login.css';
@@ -429,6 +430,10 @@ class App extends Component {
   }
 
   callUser(messageId){
+    if (this.state.inCall){
+      alert('End your current call before starting a new one.');
+      return;
+    }
     socket.emit('initiateCall', {
       initiator: this.state.me,
       messageId: messageId,
@@ -621,6 +626,15 @@ class App extends Component {
                       servers={this.state.servers}
                       messages={this.state.currentlyViewedMessages}
                     />
+                    {this.state.inCall && 
+                      <div>
+                        <audio id="voiceChat" autoplay/>
+                        <Voice 
+                          callParticipant={this.state.callParticipant}
+                          callMessageId={this.state.callMessageId}
+                        />
+                      </div>
+                    }
                   </div>
                 ) : (
                   <Redirect to="/login"/>
