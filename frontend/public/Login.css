@@ -2,14 +2,7 @@
     font-family: 'Ubuntu'; /*a name to be used later*/
     src: url('http://domain.com/fonts/font.ttf'); /*URL to font*/
 }
-div #appWrapper{
-    display: grid;
-    width: 98vw;
-    height: 98vh;
-    background-color: gray;
-    justify-items: center;
-    grid-auto-rows: 170px;
-}
+
 .test {
     height: 75px;
     width: 150px;
@@ -19,6 +12,7 @@ div #appWrapper{
     border-color: transparent;
     border-radius: 15px;
 }
+
 .filler {
     height: 30vh;
     grid-row: 2/3;
@@ -47,7 +41,7 @@ div #appWrapper{
     border-radius: 5px;
 }
 
-div > form{
+div > .form{
     height: 25vh;
     width: 25vw;
     margin: 0 25vw;

@@ -60,7 +60,8 @@ class App extends Component {
           }]
         }
       */
-      currentlyViewedMessages: []
+      currentlyViewedMessages: [],
+      currentlyViewedMessagesId: '',
     }
     
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
@@ -377,7 +378,8 @@ class App extends Component {
     }
 
     this.setState({
-      currentlyViewedMessages: currentlyViewedMessages
+      currentlyViewedMessages: currentlyViewedMessages,
+      currentlyViewedMessagesId: messageId
     })
   }
 
@@ -453,8 +455,11 @@ class App extends Component {
       this.setState({
         messages: currentMessages
       })
+
+      if (messageId == this.state.currentlyViewedMessagesId){
+        this.updateCurrentlyViewedMessages(messageId)
+      }
       
-      this.updateCurrentlyViewedMessages(messageId)
     })
   }
 
