@@ -358,6 +358,10 @@ class App extends Component {
       return;
     }
 
+    this.setState({
+      sendMessageInput: '',
+    });
+
     socket.emit('messageToServer', {
       senderId: this.state.me,
       senderUsername: this.state.myUsername,
@@ -388,6 +392,7 @@ class App extends Component {
     let currentMessages = this.state.messages;
     for (let messageObject of currentMessages){
       if (messageObject.messageId == messageId){
+        this.updateCurrentlyViewedMessages(messageId);
         return;
       }
     }
