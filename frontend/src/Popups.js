@@ -27,6 +27,15 @@ class Popup extends Component {
             </form>
           </div>
         }
+        {this.props.type == 'New Call' &&
+          <div id="newServerPopup">
+            Incoming Call
+            <form id="incomingCallForm">
+              <button type="submit" onClick={this.props.answerCall}>Answer</button>
+              <button type="submit" onClick={this.props.rejectCall}>Reject</button>
+            </form>
+          </div>
+        }
       </div>
     )
   }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Friends } from './Friends.js';
 import { Servers } from './Servers.js';
 import { NewFriend } from './NewFriend.js';
-import { CreateJoinServer } from './CreateJoinServer';
+import { CreateJoinServer } from './NewServer';
 import { Messages } from './Messages.js';
 
 

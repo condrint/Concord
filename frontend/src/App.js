@@ -32,6 +32,7 @@ class App extends Component {
       // popups
       showNewFriendPopup: false,
       showServerPopup: false,
+      showCallPopup: false,
       newFriendInput: '',
       serverInput: '',
 
@@ -62,6 +63,11 @@ class App extends Component {
       */
       currentlyViewedMessages: [],
       currentlyViewedMessagesId: '',
+
+      // calls
+      inCall: false,
+      beingCalled: false,
+  
     }
     
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
@@ -85,6 +91,8 @@ class App extends Component {
     this.getMessages = this.getMessages.bind(this);
     this.updateCurrentlyViewedMessages = this.updateCurrentlyViewedMessages.bind(this);
     this.callUser = this.callUser.bind(this);
+    this.rejectCall = this.rejectCall.bind(this);
+    this.answerCall = this.answerCall.bind(this);
     
   }
 
@@ -286,6 +294,18 @@ class App extends Component {
     });
   }
 
+  showServerPopup(){
+    this.setState({ 
+      showCallPopup: true,
+    });
+  }
+
+  hideServerPopup(){
+    this.setState({ 
+      showCallPopup: false,
+    });
+  }
+
   async getFriends(){
     console.log('getFriends');
 
@@ -428,6 +448,14 @@ class App extends Component {
     })
   }
 
+  answerCall(){
+
+  }
+
+  rejectCall(){
+
+  }
+
   componentDidUpdate(){
     console.log('App did update called');
     // when redirect is true, the redirect component will change the URL and rerender the page
@@ -464,6 +492,17 @@ class App extends Component {
       if (messageId == this.state.currentlyViewedMessagesId){
         this.updateCurrentlyViewedMessages(messageId)
       }
+    });
+
+    socket.on('callPermission', (data) => {
+      const initiator = data.initiator;
+      const receiver = data.receiver;
+
+      // this should be solved with chatrooms
+      if (this.state.me != receiver){
+        return;
+      }
+
       
     })
   }
@@ -515,15 +554,20 @@ class App extends Component {
                           newFriendInput={this.state.newFriendInput}
                         />
                       }
-                    </div>
-                    <div id="popupWrapper">
                       {this.state.showServerPopup &&
                         <Popup 
-                          type={'Join/Create Server'}
+                          type={'New Server'}
                           change={this.handleChange} 
                           joinServerSubmit={this.joinServerSubmit}
                           createServerSubmit={this.createServerSubmit}  
                           serverInput={this.state.serverInput}
+                        />
+                      }
+                      {this.state.showCallPopup &&
+                        <Popup 
+                          type={'New Call'}
+                          answerCall={this.answerCall}
+                          rejectCall={this.rejectCall}
                         />
                       }
                     </div>

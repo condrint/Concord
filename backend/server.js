@@ -80,7 +80,7 @@ socketIo.on('connection', function(socket){
   });
 
   socket.on('initiateCall', async (data) => {
-    const initator = data.initiator;
+    const initiator = data.initiator;
     const messageIdToLookupReceiver = data.messageId;
 
     // look up receiver by seeing the other userId with the associated messageId
@@ -97,12 +97,11 @@ socketIo.on('connection', function(socket){
       }
       else{
         console.log('trying to call client');
-        const chatRoom = messageId;
-        socketIo.emit('messageToClient', {
-          message: messageEntry,
-          messageId: messageId,
+        socketIo.emit('callPermission', {
+          initiator: initiator,
+          receiver: receiver,
+          messageId: messageIdToLookupReceiver
         });
-        
       }
     }
 
@@ -113,5 +112,24 @@ socketIo.on('connection', function(socket){
     }
 
 
+  })
+
+  socket.on('callPermissionResult', async (data) => {
+    const permission = data.permission;
+    const initiator = data.initiator;
+    const receiver = data.receiver;
+    const messageId = data.messageId;
+
+    if (permission){
+      socket.emit('startCall', {
+        participants: [initiator, receiver],
+        messageId: messageId
+      })
+    }
+    else{
+      socket.emit('deniedCall', {
+        initator: initiator
+      })
+    }
   })
 });

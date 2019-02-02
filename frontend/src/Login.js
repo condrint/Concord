@@ -8,7 +8,7 @@ import React, { Component } from 'react';
     }
     
 
-    render(){
+    render() {
       if(this.props.form === "login"){
         return (
           <div>
