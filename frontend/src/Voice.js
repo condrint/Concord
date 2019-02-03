@@ -24,7 +24,7 @@ class Voice extends Component {
   render() {
     return(
         <div id="voice">
-            <h1>Taling to {this.props.callParticipant}</h1>
+            <h1>Talking to {this.props.callParticipant}</h1>
         </div>
     )
   }
