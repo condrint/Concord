@@ -133,4 +133,11 @@ socketIo.on('connection', function(socket){
       })
     }
   })
+
+  socket.on('peerConnectInfoFromInitiator', (data) => {
+    socketIo.emit('peerConnectInfoToReceiver', {
+      callParticipant: data.callParticipant,
+      peerConnectInfo: data.peerConnectInfo,
+    });
+  })
 });

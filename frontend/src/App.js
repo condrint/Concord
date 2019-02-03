@@ -69,6 +69,8 @@ class App extends Component {
       inCall: false,
       callParticipant: '',
       callMessageId: '',
+      isInitiator: false,
+      peerConnectInfo: {},
     }
     
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
@@ -93,6 +95,8 @@ class App extends Component {
     this.updateCurrentlyViewedMessages = this.updateCurrentlyViewedMessages.bind(this);
     this.callUser = this.callUser.bind(this);
     this.callPermissionResponse = this.callPermissionResponse.bind(this);
+    this.sendDataToReceiver = this.sendDataToReceiver.bind(this);
+    this.removeConnectInfo = this.removeConnectInfo.bind(this);
     
   }
 
@@ -148,7 +152,6 @@ class App extends Component {
         'password': password,
       });
       if (loginResult.data.success) {
-        alert(loginResult.data.message)
         this.setState({ 
           isLoggedIn: loginResult.data.success,
           me: loginResult.data.me,
@@ -438,6 +441,9 @@ class App extends Component {
       initiator: this.state.me,
       messageId: messageId,
     })
+    this.setState({
+      isInitiator: true
+    })
   }
 
   callPermissionResponse(permission){
@@ -451,6 +457,19 @@ class App extends Component {
       initiator: this.state.callParticipant,
       receiver: this.state.me,
       messageId: this.state.callMessageId
+    })
+  }
+
+  sendDataToReceiver(data){
+    socket.emit('peerConnectInfoFromInitiator', {
+      callParticipant: this.state.callParticipant,
+      peerConnectInfo: data
+    })
+  }
+
+  removeConnectInfo(){
+    this.setState({
+      peerConnectInfo: '',
     })
   }
 
@@ -541,6 +560,15 @@ class App extends Component {
     socket.on('messageToClientError', (data) => {
       alert(data.error);
     });
+
+    socket.on('peerConnectInfoToReceiver', (data) => {
+      if (data.callParticipant != this.state.me){
+        return;
+      }
+      this.setState({
+        peerConnectInfo: data.peerConnectInfo
+      })
+    });
   }
 
   render() {
@@ -627,11 +655,15 @@ class App extends Component {
                       messages={this.state.currentlyViewedMessages}
                     />
                     {this.state.inCall && 
-                      <div>
-                        <audio id="voiceChat" autoplay/>
+                      <div id="voiceWrapper">
+                        <audio id="voiceChat" autoplay controls/>
                         <Voice 
                           callParticipant={this.state.callParticipant}
                           callMessageId={this.state.callMessageId}
+                          isInitiator={this.state.isInitiator}
+                          peerConnectInfo={this.state.peerConnectInfo}
+                          sendDataToReceiver={this.sendDataToReceiver}
+                          removeConnectInfo={this.removeConnectInfo}
                         />
                       </div>
                     }
