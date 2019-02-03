@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-let Peer = require('simple-peer')
+//let Peer = require('simple-peer')
 
 class Voice extends Component {
   constructor(props) {
@@ -8,7 +8,7 @@ class Voice extends Component {
 
   async componentDidMount(){
     let audioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    let peer = new Peer({ 
+    /*let peer = new Peer({ 
         stream: audioStream,
         channelName: this.props.callMessageId
      });
@@ -17,7 +17,7 @@ class Voice extends Component {
         console.log('received stream starting')
         let audioNode = document.getElementById('voiceChat');
         audioNode.src = window.URL.createObjectURL(stream)
-     })
+     })*/
      
   }
 
@@ -30,4 +30,4 @@ class Voice extends Component {
   }
 }
 
-export { Voice };
+export default Voice;
