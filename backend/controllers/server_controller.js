@@ -5,9 +5,24 @@ const messageController = require('../controllers/message_controller');
 const serverController = {};
 
 serverController.createServer = async (req, res) => {
-    const { serverName } = req.body;
+    const { me, serverName } = req.body;
     const newServer = new Server({ serverName });
     try {
+        let newServerDocument = await Server.findOne({
+            serverName: newServer,
+        })
+
+        //let newServerID = newServerDocument._id.toString();
+
+        if (newServerDocument){
+            return res.status(200).json({
+                success: false,
+                message: "This server already exists.",
+            });
+        };
+
+    
+
         let createdServer = await newServer.save();
         return res.status(201).json({
             success: true,
@@ -26,16 +41,16 @@ serverController.createServer = async (req, res) => {
 }
 
 userController.getMembers = async (req, res) => {
-    const { me } = req.body;
+    const { serverName } = req.body;
     try {
-        let meDocument = await Server.findById(me);
+        let meDocument = await Server.findById(serverName);
 
         let listOfMemberObjects = convertToClientMemberObjects(meDocument.members);
 
         return res.status(200).json({
             success: true,
             message: 'Members got.',
-            members: listOfFriendObjects,
+            members: listOfMemberObjects,
         });
     }
 
@@ -63,7 +78,7 @@ convertToClientMemberObjects = (members) => {
 
 serverController.newMember = async (req, res) => {
     try{
-        const { newMember, me } = req.body;
+        const { newMember, serverId } = req.body;
 
         let newMemberDocument = await User.findOne({
             username: newMember,
@@ -79,9 +94,7 @@ serverController.newMember = async (req, res) => {
         let newMemberID = newMemberDocument._id.toString();
         let newMemberUsername = newMemberDocument.username.toString();
 
-        let meDocument = await Server.findOne({
-            _id: me,
-        });
+        let meDocument = userController.lookUp(newMemberID);
 
         for (let member of meDocument.members){
             if(member._id == newMemberID){

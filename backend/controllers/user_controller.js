@@ -7,6 +7,8 @@ userController.registerUser = async (req, res) => {
     const {username, password} = req.body;
     const newUser = new User({username, password});
     try {
+
+
         let registeredUser = await newUser.save(); 
         return res.status(201).json({
             success: true,
@@ -174,6 +176,12 @@ userController.newFriend = async (req, res) => {
             message: error.message,
         });
     }
+}
+
+userController.lookUp = async (userInQuestion) => {
+    let userDocument = await User.findOne({
+        _id: userInQuestion,
+    })
 }
 
 module.exports = userController;
