@@ -8,7 +8,7 @@ messageController.createNewMessage = async (listOfParticipants) => {
     const newMessage = new Message({
         participants: convertListToObjectsWithIds(listOfParticipants)
     });
-
+    
     try {
         let createdMessage = await newMessage.save(); 
         return createdMessage._id;
@@ -28,14 +28,14 @@ messageController.findOtherParticipant = async (messageId, userId) => {
         if (!messageDocument || messageDocument.participants.length != 2){
             return '';
         }
-
+        
         let [firstParticipant, secondParticipant] = messageDocument.participants;
         
-        if (firstParticipant == userId){
-            return secondParticipant;
+        if (firstParticipant.participantId == userId){
+            return secondParticipant.participantId;
         }
-        else if (secondParticipant == userId){
-            return firstParticipant;
+        else if (secondParticipant.participantId == userId){
+            return firstParticipant.participantId;
         }
         
         return '';
@@ -105,8 +105,10 @@ messageController.getMessages = async (req, res) => {
 }
 
 convertListToObjectsWithIds = (participants) => {
-    return participants.map((id) => {
-        participantId: id
+    return participants.map(id => {
+         return {
+            participantId: id
+        };
     });
 }
 

@@ -27,6 +27,13 @@ class Popup extends Component {
             </form>
           </div>
         }
+        {this.props.type == 'New Call' &&
+          <div id="newCallPopup">
+            Incoming Call
+            <button onClick={() => this.props.callPermissionResponse(true)}>Answer</button>
+            <button onClick={() => this.props.callPermissionResponse(false)}>Reject</button>
+          </div>
+        }
       </div>
     )
   }

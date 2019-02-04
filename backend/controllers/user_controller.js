@@ -87,7 +87,7 @@ convertToClientFriendObjects = (friends) => {
     listOfFriendObjects = []
     for (let friend of friends){
         let friendObject = {
-            chatId: friend.chatId,
+            messageId: friend.messageId,
             friendId: friend.friendId,
             username: friend.username
         }
@@ -126,7 +126,7 @@ userController.newFriend = async (req, res) => {
         });
         
         for (let friend of meDocument.friends){
-            if(friend._id == newFriendID){
+            if(friend.friendId == newFriendID){
                 return res.status(200).json({
                     success: false,
                     message: "You're already friends with this user.",
@@ -147,7 +147,7 @@ userController.newFriend = async (req, res) => {
         let newFriendEntry = {
             friendId: newFriendID,
             username: newFriendUsername,
-            chatId: newMessageId
+            messageId: newMessageId
         }
 
         meDocument.friends.push(newFriendEntry);
@@ -157,7 +157,7 @@ userController.newFriend = async (req, res) => {
         let meAsFriend = {
             friendId: meDocument._id,
             username: meDocument.username,
-            chatId: newMessageId
+            messageId: newMessageId
         }
 
         newFriendDocument.friends.push(meAsFriend);
