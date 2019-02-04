@@ -6,14 +6,12 @@ const serverController = {};
 
 serverController.createServer = async (req, res) => {
     const { me, serverName } = req.body;
-    const newServer = new Server({ serverName });
+    const newServer = new Server({ owner, serverName });
     try {
+        //check if server name already exists
         let newServerDocument = await Server.findOne({
             serverName: newServer,
         })
-
-        //let newServerID = newServerDocument._id.toString();
-
         if (newServerDocument){
             return res.status(200).json({
                 success: false,
@@ -21,9 +19,18 @@ serverController.createServer = async (req, res) => {
             });
         };
 
-    
-
+        //adds new server to database
         let createdServer = await newServer.save();
+        
+        //adds user as owner of new server
+        let meDocument = await User.findOne({
+            username: me,
+        });
+        createdServer.ownerName.push(meDocument);
+
+        //adds new server to user's servers
+        meDocument.servers.push(createdServer);
+
         return res.status(201).json({
             success: true,
             message: 'Server successfully created!',
@@ -40,12 +47,12 @@ serverController.createServer = async (req, res) => {
     }
 }
 
-userController.getMembers = async (req, res) => {
-    const { serverName } = req.body;
+serverController.getMembers = async (req, res) => {
+    const { serverId } = req.body;
     try {
-        let meDocument = await Server.findById(serverName);
+        let serverDocument = await Server.findById(serverId);
 
-        let listOfMemberObjects = convertToClientMemberObjects(meDocument.members);
+        let listOfMemberObjects = convertToClientMemberObjects(serverDocument.members);
 
         return res.status(200).json({
             success: true,
@@ -64,26 +71,26 @@ userController.getMembers = async (req, res) => {
 }
 
 convertToClientMemberObjects = (members) => {
-    listOfMemberObjects = []
+    listOfMemberObjects = [];
     for (let member of members){
         let memberObject = {
-            chatId: member.chatId,
             memberId: member.memberId,
             username: member.username
         }
-        listOfFriendObjects.push(memberObject);
+        listOfMemberObjects.push(memberObject);
     }
     return listOfMemberObjects;
 }
 
 serverController.newMember = async (req, res) => {
     try{
-        const { newMember, serverId } = req.body;
+        const { server, newMember } = req.body;
 
         let newMemberDocument = await User.findOne({
             username: newMember,
         });
 
+        //checks if user exists
         if (!newMemberDocument) {
             return res.status(200).json({
                 success: false,
@@ -94,9 +101,12 @@ serverController.newMember = async (req, res) => {
         let newMemberID = newMemberDocument._id.toString();
         let newMemberUsername = newMemberDocument.username.toString();
 
-        let meDocument = userController.lookUp(newMemberID);
-
-        for (let member of meDocument.members){
+        let serverDocument = await Server.findOne({
+            serverName: server,
+        });
+        
+        //checks if user is already member of server
+        for (let member of serverDocument.members){
             if(member._id == newMemberID){
                 return res.status(200).json({
                     success: false,
@@ -121,17 +131,17 @@ serverController.newMember = async (req, res) => {
             chatID: newMessageId
         }
 
-        meDocument.members.push(newMemberEntry);
-        meDocument.save();
+        serverDocument.members.push(newMemberEntry);
+        serverDocument.save();
 
         //updating server into new member's server list
-        let meAsNewServer = {
-            serverId: meDocument._id,
-            servername: meDocument.serverName,
+        let thisNewServer = {
+            serverId: serverDocument._id,
+            servername: serverDocument.serverName,
             chatId: newMessageId 
         }
 
-        newMemberDocument.servers.push(meAsNewServer);
+        newMemberDocument.servers.push(thisNewServer);
         newMemberDocument.save();
 
         return res.status(200).json({
