@@ -97,7 +97,7 @@ class App extends Component {
     this.callPermissionResponse = this.callPermissionResponse.bind(this);
     this.sendDataToReceiver = this.sendDataToReceiver.bind(this);
     this.removeConnectInfo = this.removeConnectInfo.bind(this);
-    
+    this.endCall = this.endCall.bind(this);
   }
 
   handleChange = (event) => {
@@ -446,6 +446,16 @@ class App extends Component {
     })
   }
 
+  endCall(){
+    this.setState({
+      inCall: false,
+      callParticipant: '',
+      callMessageId: '',
+      isInitiator: false,
+      peerConnectInfo: {},
+    });
+  }
+
   callPermissionResponse(permission){
     console.log(permission);
     this.setState({
@@ -656,7 +666,7 @@ class App extends Component {
                     />
                     {this.state.inCall && 
                       <div id="voiceWrapper">
-                        <audio id="voiceChat" autoplay controls/>
+                        <audio id="voiceChat" controls/>
                         <Voice 
                           callParticipant={this.state.callParticipant}
                           callMessageId={this.state.callMessageId}
@@ -664,6 +674,7 @@ class App extends Component {
                           peerConnectInfo={this.state.peerConnectInfo}
                           sendDataToReceiver={this.sendDataToReceiver}
                           removeConnectInfo={this.removeConnectInfo}
+                          endCall={this.endCall}
                         />
                       </div>
                     }
