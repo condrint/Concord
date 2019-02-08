@@ -6,7 +6,7 @@ const serverController = {};
 
 serverController.createServer = async (req, res) => {
     const { me, serverName } = req.body;
-    const newServer = new Server({ owner, serverName });
+    const newServer = new Server({ me, serverName });
     try {
         //check if server name already exists
         let newServerDocument = await Server.findOne({
