@@ -666,7 +666,8 @@ class App extends Component {
                     />
                     {this.state.inCall && 
                       <div id="voiceWrapper">
-                        <audio id="voiceChat" controls/>
+                        
+                        <video id="voiceChat" controls/>
                         <Voice 
                           callParticipant={this.state.callParticipant}
                           callMessageId={this.state.callMessageId}

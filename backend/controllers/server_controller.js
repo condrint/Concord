@@ -82,7 +82,7 @@ convertToClientMemberObjects = (members) => {
     return listOfMemberObjects;
 }
 
-serverController.newMember = async (req, res) => {
+serverController.joinServer = async (req, res) => {
     try{
         const { server, newMember } = req.body;
 
