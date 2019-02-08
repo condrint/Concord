@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import Login from './Login.js';
 import Main from './Main.js';
-import  Popup  from './Popups.js';
+import Popup  from './Popups.js';
+import Voice from './Voice.js';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
 import io from 'socket.io-client';
+//import './Login.css';
 const axios = require('axios');
 const socket = io('http://localhost:3001');
 
@@ -31,6 +33,7 @@ class App extends Component {
       // popups
       showNewFriendPopup: false,
       showServerPopup: false,
+      showCallPopup: false,
       newFriendInput: '',
       serverInput: '',
 
@@ -59,7 +62,15 @@ class App extends Component {
           }]
         }
       */
-      currentlyViewedMessages: []
+      currentlyViewedMessages: [],
+      currentlyViewedMessagesId: '',
+
+      // calls
+      inCall: false,
+      callParticipant: '',
+      callMessageId: '',
+      isInitiator: false,
+      peerConnectInfo: {},
     }
     
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
@@ -83,7 +94,10 @@ class App extends Component {
     this.getMessages = this.getMessages.bind(this);
     this.updateCurrentlyViewedMessages = this.updateCurrentlyViewedMessages.bind(this);
     this.callUser = this.callUser.bind(this);
-    
+    this.callPermissionResponse = this.callPermissionResponse.bind(this);
+    this.sendDataToReceiver = this.sendDataToReceiver.bind(this);
+    this.removeConnectInfo = this.removeConnectInfo.bind(this);
+    this.endCall = this.endCall.bind(this);
   }
 
   handleChange = (event) => {
@@ -138,7 +152,6 @@ class App extends Component {
         'password': password,
       });
       if (loginResult.data.success) {
-        alert(loginResult.data.message)
         this.setState({ 
           isLoggedIn: loginResult.data.success,
           me: loginResult.data.me,
@@ -356,6 +369,10 @@ class App extends Component {
       return;
     }
 
+    this.setState({
+      sendMessageInput: '',
+    });
+
     socket.emit('messageToServer', {
       senderId: this.state.me,
       senderUsername: this.state.myUsername,
@@ -376,7 +393,8 @@ class App extends Component {
     }
 
     this.setState({
-      currentlyViewedMessages: currentlyViewedMessages
+      currentlyViewedMessages: currentlyViewedMessages,
+      currentlyViewedMessagesId: messageId
     })
   }
 
@@ -385,6 +403,7 @@ class App extends Component {
     let currentMessages = this.state.messages;
     for (let messageObject of currentMessages){
       if (messageObject.messageId == messageId){
+        this.updateCurrentlyViewedMessages(messageId);
         return;
       }
     }
@@ -414,9 +433,53 @@ class App extends Component {
   }
 
   callUser(messageId){
+    if (this.state.inCall){
+      alert('End your current call before starting a new one.');
+      return;
+    }
     socket.emit('initiateCall', {
-      initator: this.state.me,
+      initiator: this.state.me,
       messageId: messageId,
+    })
+    this.setState({
+      isInitiator: true
+    })
+  }
+
+  endCall(){
+    this.setState({
+      inCall: false,
+      callParticipant: '',
+      callMessageId: '',
+      isInitiator: false,
+      peerConnectInfo: {},
+    });
+  }
+
+  callPermissionResponse(permission){
+    console.log(permission);
+    this.setState({
+      showCallPopup: false,
+    })
+
+    socket.emit('callPermissionResult', {
+      permission: permission,
+      initiator: this.state.callParticipant,
+      receiver: this.state.me,
+      messageId: this.state.callMessageId
+    })
+  }
+
+  sendDataToReceiver(data){
+    socket.emit('peerConnectInfoFromInitiator', {
+      callParticipant: this.state.callParticipant,
+      peerConnectInfo: data
+    })
+  }
+
+  removeConnectInfo(){
+    this.setState({
+      peerConnectInfo: '',
     })
   }
 
@@ -435,7 +498,6 @@ class App extends Component {
     }
   }
 
-  // declaring socket events 
   componentDidMount(){
     socket.on('messageToClient', (data) => {
       console.log('client received message')
@@ -452,9 +514,71 @@ class App extends Component {
       this.setState({
         messages: currentMessages
       })
-      
-      this.updateCurrentlyViewedMessages(messageId)
-    })
+
+      if (messageId == this.state.currentlyViewedMessagesId){
+        this.updateCurrentlyViewedMessages(messageId)
+      }
+    });
+
+    socket.on('callPermission', (data) => {
+      const initiator = data.initiator;
+      const receiver = data.receiver;
+      const messageId = data.messageId;
+
+      // this should be solved with chatrooms
+      if (this.state.me != receiver){
+        return;
+      }
+
+      this.setState({
+        showCallPopup: true,
+        callParticipant: initiator,
+        callMessageId: messageId,
+      });
+    });
+
+    socket.on('deniedCall', (data) => {
+      // this check should Not be needed in the future
+      if (data.initiator == this.state.me){
+        alert('User denied call');
+      }
+    });
+
+    socket.on('startCall', (data) => {
+      let [firstParticipant, secondParticipant] = data.participants;
+      let me = this.state.me;
+
+      if (firstParticipant == me){
+          this.setState({
+            inCall: true,
+            callParticipant: secondParticipant,
+            callMessageId: data.messageId
+          });
+      }
+      else if (secondParticipant == me){
+          this.setState({
+            inCall: true,
+            callParticipant: firstParticipant,
+            callMessageId: data.messageId
+          });
+      }
+      else {
+        alert("call started but you're neither participant lmao");
+      }
+    });
+
+    socket.on('messageToClientError', (data) => {
+      alert(data.error);
+    });
+
+    socket.on('peerConnectInfoToReceiver', (data) => {
+      if (data.callParticipant != this.state.me){
+        return;
+      }
+      this.setState({
+        peerConnectInfo: data.peerConnectInfo
+      })
+    });
   }
 
   render() {
@@ -473,19 +597,21 @@ class App extends Component {
                 this.state.isLoggedIn ? (
                   <Redirect to="/main/dashboard/me"/>
                 ) : (
-                  <Login 
-                    change={this.handleChange}
-                    loginUsernameInput={this.state.loginUsernameInput}
-                    loginPasswordInput={this.state.loginPasswordInput}
-                    registerPasswordInput={this.state.registerPasswordInput}
-                    registerUsernameInput={this.state.registerUsernameInput}
-
-                    registerSubmit={this.handleRegisterSubmit}
-                    loginSubmit={this.handleLoginSubmit} 
-
-                    formChange={this.handleLoginFormChange}
-                    form={this.state.form}
-                  />
+                  <div id="loginPage">
+                    <Login 
+                      change={this.handleChange}
+                      loginUsernameInput={this.state.loginUsernameInput}
+                      loginPasswordInput={this.state.loginPasswordInput}
+                      registerPasswordInput={this.state.registerPasswordInput}
+                      registerUsernameInput={this.state.registerUsernameInput}
+                  
+                      registerSubmit={this.handleRegisterSubmit}
+                      loginSubmit={this.handleLoginSubmit} 
+                  
+                      formChange={this.handleLoginFormChange}
+                      form={this.state.form}
+                    />
+                  </div>
               ))}/>
 
               {/* Main page */}
@@ -502,8 +628,6 @@ class App extends Component {
                           newFriendInput={this.state.newFriendInput}
                         />
                       }
-                    </div>
-                    <div id="popupWrapper">
                       {this.state.showServerPopup &&
                         <Popup 
                           type={'New Server'}
@@ -511,6 +635,12 @@ class App extends Component {
                           joinServerSubmit={this.joinServerSubmit}
                           createServerSubmit={this.createServerSubmit}  
                           serverInput={this.state.serverInput}
+                        />
+                      }
+                      {this.state.showCallPopup &&
+                        <Popup 
+                          type={'New Call'}
+                          callPermissionResponse={this.callPermissionResponse}
                         />
                       }
                     </div>
@@ -534,6 +664,20 @@ class App extends Component {
                       servers={this.state.servers}
                       messages={this.state.currentlyViewedMessages}
                     />
+                    {this.state.inCall && 
+                      <div id="voiceWrapper">
+                        <audio id="voiceChat" controls/>
+                        <Voice 
+                          callParticipant={this.state.callParticipant}
+                          callMessageId={this.state.callMessageId}
+                          isInitiator={this.state.isInitiator}
+                          peerConnectInfo={this.state.peerConnectInfo}
+                          sendDataToReceiver={this.sendDataToReceiver}
+                          removeConnectInfo={this.removeConnectInfo}
+                          endCall={this.endCall}
+                        />
+                      </div>
+                    }
                   </div>
                 ) : (
                   <Redirect to="/login"/>
@@ -548,12 +692,9 @@ class App extends Component {
             </Switch>
           </div>
         </Router>
-
-        <br></br>
-        
         {/* Testing Buttons */}
-        <button onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
-        <button onClick={()=>{console.table(this.state)}}>log state</button>
+        <button class = "test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
+        <button class = "test" onClick={()=>{console.table(this.state)}}>log state</button>
       
       </div>
     )

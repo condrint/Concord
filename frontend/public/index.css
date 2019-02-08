@@ -18,7 +18,9 @@ body {
     "settings servers"
     "friends dashboard";
   background-color: black;
-  width: 90%;
+  width: 98vw;
+  height: 98vh;
+  grid-auto-rows: 170px;
 }
 
 #dashboard {

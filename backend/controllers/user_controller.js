@@ -4,9 +4,11 @@ const messageController = require('../controllers/message_controller');
 const userController = {};
 
 userController.registerUser = async (req, res) => {
-    const {username, password} = req.body;
+    const { username, password } = req.body;
     const newUser = new User({username, password});
     try {
+
+        
         let registeredUser = await newUser.save(); 
         return res.status(201).json({
             success: true,
@@ -25,7 +27,7 @@ userController.registerUser = async (req, res) => {
 }
 
 userController.loginUser = async (req , res) => {
-    const {username, password} = req.body;
+    const { username, password } = req.body;
     try {
         let loginUser = await User.findOne({ 
             username: username,
@@ -59,7 +61,7 @@ userController.loginUser = async (req , res) => {
 }
 
 userController.getFriends = async (req, res) => {
-    const {me} = req.body;
+    const { me } = req.body;
     try {
         let meDocument = await User.findById(me);
         
@@ -82,7 +84,7 @@ userController.getFriends = async (req, res) => {
 }
 
 convertToClientFriendObjects = (friends) => {
-    listOfFriendObjects = []
+    listOfFriendObjects = [];
     for (let friend of friends){
         let friendObject = {
             messageId: friend.messageId,
@@ -92,6 +94,40 @@ convertToClientFriendObjects = (friends) => {
         listOfFriendObjects.push(friendObject);
     }
     return listOfFriendObjects;
+}
+
+userController.getServers = async (req, res) => {
+    const { me } = req.body;
+    try {
+        let meDocument = await User.findById(me);
+
+        let listOfServerObjects = convertToClientServerObjects(meDocument.servers);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Servers got.',
+            servers: listOfServerObjects,
+        });
+    }
+
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+convertToClientServerObjects = (servers) => {
+    listOfServerObjects = []
+    for (let server of servers){
+        let serverObject = {
+            servername: server.servername,
+        }
+        listOfServerObjects.push(serverObject);
+    }
+    return listOfServerObjects;
 }
 
 userController.newFriend = async (req, res) => {
@@ -174,6 +210,22 @@ userController.newFriend = async (req, res) => {
             message: error.message,
         });
     }
+}
+
+userController.lookUp = async (req, res) => {
+    const { userInQuestion } = req.body;
+    let userDocument = await User.findOne({
+        _id: userInQuestion,
+    })
+    
+    if (!userInQuestion) {
+        return res.status(200).json({
+            success: false,
+            message: "User doesn't exist.",
+         });
+    }
+
+    return userDocument;
 }
 
 module.exports = userController;

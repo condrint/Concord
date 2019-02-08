@@ -80,7 +80,7 @@ socketIo.on('connection', function(socket){
   });
 
   socket.on('initiateCall', async (data) => {
-    const initator = data.initiator;
+    const initiator = data.initiator;
     const messageIdToLookupReceiver = data.messageId;
 
     // look up receiver by seeing the other userId with the associated messageId
@@ -88,7 +88,7 @@ socketIo.on('connection', function(socket){
     try {
       console.log('new call');
 
-      const receiver = await messageController.findOtherParticipant(messageId, initiator);
+      const receiver = await messageController.findOtherParticipant(messageIdToLookupReceiver, initiator);
       
       if (!receiver){
         socket.emit('messageToClientError', {
@@ -97,21 +97,47 @@ socketIo.on('connection', function(socket){
       }
       else{
         console.log('trying to call client');
-        const chatRoom = messageId;
-        socketIo.emit('messageToClient', {
-          message: messageEntry,
-          messageId: messageId,
+        socketIo.emit('callPermission', {
+          initiator: initiator,
+          receiver: receiver,
+          messageId: messageIdToLookupReceiver
         });
-        
       }
     }
 
     catch(error){
+      console.log(error)
       socket.emit('messageToClientError', {
-        error: error,
+        error: error.message,
       });
     }
 
 
+  })
+
+  socket.on('callPermissionResult', async (data) => {
+    const permission = data.permission;
+    const initiator = data.initiator;
+    const receiver = data.receiver;
+    const messageId = data.messageId;
+
+    if (permission){
+      socketIo.emit('startCall', {
+        participants: [initiator, receiver],
+        messageId: messageId
+      })
+    }
+    else{
+      socketIo.emit('deniedCall', {
+        initiator: initiator
+      })
+    }
+  })
+
+  socket.on('peerConnectInfoFromInitiator', (data) => {
+    socketIo.emit('peerConnectInfoToReceiver', {
+      callParticipant: data.callParticipant,
+      peerConnectInfo: data.peerConnectInfo,
+    });
   })
 });
