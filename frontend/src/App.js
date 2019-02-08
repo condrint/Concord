@@ -225,8 +225,8 @@ class App extends Component {
 
   try {
     let joinServerResult = await axios.post('/api/joinServer', {
-      'joinServer': joinServer,
-      'me': me,
+      'server': joinServer,
+      'newMember': me,
     });
     if(joinServerResult.data.success){
       this.getServers();
@@ -253,7 +253,7 @@ class App extends Component {
 
   try {
     let createServerResult = await axios.post('/api/createServer', {
-      'createServer': createServer,
+      'serverName': createServer,
       'me': me,
     });
     if(createServerResult.data.success){
