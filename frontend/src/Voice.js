@@ -41,7 +41,7 @@ class Voice extends Component {
   }
 
   startVoiceStream = async () => {
-    let audioStream = await navigator.mediaDevices.getUserMedia({ video: true })
+    let audioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
     this.state.peer.addStream(audioStream);
   }
 
