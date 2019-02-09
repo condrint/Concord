@@ -7,7 +7,12 @@ import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-rou
 import io from 'socket.io-client';
 //import './Login.css';
 const axios = require('axios');
-const socket = io('http://localhost:3001');
+
+//for local
+//const socket = io('http://localhost:3001');
+
+//for deploy
+const socket = io('https://' + document.domain + ':3001');
 
 class App extends Component {
   constructor() {
