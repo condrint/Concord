@@ -1,16 +1,16 @@
 const Server = require('../models/server.js');
 const User = require('../models/user.js');
-const messageController = require('../controllers/message_controller');
+const Message = require('../controllers/message_controller');
 
 const serverController = {};
 
 serverController.createServer = async (req, res) => {
     const { me, serverName } = req.body;
-    const newServer = new Server({ me, serverName });
+    
     try {
         //check if server name already exists
         let newServerDocument = await Server.findOne({
-            serverName: newServer,
+            serverName: serverName,
         })
         if (newServerDocument){
             return res.status(200).json({
@@ -18,18 +18,32 @@ serverController.createServer = async (req, res) => {
                 message: "This server already exists.",
             });
         };
-
-        //adds new server to database
-        let createdServer = await newServer.save();
         
-        //adds user as owner of new server
-        let meDocument = await User.findOne({
-            username: me,
-        });
-        createdServer.ownerName.push(meDocument);
+        newMessageId = await Message.createNewMessage([]);
 
+        let meDocument = await User.findOne({
+            _id: me
+        });
+        
+        //creates new server with new parameters
+        const newServer = new Server({
+            serverName: serverName,
+            ownerName: meDocument.username,
+            ownerId: meDocument._id,
+            //members: [ meDocument._id ],
+            messageId: newMessageId
+        })
+        await newServer.members.push(meDocument._id);
+        await newServer.save();
+        
+        console.log(newServer.ownerName);
+        console.log(newServer.ownerId);
+        console.log(newServer.members);
+        
         //adds new server to user's servers
-        meDocument.servers.push(createdServer);
+        meDocument.servers.push(newServer);
+        await meDocument.save();
+        console.log(meDocument.servers);
 
         return res.status(201).json({
             success: true,
@@ -87,10 +101,10 @@ serverController.joinServer = async (req, res) => {
         const { server, newMember } = req.body;
 
         let newMemberDocument = await User.findOne({
-            username: newMember,
+            _id: newMember,
         });
 
-        //checks if user exists
+        //checks if user exists - do we need this?
         if (!newMemberDocument) {
             return res.status(200).json({
                 success: false,
@@ -99,8 +113,7 @@ serverController.joinServer = async (req, res) => {
         }
 
         let newMemberID = newMemberDocument._id.toString();
-        let newMemberUsername = newMemberDocument.username.toString();
-
+        
         let serverDocument = await Server.findOne({
             serverName: server,
         });
@@ -110,43 +123,28 @@ serverController.joinServer = async (req, res) => {
             if(member._id == newMemberID){
                 return res.status(200).json({
                     success: false,
-                    message: "This user is already a member of this server."
+                    message: "You are already a member of this server."
                 });
             }
         }
-
-        newMessageID = await messageController.createNewMessage([me, newMemberID]);
-
-        if (!newMessageId){
-            return res.status(200).json({
-                success: false,
-                message: "Error creating mutual message log between server and new Member."
-            })
-        }
-
+        
         //updating new member into server's member list
-        let newMemberEntry = {
-            memberId: newMemberID,
-            username: newMemberUsername,
-            chatID: newMessageId
-        }
-
-        serverDocument.members.push(newMemberEntry);
+        serverDocument.members.push(newMemberID);
+        let messageDocument = await Message.findOne({
+            _id: serverDocument.messageId
+        });
+        await messageDocument.participants.push(newMemberID);
         serverDocument.save();
+        //console.log(serverDocument.members);
 
         //updating server into new member's server list
-        let thisNewServer = {
-            serverId: serverDocument._id,
-            servername: serverDocument.serverName,
-            chatId: newMessageId 
-        }
-
-        newMemberDocument.servers.push(thisNewServer);
+        newMemberDocument.servers.push(serverDocument._id);
         newMemberDocument.save();
+        //console.log(newMemberDocument.servers);
 
         return res.status(200).json({
             success: true,
-            message: 'Member added',
+            message: 'You have joined the server: ' + server + '.',
         });
 
     }

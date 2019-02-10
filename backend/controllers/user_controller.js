@@ -1,5 +1,5 @@
 const User = require('../models/user.js');
-const messageController = require('../controllers/message_controller');
+const Message = require('../controllers/message_controller');
 
 const userController = {};
 
@@ -7,7 +7,7 @@ userController.registerUser = async (req, res) => {
     const { username, password } = req.body;
     const newUser = new User({username, password});
     try {
-
+        console.log(newUser._id);
         
         let registeredUser = await newUser.save(); 
         return res.status(201).json({
@@ -168,7 +168,7 @@ userController.newFriend = async (req, res) => {
             }
         }
 
-        newMessageId = await messageController.createNewMessage([me, newFriendID]);
+        newMessageId = await Message.createNewMessage([me, newFriendID]);
 
         if (!newMessageId){
             return res.status(200).json({
@@ -197,6 +197,7 @@ userController.newFriend = async (req, res) => {
         newFriendDocument.friends.push(meAsFriend);
         newFriendDocument.save();
 
+        console.log(meDocument.friends);
         return res.status(200).json({
             success: true,
             message: 'Friend added',

@@ -7,6 +7,19 @@ const app = express();
 const server = require('http').Server(app);
 const socketIo = require('socket.io')(server, { origins: '*:*'});
 const messageController = require('./controllers/message_controller');
+/*
+const User = require('../backend/models/user.js');
+const Server = require('../backend/models/server.js');
+const Message = require('../backend/models/message.js');
+User.remove({}, function(err) { 
+  console.log('User collection removed') 
+});
+Server.remove({}, function(err) { 
+  console.log('Server collection removed') 
+});
+Message.remove({}, function(err) { 
+  console.log('Message collection removed') 
+});*/
 
 // configure middleware
 app.use(bodyParser.json());
