@@ -1,6 +1,7 @@
 const Server = require('../models/server.js');
 const User = require('../models/user.js');
-const Message = require('../controllers/message_controller');
+const messageController = require('../controllers/message_controller');
+const Message = require('../models/message.js');
 
 const serverController = {};
 
@@ -19,7 +20,7 @@ serverController.createServer = async (req, res) => {
             });
         };
         
-        newMessageId = await Message.createNewMessage([]);
+        newMessageId = await messageController.createNewMessage([me]);
 
         let meDocument = await User.findOne({
             _id: me
@@ -37,8 +38,9 @@ serverController.createServer = async (req, res) => {
         await newServer.save();
         
         console.log(newServer.ownerName);
-        console.log(newServer.ownerId);
-        console.log(newServer.members);
+        //console.log(newServer.ownerId);
+        //console.log(newServer.members);
+        console.log(newMessageId);
         
         //adds new server to user's servers
         meDocument.servers.push(newServer);
@@ -134,8 +136,10 @@ serverController.joinServer = async (req, res) => {
             _id: serverDocument.messageId
         });
         await messageDocument.participants.push(newMemberID);
+        messageDocument.save();
         serverDocument.save();
-        //console.log(serverDocument.members);
+        console.log(messageDocument.participants);
+        console.log(serverDocument.members);
 
         //updating server into new member's server list
         newMemberDocument.servers.push(serverDocument._id);

@@ -1,5 +1,5 @@
 const User = require('../models/user.js');
-const Message = require('../controllers/message_controller');
+const messageController = require('../controllers/message_controller');
 
 const userController = {};
 
@@ -168,7 +168,7 @@ userController.newFriend = async (req, res) => {
             }
         }
 
-        newMessageId = await Message.createNewMessage([me, newFriendID]);
+        newMessageId = await messageController.createNewMessage([me, newFriendID]);
 
         if (!newMessageId){
             return res.status(200).json({
