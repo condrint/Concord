@@ -228,4 +228,12 @@ userController.lookUp = async (req, res) => {
     return userDocument;
 }
 
+userController.uploadImage = async (req, res) => {
+    const { me, image } = req.body;
+    
+    let meDocument = await User.findById(me);
+
+    console.log(image);
+}
+
 module.exports = userController;

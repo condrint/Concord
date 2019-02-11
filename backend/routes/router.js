@@ -13,6 +13,7 @@ router.post('/login', userController.loginUser);
 router.post('/register', userController.registerUser);
 router.post('/newFriend', userController.newFriend);
 router.post('/getFriends', userController.getFriends);
+router.post('/uploadImage', userController.uploadImage);
 
 router.post('/getMessages', messageController.getMessages);
 

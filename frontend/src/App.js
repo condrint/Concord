@@ -12,7 +12,7 @@ const axios = require('axios');
 //const socket = io('http://localhost:3001');
 
 //for deploy
-const socket = io('https://' + document.domain + ':3001');
+const socket = io('http://' + document.domain + ':3001');
 
 class App extends Component {
   constructor() {
@@ -24,6 +24,7 @@ class App extends Component {
       myUsername: '',
       redirect: false,
       redirectTo: '',
+      redirectType: '',
       redirectId: '',
 
       // login 
@@ -69,6 +70,8 @@ class App extends Component {
       */
       currentlyViewedMessages: [],
       currentlyViewedMessagesId: '',
+      image: null,
+
 
       // calls
       inCall: false,
@@ -103,6 +106,8 @@ class App extends Component {
     this.sendDataToReceiver = this.sendDataToReceiver.bind(this);
     this.removeConnectInfo = this.removeConnectInfo.bind(this);
     this.endCall = this.endCall.bind(this);
+    this.uploadImage = this.uploadImage.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
   }
 
   handleChange = (event) => {
@@ -110,6 +115,56 @@ class App extends Component {
     this.setState({
       [event.target.id]: event.target.value
     });
+  }
+
+  handleImageChange = (event) => {
+    event.preventDefault();
+    console.log(event.target);
+    this.setState({
+      image: event.target.files[0]
+    });
+  }
+
+  uploadImage = async () => {
+    const image = this.state.image;
+    console.log(image)
+
+    if (!image){
+      alert('No image selected.');
+      return;
+    }
+
+    if (image.size > 100 * 1000){
+      alert('Image is too large. It must be smaller than 100KB');
+      return;
+    }
+    
+    const formData = new FormData()
+    formData.append('file', image);
+    formData.append('name', image.name);
+
+    try{
+      let uploadImageResult = await axios.post('/api/uploadImage', {
+        image: formData,
+        me: this.state.me
+      })
+
+      if (uploadImageResult.success){
+        alert(uploadImageResult.message);
+      }
+      else{
+        alert(uploadImageResult.message);
+      }
+    }
+
+    catch (error) {
+      alert(error)
+    }
+
+    this.setState({
+      image: null
+    })
+    console.log(image);
   }
 
   handleRegisterSubmit = async (event) => {
@@ -357,6 +412,7 @@ class App extends Component {
     this.setState({
       redirect: true,
       redirectTo: path,
+      redirectType: type,
       redirectId: ID,
     })
   }
@@ -493,12 +549,13 @@ class App extends Component {
     console.log('App did update called');
     // when redirect is true, the redirect component will change the URL and rerender the page
     // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
-    if (this.state.redirect){
+    if (this.state.redirect && (this.state.redirectType == 'server' || this.state.redirectType == 'user')){
       const chatRoomId = this.state.redirectId;
       this.getMessages(chatRoomId);
       this.setState({
         redirect: false,
         redirectTo: '',
+        redirectType: '',
         redirectId: '',
       });
     }
@@ -660,8 +717,12 @@ class App extends Component {
                       showServerPopup ={this.showServerPopup}
                       change={this.handleChange}
                       sendMessage={this.sendMessage}
+                      sendMessageInput={this.state.sendMessageInput}
                       redirect={this.redirect}
                       callUser={this.callUser}
+                      handleImageChange={this.handleImageChange}
+                      uploadImage={this.uploadImage}
+                      image={this.state.image}
 
                       // content
                       getFriends={this.getFriends}

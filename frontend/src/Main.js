@@ -4,6 +4,7 @@ import { Servers } from './Servers.js';
 import { NewFriend } from './NewFriend.js';
 import { CreateJoinServer } from './NewServer';
 import { Messages } from './Messages.js';
+import { Settings } from './Settings.js';
 
 
 class Main extends Component {
@@ -14,7 +15,7 @@ class Main extends Component {
 
   componentDidMount(){
     this.props.getFriends();
-    this.props.getServers();
+    //this.props.getServers();
   }
 
 
@@ -24,8 +25,9 @@ class Main extends Component {
 
     return (
       <div id="main">
-        <div id="settings">
+        <div>
           Settings
+          <button onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
         </div>
 
         <div id="servers">
@@ -42,6 +44,12 @@ class Main extends Component {
 
         <div id="dashboard">
 
+          {(urlType == 'settings') && 
+            <div id="settings">
+              <Settings handleImageChange={this.props.handleImageChange} uploadImage={this.props.uploadImage} image={this.props.image}/>
+            </div>
+          }
+
           {/* don't add html below the sendMessageForm - this comment 
             can be removed when this fact is more obvious in the future*/}
 
@@ -49,7 +57,7 @@ class Main extends Component {
             <div id="chat">
               <Messages messages={this.props.messages}/>
               <div id="sendMessageForm">
-                <input id="sendMessageInput" onChange={this.props.change} type="text" placeholder="Send a message!"/>
+                <input id="sendMessageInput" onChange={this.props.change} value={this.props.sendMessageInput} type="text" placeholder="Send a message!"/>
                 <button onClick={() => this.props.sendMessage(urlType, urlMessageId)}> Send </button>
                 {(urlType == 'user' &&
                   <button onClick={() => this.props.callUser(urlMessageId)}> Call </button>
