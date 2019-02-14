@@ -8,9 +8,6 @@ import io from 'socket.io-client';
 //import './Login.css';
 const axios = require('axios');
 
-//for local
-//const socket = io('http://localhost:3001');
-
 //for deploy
 const socket = io('http://' + document.domain + ':3001');
 
@@ -140,14 +137,21 @@ class App extends Component {
     }
     
     const formData = new FormData()
-    formData.append('file', image);
-    formData.append('name', image.name);
+    formData.append('image', image);
+
+    console.log(formData);
 
     try{
-      let uploadImageResult = await axios.post('/api/uploadImage', {
-        image: formData,
-        me: this.state.me
-      })
+      let uploadImageResult = await axios.post(
+        '/api/uploadImage/', 
+        formData,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      )
 
       if (uploadImageResult.success){
         alert(uploadImageResult.message);

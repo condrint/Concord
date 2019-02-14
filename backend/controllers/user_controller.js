@@ -1,6 +1,5 @@
 const User = require('../models/user.js');
 const messageController = require('../controllers/message_controller');
-
 const userController = {};
 
 userController.registerUser = async (req, res) => {
@@ -229,12 +228,9 @@ userController.lookUp = async (req, res) => {
     return userDocument;
 }
 
-userController.uploadImage = async (req, res) => {
-    const { me, image } = req.body;
+userController.uploadImage = upload.single('avatar'), async (req, res) => {
+    const { image } = req.file
     
-    let meDocument = await User.findById(me);
-
-    console.log(image);
 }
 
 module.exports = userController;

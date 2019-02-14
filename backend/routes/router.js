@@ -1,5 +1,10 @@
 // ./express-server/routes/todo.server.route.js
 const express = require('express');
+//const multer = require('multer');
+//const parser = multer({ storage: storage });
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+
 
 //import controller file
 const userController = require('../controllers/user_controller');
@@ -13,7 +18,7 @@ router.post('/login', userController.loginUser);
 router.post('/register', userController.registerUser);
 router.post('/newFriend', userController.newFriend);
 router.post('/getFriends', userController.getFriends);
-router.post('/uploadImage', userController.uploadImage);
+router.post('/uploadImage',  upload.single('image'), userController.uploadImage);
 
 router.post('/getMessages', messageController.getMessages);
 
