@@ -1,12 +1,13 @@
 const User = require('../models/user.js');
 const messageController = require('../controllers/message_controller');
-
 const userController = {};
 
 userController.registerUser = async (req, res) => {
-    const {username, password} = req.body;
+    const { username, password } = req.body;
     const newUser = new User({username, password});
     try {
+        console.log(newUser._id);
+        
         let registeredUser = await newUser.save(); 
         return res.status(201).json({
             success: true,
@@ -25,7 +26,7 @@ userController.registerUser = async (req, res) => {
 }
 
 userController.loginUser = async (req , res) => {
-    const {username, password} = req.body;
+    const { username, password } = req.body;
     try {
         let loginUser = await User.findOne({ 
             username: username,
@@ -59,7 +60,7 @@ userController.loginUser = async (req , res) => {
 }
 
 userController.getFriends = async (req, res) => {
-    const {me} = req.body;
+    const { me } = req.body;
     try {
         let meDocument = await User.findById(me);
         
@@ -82,16 +83,50 @@ userController.getFriends = async (req, res) => {
 }
 
 convertToClientFriendObjects = (friends) => {
-    listOfFriendObjects = []
+    listOfFriendObjects = [];
     for (let friend of friends){
         let friendObject = {
-            chatId: friend.chatId,
+            messageId: friend.messageId,
             friendId: friend.friendId,
             username: friend.username
         }
         listOfFriendObjects.push(friendObject);
     }
     return listOfFriendObjects;
+}
+
+userController.getServers = async (req, res) => {
+    const { me } = req.body;
+    try {
+        let meDocument = await User.findById(me);
+
+        let listOfServerObjects = convertToClientServerObjects(meDocument.servers);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Servers got.',
+            servers: listOfServerObjects,
+        });
+    }
+
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+convertToClientServerObjects = (servers) => {
+    listOfServerObjects = []
+    for (let server of servers){
+        let serverObject = {
+            servername: server.servername,
+        }
+        listOfServerObjects.push(serverObject);
+    }
+    return listOfServerObjects;
 }
 
 userController.newFriend = async (req, res) => {
@@ -124,7 +159,7 @@ userController.newFriend = async (req, res) => {
         });
         
         for (let friend of meDocument.friends){
-            if(friend._id == newFriendID){
+            if(friend.friendId == newFriendID){
                 return res.status(200).json({
                     success: false,
                     message: "You're already friends with this user.",
@@ -145,7 +180,7 @@ userController.newFriend = async (req, res) => {
         let newFriendEntry = {
             friendId: newFriendID,
             username: newFriendUsername,
-            chatId: newMessageId
+            messageId: newMessageId
         }
 
         meDocument.friends.push(newFriendEntry);
@@ -155,12 +190,13 @@ userController.newFriend = async (req, res) => {
         let meAsFriend = {
             friendId: meDocument._id,
             username: meDocument.username,
-            chatId: newMessageId
+            messageId: newMessageId
         }
 
         newFriendDocument.friends.push(meAsFriend);
         newFriendDocument.save();
 
+        console.log(meDocument.friends);
         return res.status(200).json({
             success: true,
             message: 'Friend added',
@@ -174,6 +210,27 @@ userController.newFriend = async (req, res) => {
             message: error.message,
         });
     }
+}
+
+userController.lookUp = async (req, res) => {
+    const { userInQuestion } = req.body;
+    let userDocument = await User.findOne({
+        _id: userInQuestion,
+    })
+    
+    if (!userInQuestion) {
+        return res.status(200).json({
+            success: false,
+            message: "User doesn't exist.",
+         });
+    }
+
+    return userDocument;
+}
+
+userController.uploadImage = upload.single('avatar'), async (req, res) => {
+    const { image } = req.file
+    
 }
 
 module.exports = userController;

@@ -17,17 +17,23 @@ class Popup extends Component {
             </form>
           </div>
         }
-        {/*
         {this.props.type == 'New Server' &&
           <div id="newServerPopup">
             Join or create server
             <form id="newServerForm">
-              <input id="createServerInput" type="text" onChange={this.props.change} value={this.props.serverInput}/>
+              <input id="serverInput" type="text" onChange={this.props.change} value={this.props.serverInput}/>
               <button type="submit" onClick={this.props.createServerSubmit}>Create</button>
               <button type="submit" onClick={this.props.joinServerSubmit}>Join</button>
             </form>
           </div>
-        }*/}
+        }
+        {this.props.type == 'New Call' &&
+          <div id="newCallPopup">
+            Incoming Call
+            <button onClick={() => this.props.callPermissionResponse(true)}>Answer</button>
+            <button onClick={() => this.props.callPermissionResponse(false)}>Reject</button>
+          </div>
+        }
       </div>
     )
   }

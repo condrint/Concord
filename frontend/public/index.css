@@ -21,6 +21,7 @@ body {
   /grid-template-areas: 
     "settings servers"
     "friends dashboard";
+<<<<<<< HEAD
     display: grid;
     grid-template-columns: 1fr 9fr;
     grid-auto-rows: 100px;
@@ -63,6 +64,12 @@ height: 75px;
 
 .dashboard{
   height: 500px;
+=======
+  background-color: black;
+  width: 98vw;
+  height: 98vh;
+  grid-auto-rows: 170px;
+>>>>>>> c48600f9f053be0001c3db34cccf7c5832900e33
 }
 
 #dashboard {

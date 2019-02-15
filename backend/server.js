@@ -7,6 +7,19 @@ const app = express();
 const server = require('http').Server(app);
 const socketIo = require('socket.io')(server, { origins: '*:*'});
 const messageController = require('./controllers/message_controller');
+/*
+const User = require('../backend/models/user.js');
+const Server = require('../backend/models/server.js');
+const Message = require('../backend/models/message.js');
+User.remove({}, function(err) { 
+  console.log('User collection removed') 
+});
+Server.remove({}, function(err) { 
+  console.log('Server collection removed') 
+});
+Message.remove({}, function(err) { 
+  console.log('Message collection removed') 
+});*/
 
 // configure middleware
 app.use(bodyParser.json());
@@ -80,7 +93,7 @@ socketIo.on('connection', function(socket){
   });
 
   socket.on('initiateCall', async (data) => {
-    const initator = data.initiator;
+    const initiator = data.initiator;
     const messageIdToLookupReceiver = data.messageId;
 
     // look up receiver by seeing the other userId with the associated messageId
@@ -88,7 +101,7 @@ socketIo.on('connection', function(socket){
     try {
       console.log('new call');
 
-      const receiver = await messageController.findOtherParticipant(messageId, initiator);
+      const receiver = await messageController.findOtherParticipant(messageIdToLookupReceiver, initiator);
       
       if (!receiver){
         socket.emit('messageToClientError', {
@@ -97,21 +110,47 @@ socketIo.on('connection', function(socket){
       }
       else{
         console.log('trying to call client');
-        const chatRoom = messageId;
-        socketIo.emit('messageToClient', {
-          message: messageEntry,
-          messageId: messageId,
+        socketIo.emit('callPermission', {
+          initiator: initiator,
+          receiver: receiver,
+          messageId: messageIdToLookupReceiver
         });
-        
       }
     }
 
     catch(error){
+      console.log(error)
       socket.emit('messageToClientError', {
-        error: error,
+        error: error.message,
       });
     }
 
 
+  })
+
+  socket.on('callPermissionResult', async (data) => {
+    const permission = data.permission;
+    const initiator = data.initiator;
+    const receiver = data.receiver;
+    const messageId = data.messageId;
+
+    if (permission){
+      socketIo.emit('startCall', {
+        participants: [initiator, receiver],
+        messageId: messageId
+      })
+    }
+    else{
+      socketIo.emit('deniedCall', {
+        initiator: initiator
+      })
+    }
+  })
+
+  socket.on('peerConnectInfoFromInitiator', (data) => {
+    socketIo.emit('peerConnectInfoToReceiver', {
+      callParticipant: data.callParticipant,
+      peerConnectInfo: data.peerConnectInfo,
+    });
   })
 });

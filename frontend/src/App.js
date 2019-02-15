@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import Login from './Login.js';
 import Main from './Main.js';
-import  Popup  from './Popups.js';
+import Popup  from './Popups.js';
+import Voice from './Voice.js';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
 import io from 'socket.io-client';
+//import './Login.css';
 const axios = require('axios');
-const socket = io('http://localhost:3001');
+
+//for deploy
+const socket = io('http://' + document.domain + ':3001');
 
 class App extends Component {
   constructor() {
@@ -17,6 +21,7 @@ class App extends Component {
       myUsername: '',
       redirect: false,
       redirectTo: '',
+      redirectType: '',
       redirectId: '',
 
       // login 
@@ -30,6 +35,8 @@ class App extends Component {
       
       // popups
       showNewFriendPopup: false,
+      showServerPopup: false,
+      showCallPopup: false,
       newFriendInput: '',
       serverInput: '',
 
@@ -40,7 +47,7 @@ class App extends Component {
       friends: [],
       /* friends form ->
         {
-          chatId,
+          messageId,
           friendId,
           username
         }
@@ -58,7 +65,17 @@ class App extends Component {
           }]
         }
       */
-      currentlyViewedMessages: []
+      currentlyViewedMessages: [],
+      currentlyViewedMessagesId: '',
+      image: null,
+
+
+      // calls
+      inCall: false,
+      callParticipant: '',
+      callMessageId: '',
+      isInitiator: false,
+      peerConnectInfo: {},
     }
     
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
@@ -66,24 +83,92 @@ class App extends Component {
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this);
     this.newFriendSubmit = this.newFriendSubmit.bind(this);
+    this.createServerSubmit = this.createServerSubmit.bind(this);
+    this.joinServerSubmit = this.joinServerSubmit.bind(this);
 
     this.showNewFriendPopup = this.showNewFriendPopup.bind(this);
     this.hideNewFriendPopup = this.hideNewFriendPopup.bind(this);
+    this.showServerPopup = this.showServerPopup.bind(this);
+    this.hideServerPopup = this.hideServerPopup.bind(this);
 
     this.getFriends = this.getFriends.bind(this);
+    this.getServers = this.getServers.bind(this);
     this.redirect = this.redirect.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.clearUsernameAndPasswordFields = this.clearUsernameAndPasswordFields.bind(this);
     this.getMessages = this.getMessages.bind(this);
     this.updateCurrentlyViewedMessages = this.updateCurrentlyViewedMessages.bind(this);
     this.callUser = this.callUser.bind(this);
-    
+    this.callPermissionResponse = this.callPermissionResponse.bind(this);
+    this.sendDataToReceiver = this.sendDataToReceiver.bind(this);
+    this.removeConnectInfo = this.removeConnectInfo.bind(this);
+    this.endCall = this.endCall.bind(this);
+    this.uploadImage = this.uploadImage.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
   }
 
   handleChange = (event) => {
+    console.log(event.target.id, event.target.value);
     this.setState({
       [event.target.id]: event.target.value
     });
+  }
+
+  handleImageChange = (event) => {
+    event.preventDefault();
+    console.log(event.target);
+    this.setState({
+      image: event.target.files[0]
+    });
+  }
+
+  uploadImage = async () => {
+    const image = this.state.image;
+    console.log(image)
+
+    if (!image){
+      alert('No image selected.');
+      return;
+    }
+
+    if (image.size > 100 * 1000){
+      alert('Image is too large. It must be smaller than 100KB');
+      return;
+    }
+    
+    const formData = new FormData()
+    formData.append('image', image);
+
+    console.log(formData);
+
+    try{
+      let uploadImageResult = await axios.post(
+        '/api/uploadImage/', 
+        formData,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      )
+
+      if (uploadImageResult.success){
+        alert(uploadImageResult.message);
+      }
+      else{
+        alert(uploadImageResult.message);
+      }
+    }
+
+    catch (error) {
+      alert(error)
+    }
+
+    this.setState({
+      image: null
+    })
+    console.log(image);
   }
 
   handleRegisterSubmit = async (event) => {
@@ -132,7 +217,6 @@ class App extends Component {
         'password': password,
       });
       if (loginResult.data.success) {
-        alert(loginResult.data.message)
         this.setState({ 
           isLoggedIn: loginResult.data.success,
           me: loginResult.data.me,
@@ -194,6 +278,62 @@ class App extends Component {
     this.hideNewFriendPopup();
   }
 
+  joinServerSubmit = async (event) =>{
+  event.preventDefault();
+  let joinServer = this.state.serverInput;
+  let me = this.state.me;
+  
+  if(!joinServer){
+    alert('Invalid Input');
+    return;
+  }
+
+  try {
+    let joinServerResult = await axios.post('/api/joinServer', {
+      'server': joinServer,
+      'newMember': me,
+    });
+    if(joinServerResult.data.success){
+      this.getServers();
+      alert(joinServerResult.data.message)
+    }
+    else{
+      alert(joinServerResult.data.message)
+    }
+  } catch (error) {
+    alert(error);
+  }
+  this.hideServerPopup();
+  }
+
+  createServerSubmit = async (event) =>{
+  event.preventDefault();
+  let createServer = this.state.serverInput;
+  let me = this.state.me;
+  
+  if(!createServer){
+    alert('Invalid Input');
+    return;
+  }
+
+  try {
+    let createServerResult = await axios.post('/api/createServer', {
+      'serverName': createServer,
+      'me': me,
+    });
+    if(createServerResult.data.success){
+      this.getServers();
+      alert(createServerResult.data.message)
+    }
+    else{
+      alert(createServerResult.data.message)
+    }
+  } catch (error) {
+    alert(error);
+  }
+  this.hideServerPopup();
+  }
+
   showNewFriendPopup(){
     this.setState({ 
       showNewFriendPopup: true,
@@ -208,6 +348,19 @@ class App extends Component {
     });
   }
   
+  showServerPopup(){
+    this.setState({ 
+      showServerPopup: true,
+      serverInput: '',
+    });
+  }
+
+  hideServerPopup(){
+    this.setState({ 
+      showServerPopup: false,
+      serverInput: '',
+    });
+  }
 
   async getFriends(){
     console.log('getFriends');
@@ -233,12 +386,37 @@ class App extends Component {
     }
   }
 
+  async getServers(){
+    console.log('getServers');
+
+    let me = this.state.me;
+
+    try{
+      let serversResult = await axios.post('api/getServers', {
+        me: me
+      });
+
+      if(serversResult.data.success){
+        this.setState({
+          servers: serversResult.data.servers
+        });
+      }
+      else{
+        alert(serversResult.data.message);
+      }
+    }
+    catch(error){
+      alert(error);
+    }
+  }
+
   redirect(type, ID){
     console.log('redirect');
     let path = '/main/' + type + '/' +  ID;
     this.setState({
       redirect: true,
       redirectTo: path,
+      redirectType: type,
       redirectId: ID,
     })
   }
@@ -256,6 +434,10 @@ class App extends Component {
       alert("You can't send an empty message.");
       return;
     }
+
+    this.setState({
+      sendMessageInput: '',
+    });
 
     socket.emit('messageToServer', {
       senderId: this.state.me,
@@ -277,7 +459,8 @@ class App extends Component {
     }
 
     this.setState({
-      currentlyViewedMessages: currentlyViewedMessages
+      currentlyViewedMessages: currentlyViewedMessages,
+      currentlyViewedMessagesId: messageId
     })
   }
 
@@ -286,6 +469,7 @@ class App extends Component {
     let currentMessages = this.state.messages;
     for (let messageObject of currentMessages){
       if (messageObject.messageId == messageId){
+        this.updateCurrentlyViewedMessages(messageId);
         return;
       }
     }
@@ -315,9 +499,53 @@ class App extends Component {
   }
 
   callUser(messageId){
+    if (this.state.inCall){
+      alert('End your current call before starting a new one.');
+      return;
+    }
     socket.emit('initiateCall', {
-      initator: this.state.me,
+      initiator: this.state.me,
       messageId: messageId,
+    })
+    this.setState({
+      isInitiator: true
+    })
+  }
+
+  endCall(){
+    this.setState({
+      inCall: false,
+      callParticipant: '',
+      callMessageId: '',
+      isInitiator: false,
+      peerConnectInfo: {},
+    });
+  }
+
+  callPermissionResponse(permission){
+    console.log(permission);
+    this.setState({
+      showCallPopup: false,
+    })
+
+    socket.emit('callPermissionResult', {
+      permission: permission,
+      initiator: this.state.callParticipant,
+      receiver: this.state.me,
+      messageId: this.state.callMessageId
+    })
+  }
+
+  sendDataToReceiver(data){
+    socket.emit('peerConnectInfoFromInitiator', {
+      callParticipant: this.state.callParticipant,
+      peerConnectInfo: data
+    })
+  }
+
+  removeConnectInfo(){
+    this.setState({
+      peerConnectInfo: '',
     })
   }
 
@@ -325,18 +553,18 @@ class App extends Component {
     console.log('App did update called');
     // when redirect is true, the redirect component will change the URL and rerender the page
     // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
-    if (this.state.redirect){
+    if (this.state.redirect && (this.state.redirectType == 'server' || this.state.redirectType == 'user')){
       const chatRoomId = this.state.redirectId;
       this.getMessages(chatRoomId);
       this.setState({
         redirect: false,
         redirectTo: '',
+        redirectType: '',
         redirectId: '',
       });
     }
   }
 
-  // declaring socket events 
   componentDidMount(){
     socket.on('messageToClient', (data) => {
       console.log('client received message')
@@ -353,9 +581,71 @@ class App extends Component {
       this.setState({
         messages: currentMessages
       })
-      
-      this.updateCurrentlyViewedMessages(messageId)
-    })
+
+      if (messageId == this.state.currentlyViewedMessagesId){
+        this.updateCurrentlyViewedMessages(messageId)
+      }
+    });
+
+    socket.on('callPermission', (data) => {
+      const initiator = data.initiator;
+      const receiver = data.receiver;
+      const messageId = data.messageId;
+
+      // this should be solved with chatrooms
+      if (this.state.me != receiver){
+        return;
+      }
+
+      this.setState({
+        showCallPopup: true,
+        callParticipant: initiator,
+        callMessageId: messageId,
+      });
+    });
+
+    socket.on('deniedCall', (data) => {
+      // this check should Not be needed in the future
+      if (data.initiator == this.state.me){
+        alert('User denied call');
+      }
+    });
+
+    socket.on('startCall', (data) => {
+      let [firstParticipant, secondParticipant] = data.participants;
+      let me = this.state.me;
+
+      if (firstParticipant == me){
+          this.setState({
+            inCall: true,
+            callParticipant: secondParticipant,
+            callMessageId: data.messageId
+          });
+      }
+      else if (secondParticipant == me){
+          this.setState({
+            inCall: true,
+            callParticipant: firstParticipant,
+            callMessageId: data.messageId
+          });
+      }
+      else {
+        alert("call started but you're neither participant lmao");
+      }
+    });
+
+    socket.on('messageToClientError', (data) => {
+      alert(data.error);
+    });
+
+    socket.on('peerConnectInfoToReceiver', (data) => {
+      if (data.callParticipant != this.state.me){
+        return;
+      }
+      this.setState({
+        peerConnectInfo: data.peerConnectInfo
+      })
+    });
   }
 
   render() {
@@ -374,19 +664,21 @@ class App extends Component {
                 this.state.isLoggedIn ? (
                   <Redirect to="/main/dashboard/me"/>
                 ) : (
-                  <Login 
-                    change={this.handleChange}
-                    loginUsernameInput={this.state.loginUsernameInput}
-                    loginPasswordInput={this.state.loginPasswordInput}
-                    registerPasswordInput={this.state.registerPasswordInput}
-                    registerUsernameInput={this.state.registerUsernameInput}
-
-                    registerSubmit={this.handleRegisterSubmit}
-                    loginSubmit={this.handleLoginSubmit} 
-
-                    formChange={this.handleLoginFormChange}
-                    form={this.state.form}
-                  />
+                  <div id="loginPage">
+                    <Login 
+                      change={this.handleChange}
+                      loginUsernameInput={this.state.loginUsernameInput}
+                      loginPasswordInput={this.state.loginPasswordInput}
+                      registerPasswordInput={this.state.registerPasswordInput}
+                      registerUsernameInput={this.state.registerUsernameInput}
+                  
+                      registerSubmit={this.handleRegisterSubmit}
+                      loginSubmit={this.handleLoginSubmit} 
+                  
+                      formChange={this.handleLoginFormChange}
+                      form={this.state.form}
+                    />
+                  </div>
               ))}/>
 
               {/* Main page */}
@@ -403,6 +695,21 @@ class App extends Component {
                           newFriendInput={this.state.newFriendInput}
                         />
                       }
+                      {this.state.showServerPopup &&
+                        <Popup 
+                          type={'New Server'}
+                          change={this.handleChange} 
+                          joinServerSubmit={this.joinServerSubmit}
+                          createServerSubmit={this.createServerSubmit}  
+                          serverInput={this.state.serverInput}
+                        />
+                      }
+                      {this.state.showCallPopup &&
+                        <Popup 
+                          type={'New Call'}
+                          callPermissionResponse={this.callPermissionResponse}
+                        />
+                      }
                     </div>
 
                     {/* Main content */}
@@ -411,17 +718,38 @@ class App extends Component {
 
                       // button functions
                       showNewFriendPopup={this.showNewFriendPopup}
+                      showServerPopup ={this.showServerPopup}
                       change={this.handleChange}
                       sendMessage={this.sendMessage}
+                      sendMessageInput={this.state.sendMessageInput}
                       redirect={this.redirect}
                       callUser={this.callUser}
+                      handleImageChange={this.handleImageChange}
+                      uploadImage={this.uploadImage}
+                      image={this.state.image}
 
                       // content
                       getFriends={this.getFriends}
+                      getServers={this.getServers}
                       friends={this.state.friends}
                       servers={this.state.servers}
                       messages={this.state.currentlyViewedMessages}
                     />
+                    {this.state.inCall && 
+                      <div id="voiceWrapper">
+                        
+                        <audio id="voiceChat" controls/>
+                        <Voice 
+                          callParticipant={this.state.callParticipant}
+                          callMessageId={this.state.callMessageId}
+                          isInitiator={this.state.isInitiator}
+                          peerConnectInfo={this.state.peerConnectInfo}
+                          sendDataToReceiver={this.sendDataToReceiver}
+                          removeConnectInfo={this.removeConnectInfo}
+                          endCall={this.endCall}
+                        />
+                      </div>
+                    }
                   </div>
                 ) : (
                   <Redirect to="/login"/>
@@ -436,12 +764,9 @@ class App extends Component {
             </Switch>
           </div>
         </Router>
-
-        <br></br>
-        
         {/* Testing Buttons */}
-        <button onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
-        <button onClick={()=>{console.table(this.state)}}>log state</button>
+        <button class = "test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
+        <button class = "test" onClick={()=>{console.table(this.state)}}>log state</button>
       
       </div>
     )

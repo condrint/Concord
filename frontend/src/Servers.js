@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-class Friends extends Component {
+class Servers extends Component {
   constructor(props) {
     super(props);
   }
@@ -9,10 +9,10 @@ class Friends extends Component {
   render() {
     return(
       <ul>
-        { this.props.friends && this.props.friends.map((friend, index) => 
-          <li key={index} onClick={() => {this.props.redirect('user', friend.messageId)}}> 
+        { this.props.servers && this.props.servers.map((server, index) => 
+          <li key={index} onClick={() => {this.props.redirect('user', server.servername)}}> 
             <button>
-              {friend.username}
+              {server.servername}
             </button>
           </li>
         )}
@@ -21,4 +21,4 @@ class Friends extends Component {
   }
 }
 
-export { Friends };
+export { Servers };
