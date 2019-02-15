@@ -228,8 +228,9 @@ userController.lookUp = async (req, res) => {
     return userDocument;
 }
 
-userController.uploadImage = upload.single('avatar'), async (req, res) => {
+userController.uploadImage = async (req, res) => {
     const { image } = req.file
+    console.log(image);
     
 }
 

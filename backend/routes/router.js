@@ -5,13 +5,10 @@ const express = require('express');
 var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
 
-
-//import controller file
 const userController = require('../controllers/user_controller');
 const messageController = require('../controllers/message_controller');
 const serverController = require('../controllers/server_controller');
 
-// get an instance of express router
 const router = express();
 
 router.post('/login', userController.loginUser);
