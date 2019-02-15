@@ -10,9 +10,9 @@ class Servers extends Component {
     return(
       <ul>
         { this.props.servers && this.props.servers.map((server, index) => 
-          <li key={index} onClick={() => {this.props.redirect('user', server.servername)}}> 
+          <li key={index} onClick={() => {this.props.redirect('server', server.messageId)}}> 
             <button>
-              {server.servername}
+              {server.serverName}
             </button>
           </li>
         )}
