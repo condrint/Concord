@@ -5,20 +5,64 @@ body {
 
 /* Main.js */
 
-#main > div {
-  background-color: grey;
-}
+/* #main > div {
+  display: grid;
+  background-color:gray;
+  
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+} */
 
 #main {
-  display: grid;
+  /*
   grid-gap: 10px;
   grid-template-columns: 10% 80%;
-  grid-template-rows: 10% 80%;
-  grid-template-areas: 
+  grid-template-rows: 30% 80%;
+  /grid-template-areas: 
     "settings servers"
     "friends dashboard";
-  background-color: black;
-  width: 90%;
+    display: grid;
+    grid-template-columns: 1fr 9fr;
+    grid-auto-rows: 100px;
+    grid-gap: 5px;
+    */
+  display: grid;
+  height:600px;
+  background-color:black;
+  grid-template-columns: 1fr 50fr;
+  grid-template-rows: 1fr 10fr
+}
+
+/* Main divs */
+#scalablemain{
+  grid-auto-rows: 500px;
+  grid-auto-columns:500px;
+  background-color:gray;
+  }
+  
+#nonscalablemain{
+  float:left;
+  width: 100px;
+  background-color: red;
+}
+
+/* Nonscalable classes */
+.settings {
+  margin: 0 auto;
+  height: 75px;
+}
+
+.friends{
+  height: 531px;
+}
+
+/* Scalable classes */
+.servers{
+height: 75px;
+}
+
+.dashboard{
+  height: 500px;
 }
 
 #dashboard {
