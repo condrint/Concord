@@ -12,7 +12,9 @@ body {
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
 } */
-
+#appWrapper {
+  /* background-color: gray; */
+}
 #main {
   /*
   grid-gap: 10px;
@@ -21,55 +23,10 @@ body {
   /grid-template-areas: 
     "settings servers"
     "friends dashboard";
-<<<<<<< HEAD
-    display: grid;
-    grid-template-columns: 1fr 9fr;
-    grid-auto-rows: 100px;
-    grid-gap: 5px;
-    */
-  display: grid;
-  height:600px;
-  background-color:black;
-  grid-template-columns: 1fr 50fr;
-  grid-template-rows: 1fr 10fr
-}
-
-/* Main divs */
-#scalablemain{
-  grid-auto-rows: 500px;
-  grid-auto-columns:500px;
-  background-color:gray;
-  }
-  
-#nonscalablemain{
-  float:left;
-  width: 100px;
-  background-color: red;
-}
-
-/* Nonscalable classes */
-.settings {
-  margin: 0 auto;
-  height: 75px;
-}
-
-.friends{
-  height: 531px;
-}
-
-/* Scalable classes */
-.servers{
-height: 75px;
-}
-
-.dashboard{
-  height: 500px;
-=======
   background-color: black;
   width: 98vw;
   height: 98vh;
   grid-auto-rows: 170px;
->>>>>>> c48600f9f053be0001c3db34cccf7c5832900e33
 }
 
 #dashboard {
