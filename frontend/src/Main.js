@@ -25,23 +25,27 @@ class Main extends Component {
 
     return (
       <div id="main">
-        <div>
-          Settings
-          <button onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
-        </div>
+        <div id="leftColumn">
+          <div id="settings">
+            Settings
+            <button onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
+          </div>
+          <div id="iconsWrapper">
+            {/*
+            <div id="servers">
+              servers
+              <Servers servers={this.props.servers} redirect={this.props.redirect}/>
+              <CreateJoinServer showServerPopup ={this.props.showServerPopup}/>
+            </div>*/}
 
-        <div id="servers">
-          servers
-          <Servers servers={this.props.servers} redirect={this.props.redirect}/>
-          <CreateJoinServer showServerPopup ={this.props.showServerPopup}/>
+            <div id="friends">
+              Friends
+              <Friends friends={this.props.friends} redirect={this.props.redirect}/> 
+              <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
+            </div>
+          </div>
         </div>
-
-        <div id="friends">
-          Friends
-          <Friends friends={this.props.friends} redirect={this.props.redirect}/> 
-          <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
-        </div>
-
+        
         <div id="dashboard">
 
           {(urlType == 'settings') && 
@@ -50,18 +54,18 @@ class Main extends Component {
             </div>
           }
 
-          {/* don't add html below the sendMessageForm - this comment 
-            can be removed when this fact is more obvious in the future*/}
-
           {(urlType == 'user' || urlType == 'server') && 
             <div id="chat">
               <Messages messages={this.props.messages}/>
               <div id="sendMessageForm">
+
                 <input id="sendMessageInput" onChange={this.props.change} value={this.props.sendMessageInput} type="text" placeholder="Send a message!"/>
                 <button onClick={() => this.props.sendMessage(urlType, urlMessageId)}> Send </button>
+                
                 {(urlType == 'user' &&
                   <button onClick={() => this.props.callUser(urlMessageId)}> Call </button>
                 )}
+
               </div>
             </div>
           }

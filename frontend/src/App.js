@@ -684,7 +684,7 @@ class App extends Component {
               {/* Main page */}
               <Route path="/main/:type/:id" render={({match}) =>
                 this.state.isLoggedIn ? (
-                  <div>
+                  <div id="content">
                     {/* Pop ups */}
                     <div id="popupWrapper">
                       {this.state.showNewFriendPopup &&
@@ -765,8 +765,8 @@ class App extends Component {
           </div>
         </Router>
         {/* Testing Buttons */}
-        <button class = "test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
-        <button class = "test" onClick={()=>{console.table(this.state)}}>log state</button>
+        <button className="test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
+        <button className="test" onClick={()=>{console.table(this.state)}}>log state</button>
       
       </div>
     )
