@@ -9,7 +9,7 @@ import io from 'socket.io-client';
 const axios = require('axios');
 
 //for deploy
-const socket = io('https://' + document.domain);
+const socket = io();
 
 class App extends Component {
   constructor() {
