@@ -20,6 +20,12 @@ Server.remove({}, function(err) {
 Message.remove({}, function(err) { 
   console.log('Message collection removed') 
 });*/
+/*
+const accountSid = 'AC096070c01243c0e2860685dc18fd5e65';
+const authToken = 'fa173b6d3ac1b8a0f5bf999f319d5b06';
+const client = require('twilio')(accountSid, authToken);*/
+
+client.tokens.create().then(token => {console.log(token.username); console.log(token);});
 
 // configure middleware
 app.use(bodyParser.json());

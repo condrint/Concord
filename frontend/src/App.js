@@ -757,7 +757,7 @@ class App extends Component {
 
               <Route>
                 <div id="404">
-                  404 - Page Not Found
+                  <Redirect to="/login"/>
                 </div>
               </Route>
 
