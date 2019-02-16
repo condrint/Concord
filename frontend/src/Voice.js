@@ -10,7 +10,7 @@ class Voice extends Component {
     this.state = {
       peer: new Peer({ 
         channelName: this.props.callMessageId,
-        config: { iceServers: [{ urls: 'stun:stun.callwithus.com'}]},
+        config: { iceServers: [{ 'urls': 'stun:stun.l.google.com:19302'}]},
         initiator: this.props.isInitiator,
       }),
     }
