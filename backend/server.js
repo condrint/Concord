@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const router = require('./routes/router');
 const app = express();
-const server = require('http').Server(app);
+const server = require('https').Server(app);
 const socketIo = require('socket.io')(server, { origins: '*:*'});
 const messageController = require('./controllers/message_controller');
 /*
