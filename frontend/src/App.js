@@ -27,7 +27,7 @@ class App extends Component {
       // login 
       loginUsernameInput: '',
       loginPasswordInput: '',
-      isLoggedIn: true, //keep as true for testing using npm run start
+      isLoggedIn: false, //keep as true for testing using npm run start
 
       // register
       registerUsernameInput: '',
@@ -556,7 +556,7 @@ class App extends Component {
       toggleIcons: !this.state.toggleIcons
     });
   }
-  
+
   componentDidUpdate(){
     console.log('App did update called');
     // when redirect is true, the redirect component will change the URL and rerender the page
