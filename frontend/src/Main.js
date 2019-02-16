@@ -29,10 +29,6 @@ class Main extends Component {
           Settings
           <button onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
         </div>
-        <div id = "scalablemain">
-          <div class="servers">
-            servers
-          </div>
 
         <div id="servers">
           servers
@@ -65,11 +61,10 @@ class Main extends Component {
                 <button onClick={() => this.props.sendMessage(urlType, urlMessageId)}> Send </button>
                 {(urlType == 'user' &&
                   <button onClick={() => this.props.callUser(urlMessageId)}> Call </button>
-            )}
+                )}
               </div>
             </div>
           }
-          </div>
         </div>
       </div>
     )

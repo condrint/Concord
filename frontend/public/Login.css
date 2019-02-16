@@ -63,8 +63,14 @@
     color: white;
 }
 
-div > form{
-    
+#loginForm {
+    height: 25px;
+    width: 375px;
+    margin: 0 auto;
+    display: grid;
+}
+
+#registerForm {
     height: 25px;
     width: 375px;
     margin: 0 auto;
