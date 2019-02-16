@@ -23,9 +23,9 @@ Message.remove({}, function(err) {
 /*
 const accountSid = 'AC096070c01243c0e2860685dc18fd5e65';
 const authToken = 'fa173b6d3ac1b8a0f5bf999f319d5b06';
-const client = require('twilio')(accountSid, authToken);*/
+const client = require('twilio')(accountSid, authToken);
 
-client.tokens.create().then(token => {console.log(token.username); console.log(token);});
+client.tokens.create().then(token => {console.log(token.username); console.log(token);});*/
 
 // configure middleware
 app.use(bodyParser.json());
