@@ -37,7 +37,7 @@ server.listen(port, () => {
 
 // connect to database
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/')
 .then(res => console.log("Connected to DB"))
 .catch(err => console.log(err));
 

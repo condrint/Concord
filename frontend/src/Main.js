@@ -4,6 +4,7 @@ import { Servers } from './Servers.js';
 import { NewFriend } from './NewFriend.js';
 import { CreateJoinServer } from './NewServer';
 import { Messages } from './Messages.js';
+import { Settings } from './Settings.js';
 
 
 class Main extends Component {
@@ -14,7 +15,7 @@ class Main extends Component {
 
   componentDidMount(){
     this.props.getFriends();
-    this.props.getServers();
+    //this.props.getServers();
   }
 
 
@@ -24,36 +25,51 @@ class Main extends Component {
 
     return (
       <div id="main">
-        <div id="settings">
-          Settings
-        </div>
+        <div id="leftColumn">
 
-        <div id="servers">
-          servers
-          <Servers servers={this.props.servers} redirect={this.props.redirect}/>
-          <CreateJoinServer showServerPopup ={this.props.showServerPopup}/>
-        </div>
+          <div id="settings">
+            <button onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
+          </div>
 
-        <div id="friends">
-          Friends
-          <Friends friends={this.props.friends} redirect={this.props.redirect}/> 
-          <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
+          <div id="iconsWrapper">
+            <button onClick={this.props.handleToggleIcons}>Friends / Servers</button>
+            {this.props.toggleIcons ? (
+              <div id="servers">
+                servers
+                <Servers servers={this.props.servers} redirect={this.props.redirect}/>
+                <CreateJoinServer showServerPopup ={this.props.showServerPopup}/>
+              </div>
+            ) : (
+              <div id="friends">
+                Friends
+                <Friends friends={this.props.friends} redirect={this.props.redirect}/> 
+                <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
+              </div>
+            )}
+
+          </div>
         </div>
 
         <div id="dashboard">
 
-          {/* don't add html below the sendMessageForm - this comment 
-            can be removed when this fact is more obvious in the future*/}
+          {(urlType == 'settings') && 
+            <div id="settings">
+              <Settings handleImageChange={this.props.handleImageChange} uploadImage={this.props.uploadImage} image={this.props.image}/>
+            </div>
+          }
 
           {(urlType == 'user' || urlType == 'server') && 
             <div id="chat">
               <Messages messages={this.props.messages}/>
               <div id="sendMessageForm">
-                <input id="sendMessageInput" onChange={this.props.change} type="text" placeholder="Send a message!"/>
+
+                <input id="sendMessageInput" onChange={this.props.change} value={this.props.sendMessageInput} type="text" placeholder="Send a message!"/>
                 <button onClick={() => this.props.sendMessage(urlType, urlMessageId)}> Send </button>
+                
                 {(urlType == 'user' &&
                   <button onClick={() => this.props.callUser(urlMessageId)}> Call </button>
                 )}
+
               </div>
             </div>
           }

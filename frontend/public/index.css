@@ -1,33 +1,84 @@
 body {
   font-family: sans-serif;
+  background-color: #909090;
 }
 
+body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+}
 
-/* Main.js */
+#appWrapper {
+  height: 100%;
+  width: 100%;
+}
 
-#main > div {
-  background-color: grey;
+#routesWrapper {
+  height: 100%;
+  width: 100%;
 }
 
 #main {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: 10% 80%;
-  grid-template-rows: 10% 80%;
-  grid-template-areas: 
-    "settings servers"
-    "friends dashboard";
-  background-color: black;
-  width: 98vw;
-  height: 98vh;
-  grid-auto-rows: 170px;
+  height: 100%;
+  width: 100%;
+}
+
+#content {
+  display: relative;
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
 }
 
 #dashboard {
-  position: relative;
+  display: grid;
+  background-color: blue;
 }
 
-#sendMessageForm {
+#iconsWrapper {
+  height: 100%;
+}
+
+#settings{
+  height: 50px;
+}
+
+#settings > button {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#friends{
+  height: 100%;
+}
+
+#servers{
+  height: 100%;
+}
+
+#leftColumn {
+  background-color: rgb(88, 88, 100);
+  height: 100%;
+  width: 180px;
+}
+
+#dashboard {
   position: absolute;
-  bottom: 0;
+  width: calc(100% - 180px);
+  height: 100%;
+  left: 180px;
+  top: 0px;
+  background-color: rgb(156, 156, 156);
+}
+
+.test {
+  position: absolute;
+  bottom: 100px;
 }
