@@ -13,12 +13,14 @@ router.post('/login', userController.loginUser);
 router.post('/register', userController.registerUser);
 router.post('/newFriend', userController.newFriend);
 router.post('/getFriends', userController.getFriends);
+//router.post('/deletefriend', userController.deletefriend);
 
 router.post('/getMessages', messageController.getMessages);
 
 router.post('/createServer', serverController.createServer);
 router.post('/joinServer', serverController.joinServer);
 router.post('/getMembers', serverController.getMembers);
+//router.post('/deleteServer', serverController.deleteServer);
 
 module.exports = router;
 

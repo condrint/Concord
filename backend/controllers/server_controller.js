@@ -162,6 +162,10 @@ serverController.joinServer = async (req, res) => {
     }
 }
 
-
+serverController.deleteServer = async (req, res) => {
+    //delete server from database
+    //delete server from members' servers list
+    //delete message document associated with server
+}
 
 module.exports = serverController;

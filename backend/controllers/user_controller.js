@@ -1,5 +1,6 @@
 const User = require('../models/user.js');
 const messageController = require('../controllers/message_controller');
+const Message = require('../models/message.js');
 
 const userController = {};
 
@@ -227,6 +228,77 @@ userController.lookUp = async (req, res) => {
     }
 
     return userDocument;
+}
+
+userController.deleteFriend = async (req, res) => {
+    //delete friend from user's friend list
+    //delete user from friend's friend list
+    //delete message document associated with friend
+
+    const { me, friend } = req.body;
+    try{
+        let meDocument = await User.findOne({
+            _id: me
+        });
+
+        let friendDocument = await User.findOne({
+            _id: friend
+        });
+
+        let meToBeDeleted = {
+            friendId: '',
+            username: '',
+            messageId: ''
+        }
+
+        let friendToBeDeleted = {
+            friendId: '',
+            username: '',
+            messageId: ''
+        }
+
+        for (let friend of meDocument.friends){
+            if(friend.friendId == friendDocument._id){
+                friendToBeDeleted = {
+                    friendId: friend.friendId,
+                    username: friend.username,
+                    messageId: friend.messageId
+                }
+                
+            }
+        }
+
+        for (let friend of friendDocument.friends){
+            if(friend.friendId == meDocument._id){
+                meToBeDeleted = {
+                    friendId: friend.friendId,
+                    username: friend.username,
+                    messageId: friend.messageId
+                }
+                
+            }
+        }
+
+        let messageDocument = await Message.findOne({
+            _id: friendToBeDeleted.messageId
+        });
+
+        await meDocument.friends.pull(friendToBeDeleted);
+        await friendDocument.friends.pull(meToBeDeleted);
+        await meDocument.save();
+        await friendDocument.save();
+        await Message.remove(messageDocument);
+
+
+    }
+
+    catch(error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
 }
 
 module.exports = userController;
