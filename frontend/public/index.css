@@ -8,7 +8,7 @@ body {
   width: 100vw;
   margin: 0px;
   padding: 0px;
-  /*overflow: hidden;*/
+  overflow: hidden;
 }
 
 #appWrapper {
@@ -71,7 +71,7 @@ body {
 
 #dashboard {
   position: absolute;
-  width: 100%;
+  width: calc(100% - 180px);
   height: 100%;
   left: 180px;
   top: 0px;
