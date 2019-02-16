@@ -5,18 +5,19 @@ body {
 
 /* Main.js */
 
-/* #main > div {
+#main > div {
   display: grid;
   background-color:gray;
   
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
-} */
-#appWrapper {
-  /* background-color: gray; */
+} 
+
+body {
+  background-color: #909090;
 }
+
 #main {
-  /*
   grid-gap: 10px;
   grid-template-columns: 10% 80%;
   grid-template-rows: 30% 80%;
