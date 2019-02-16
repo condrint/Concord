@@ -44,6 +44,7 @@ class App extends Component {
       sendMessageInput: '',
 
       // main
+      toggleIcons: true,
       friends: [],
       /* friends form ->
         {
@@ -105,6 +106,7 @@ class App extends Component {
     this.endCall = this.endCall.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
+    this.toggleIcons = this.toggleIcons.bind(this);
   }
 
   handleChange = (event) => {
@@ -549,6 +551,12 @@ class App extends Component {
     })
   }
 
+  toggleIcons(){
+    this.setState({
+      toggleIcons: !this.state.toggleIcons
+    });
+  }
+  
   componentDidUpdate(){
     console.log('App did update called');
     // when redirect is true, the redirect component will change the URL and rerender the page
@@ -727,6 +735,8 @@ class App extends Component {
                       handleImageChange={this.handleImageChange}
                       uploadImage={this.uploadImage}
                       image={this.state.image}
+                      toggleIcons={this.state.toggleIcons}
+                      handleToggleIcons={this.toggleIcons}                      
 
                       // content
                       getFriends={this.getFriends}

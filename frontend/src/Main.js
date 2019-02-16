@@ -26,26 +26,30 @@ class Main extends Component {
     return (
       <div id="main">
         <div id="leftColumn">
+
           <div id="settings">
-            Settings
             <button onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
           </div>
-          <div id="iconsWrapper">
-            {/*
-            <div id="servers">
-              servers
-              <Servers servers={this.props.servers} redirect={this.props.redirect}/>
-              <CreateJoinServer showServerPopup ={this.props.showServerPopup}/>
-            </div>*/}
 
-            <div id="friends">
-              Friends
-              <Friends friends={this.props.friends} redirect={this.props.redirect}/> 
-              <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
-            </div>
+          <div id="iconsWrapper">
+            <button onClick={this.props.handleToggleIcons}>Friends / Servers</button>
+            {this.props.toggleIcons ? (
+              <div id="servers">
+                servers
+                <Servers servers={this.props.servers} redirect={this.props.redirect}/>
+                <CreateJoinServer showServerPopup ={this.props.showServerPopup}/>
+              </div>
+            ) : (
+              <div id="friends">
+                Friends
+                <Friends friends={this.props.friends} redirect={this.props.redirect}/> 
+                <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
+              </div>
+            )}
+
           </div>
         </div>
-        
+
         <div id="dashboard">
 
           {(urlType == 'settings') && 

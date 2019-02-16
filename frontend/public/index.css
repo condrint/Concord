@@ -50,6 +50,11 @@ body {
   height: 50px;
 }
 
+#settings > button {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #friends{
   height: 100%;
 }
