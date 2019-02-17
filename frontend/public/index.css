@@ -26,6 +26,15 @@ body {
   width: 100%;
 }
 
+#voiceWrapper {
+  position: absolute;
+  top: 0px;
+  margin: 10px;
+  background-color: rgb(17, 115, 172);
+  left: calc(180px + 25%);
+  right: calc(180px + 75%);
+}
+
 #content {
   display: relative;
   height: 100%;
