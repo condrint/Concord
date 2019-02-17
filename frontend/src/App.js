@@ -667,6 +667,7 @@ class App extends Component {
               </div>
             }
             <Switch>
+
               {/* Login and register page */}
               <Route exact path="/login" render={() => (
                 this.state.isLoggedIn ? (
@@ -693,6 +694,7 @@ class App extends Component {
               <Route path="/main/:type/:id" render={({match}) =>
                 this.state.isLoggedIn ? (
                   <div id="content">
+
                     {/* Pop ups */}
                     <div id="popupWrapper">
                       {this.state.showNewFriendPopup &&
@@ -720,6 +722,22 @@ class App extends Component {
                       }
                     </div>
 
+                    {/* Chat */}
+                    {this.state.inCall && 
+                      <div id="voiceWrapper">
+                        <audio id="voiceChat" controls/>
+                        <Voice 
+                          callParticipant={this.state.callParticipant}
+                          callMessageId={this.state.callMessageId}
+                          isInitiator={this.state.isInitiator}
+                          peerConnectInfo={this.state.peerConnectInfo}
+                          sendDataToReceiver={this.sendDataToReceiver}
+                          removeConnectInfo={this.removeConnectInfo}
+                          endCall={this.endCall}
+                        />
+                      </div>
+                    }
+
                     {/* Main content */}
                     <Main 
                       match={match} 
@@ -745,21 +763,7 @@ class App extends Component {
                       servers={this.state.servers}
                       messages={this.state.currentlyViewedMessages}
                     />
-                    {this.state.inCall && 
-                      <div id="voiceWrapper">
-                        
-                        <audio id="voiceChat" controls/>
-                        <Voice 
-                          callParticipant={this.state.callParticipant}
-                          callMessageId={this.state.callMessageId}
-                          isInitiator={this.state.isInitiator}
-                          peerConnectInfo={this.state.peerConnectInfo}
-                          sendDataToReceiver={this.sendDataToReceiver}
-                          removeConnectInfo={this.removeConnectInfo}
-                          endCall={this.endCall}
-                        />
-                      </div>
-                    }
+
                   </div>
                 ) : (
                   <Redirect to="/login"/>
@@ -774,6 +778,7 @@ class App extends Component {
             </Switch>
           </div>
         </Router>
+
         {/* Testing Buttons */}
         <button className="test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
         <button className="test" onClick={()=>{console.table(this.state)}}>log state</button>

@@ -30,13 +30,22 @@ body {
   position: absolute;
   top: 0px;
   margin: 10px;
+  padding: 10px;
+  z-index: 2;
   background-color: rgb(17, 115, 172);
   left: calc(180px + 25%);
-  right: calc(180px + 75%);
 }
 
+#popupWrapper {
+  position: absolute;
+  top: 0px;
+  margin: 10px;
+  padding: 10px;
+  z-index: 1;
+  background-color: #4e4e4e;
+}
 #content {
-  display: relative;
+  position: relative;
   height: 100%;
   width: 100%;
 }
