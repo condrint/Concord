@@ -47,7 +47,7 @@ userController.registerUser = async (req, res) => {
 userController.loginUser = async (req , res) => {
     const { username, password } = req.body;
     try {   
-        let twilioToken = client.tokens.create();
+        let twilioToken = await client.tokens.create();
 
         let loginUser = await User.findOne({ 
             username: username,
