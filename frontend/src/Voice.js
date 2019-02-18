@@ -13,7 +13,7 @@ class Voice extends Component {
       peer: new Peer({ 
         channelName: this.props.callMessageId,
         config: { 
-          iceServers: this.props.token.iceServers[1]
+          iceServers: [this.props.token.iceServers[1]]
         },
         initiator: this.props.isInitiator,
       }),
