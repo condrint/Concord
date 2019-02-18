@@ -7,6 +7,8 @@ class Voice extends Component {
   constructor(props) {
     super(props);
 
+    console.log(this.props.token);
+
     this.state = {
       peer: new Peer({ 
         channelName: this.props.callMessageId,
@@ -14,7 +16,7 @@ class Voice extends Component {
           iceServers: [{ 
             url: 'turn:global.turn.twilio.com:3478?transport=udp',
             username: this.props.token.username,
-            credential: this.props.token.credential 
+            credential: this.props.token.password 
           }]
         },
         initiator: this.props.isInitiator,
