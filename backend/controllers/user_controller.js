@@ -8,11 +8,6 @@ require('dotenv').load();
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_TOKEN;
 const client = require('twilio')(accountSid, authToken);
-var twilioToken = {};
-client.tokens.create().then(token => {
-    twilioToken = token;
-    console.log(token);
-});
 
 const cloud_name = process.env.CLOUD_NAME;
 const api_key = process.env.API_KEY;
@@ -52,6 +47,8 @@ userController.registerUser = async (req, res) => {
 userController.loginUser = async (req , res) => {
     const { username, password } = req.body;
     try {   
+        let twilioToken = client.tokens.create();
+
         let loginUser = await User.findOne({ 
             username: username,
             password: password,
