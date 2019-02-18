@@ -77,6 +77,7 @@ class App extends Component {
       callMessageId: '',
       isInitiator: false,
       peerConnectInfo: {},
+      token: {},
     }
     
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
@@ -223,6 +224,7 @@ class App extends Component {
           isLoggedIn: loginResult.data.success,
           me: loginResult.data.me,
           myUsername: loginResult.data.myUsername,
+          token: loginResult.data.token,
         });
         
         socket.emit('newClient', {
@@ -734,6 +736,7 @@ class App extends Component {
                           sendDataToReceiver={this.sendDataToReceiver}
                           removeConnectInfo={this.removeConnectInfo}
                           endCall={this.endCall}
+                          token={this.state.token}
                         />
                       </div>
                     }

@@ -4,6 +4,11 @@ const cloudinary = require('cloudinary');
 const Datauri = require('datauri');
 
 require('dotenv').load();
+
+const accountSid = process.env.TWILIO_SID;
+const authToken = process.env.TWILIO_TOKEN;
+const client = require('twilio')(accountSid, authToken);
+
 const cloud_name = process.env.CLOUD_NAME;
 const api_key = process.env.API_KEY;
 const api_secret = process.env.API_SECRET;
@@ -42,6 +47,8 @@ userController.registerUser = async (req, res) => {
 userController.loginUser = async (req , res) => {
     const { username, password } = req.body;
     try {
+        let token = await client.tokens.create();
+
         let loginUser = await User.findOne({ 
             username: username,
             password: password,
@@ -52,6 +59,7 @@ userController.loginUser = async (req , res) => {
                 success: true,
                 me: loginUser._id,
                 myUsername: loginUser.username,
+                token: token,
                 message: 'Logged in.',
             })
         }
