@@ -15,8 +15,8 @@ class Voice extends Component {
         config: { 
           iceServers: [{ 
             url: 'turn:global.turn.twilio.com:3478?transport=udp',
-            username: 'b7d2ff731be6158fc6b01acc98719642b001893735d87240d1400e3f25c40c89',
-            credential: 'sIslXUdF1j3jRmy3+ymIujZRfM4T6zs9q5aXaaTqaKc='
+            username: this.props.token.username,
+            credential: this.props.token.password
           }]
         },
         initiator: this.props.isInitiator,
