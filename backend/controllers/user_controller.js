@@ -8,7 +8,8 @@ require('dotenv').load();
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_TOKEN;
 const client = require('twilio')(accountSid, authToken);
-var token = client.tokens.create();
+var twilioToken = {};
+client.tokens.create().then(token => {twilioToken = token; console.log(token);});
 
 const cloud_name = process.env.CLOUD_NAME;
 const api_key = process.env.API_KEY;
@@ -59,7 +60,7 @@ userController.loginUser = async (req , res) => {
                 success: true,
                 me: loginUser._id,
                 myUsername: loginUser.username,
-                token: token,
+                token: twilioToken,
                 message: 'Logged in.',
             })
         }
