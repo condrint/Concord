@@ -141,11 +141,11 @@ class App extends Component {
     const formData = new FormData()
     formData.append('image', image);
 
-    console.log(formData);
+    const url = '/api/uploadImage/' + this.state.me + '/'
 
     try{
       let uploadImageResult = await axios.post(
-        '/api/uploadImage/', 
+        url, 
         formData,
         {
           headers: {
@@ -155,11 +155,12 @@ class App extends Component {
         }
       )
 
-      if (uploadImageResult.success){
-        alert(uploadImageResult.message);
+      console.log(uploadImageResult);
+      if (uploadImageResult.data.success){
+        alert(uploadImageResult.data.message);
       }
       else{
-        alert(uploadImageResult.message);
+        alert(uploadImageResult.data.message);
       }
     }
 
@@ -170,7 +171,6 @@ class App extends Component {
     this.setState({
       image: null
     })
-    console.log(image);
   }
 
   handleRegisterSubmit = async (event) => {
