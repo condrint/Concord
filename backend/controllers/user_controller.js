@@ -265,7 +265,7 @@ userController.uploadImage = async (req, res) => {
         uploadResult = await cloudinary.uploader.upload(datauri.content, {});
         const urlForImage = uploadResult.secure_url;
         const [url1, url2] = urlForImage.split('upload');
-        const croppedUrl = url1 + 'upload/w_400,h_400,c_crop,g_face,r_max/w_200' + url2;
+        const croppedUrl = url1 + 'upload/h_200,w_200' + url2;
         
         let userDocument = await User.findById(me);
         userDocument.avatarUrl = croppedUrl;
