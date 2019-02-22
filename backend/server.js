@@ -55,10 +55,22 @@ socketIo.on('connection', function(socket){
 
   socket.on('newClient', (data) => {
     const clientId = data.id;
-    clients[clientId] = socket.id;
+    clients[clientId] = socket.id.toString();
+  });
+
+  socket.on('disconnect', () => {
+    for (let client in clients){
+      if (clients[client] == socket.id){
+        delete clients[client];
+        return;
+      }
+    }
   });
 
   socket.on('messageToServer', async (data) => {
+
+    console.log(clients);
+
     const message = data.message;
     const senderId = data.senderId;
     const senderUsername = data.senderUsername;
@@ -77,12 +89,15 @@ socketIo.on('connection', function(socket){
         });
       }
       else{
-        console.log('trying to emit to client');
-        const chatRoom = messageId;
-        socketIo.emit('messageToClient', {
-          message: messageEntry,
-          messageId: messageId,
-        });
+        const participants = await messageController.findParticipants(messageId);
+        for (let participantId of participants){
+          socketIo.to(clients[participantId]).emit('messageToClient', {
+            message: messageEntry,
+            messageId: messageId,
+          });
+        }
+
+
       }
     }
 
