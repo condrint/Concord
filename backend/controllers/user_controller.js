@@ -1,6 +1,24 @@
 const User = require('../models/user.js');
 const messageController = require('../controllers/message_controller');
 const Message = require('../models/message.js');
+const cloudinary = require('cloudinary');
+const Datauri = require('datauri');
+
+require('dotenv').load();
+
+const accountSid = process.env.TWILIO_SID;
+const authToken = process.env.TWILIO_TOKEN;
+const client = require('twilio')(accountSid, authToken);
+
+const cloud_name = process.env.CLOUD_NAME;
+const api_key = process.env.API_KEY;
+const api_secret = process.env.API_SECRET;
+
+cloudinary.config({ 
+    cloud_name: cloud_name, 
+    api_key: api_key, 
+    api_secret: api_secret
+});
 
 const userController = {};
 
@@ -29,7 +47,9 @@ userController.registerUser = async (req, res) => {
 
 userController.loginUser = async (req , res) => {
     const { username, password } = req.body;
-    try {
+    try {   
+        let twilioToken = await client.tokens.create();
+
         let loginUser = await User.findOne({ 
             username: username,
             password: password,
@@ -40,6 +60,7 @@ userController.loginUser = async (req , res) => {
                 success: true,
                 me: loginUser._id,
                 myUsername: loginUser.username,
+                token: twilioToken,
                 message: 'Logged in.',
             })
         }
@@ -90,7 +111,8 @@ convertToClientFriendObjects = (friends) => {
         let friendObject = {
             messageId: friend.messageId,
             friendId: friend.friendId,
-            username: friend.username
+            username: friend.username,
+            avatarUrl: friend.avatarUrl
         }
         listOfFriendObjects.push(friendObject);
     }
@@ -182,7 +204,8 @@ userController.newFriend = async (req, res) => {
         let newFriendEntry = {
             friendId: newFriendID,
             username: newFriendUsername,
-            messageId: newMessageId
+            messageId: newMessageId,
+            avatarUrl: newFriendDocument.avatarUrl
         }
 
         meDocument.friends.push(newFriendEntry);
@@ -192,7 +215,8 @@ userController.newFriend = async (req, res) => {
         let meAsFriend = {
             friendId: meDocument._id,
             username: meDocument.username,
-            messageId: newMessageId
+            messageId: newMessageId,
+            avatarUrl: meDocument.avatarUrl
         }
 
         newFriendDocument.friends.push(meAsFriend);
@@ -302,8 +326,36 @@ userController.deleteFriend = async (req, res) => {
 }
 
 userController.uploadImage = async (req, res) => {
-    const { image } = req.file
-    console.log(image);
+    const image = req.file;
+    const me = req.params.id;
+    
+    const datauri = new Datauri();
+    datauri.format('.jpeg', image.buffer);
+    
+
+    try{
+        uploadResult = await cloudinary.uploader.upload(datauri.content, {});
+        const urlForImage = uploadResult.secure_url;
+        const [url1, url2] = urlForImage.split('upload');
+        const croppedUrl = url1 + 'upload/h_200,w_200' + url2;
+        
+        let userDocument = await User.findById(me);
+        userDocument.avatarUrl = croppedUrl;
+        userDocument.save();
+
+        return res.status(200).json({
+            success: true,
+            url: croppedUrl,
+            message: "Avatar updated"
+        });
+    }
+    catch(error){
+        console.log(error);
+        return res.status(200).json({
+            success: false,
+            message: "Error uploading image.",
+         });
+    }
     
 }
 

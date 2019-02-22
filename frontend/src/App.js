@@ -77,6 +77,7 @@ class App extends Component {
       callMessageId: '',
       isInitiator: false,
       peerConnectInfo: {},
+      token: {},
     }
     
     this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
@@ -141,11 +142,11 @@ class App extends Component {
     const formData = new FormData()
     formData.append('image', image);
 
-    console.log(formData);
+    const url = '/api/uploadImage/' + this.state.me + '/'
 
     try{
       let uploadImageResult = await axios.post(
-        '/api/uploadImage/', 
+        url, 
         formData,
         {
           headers: {
@@ -155,11 +156,12 @@ class App extends Component {
         }
       )
 
-      if (uploadImageResult.success){
-        alert(uploadImageResult.message);
+      console.log(uploadImageResult);
+      if (uploadImageResult.data.success){
+        alert(uploadImageResult.data.message);
       }
       else{
-        alert(uploadImageResult.message);
+        alert(uploadImageResult.data.message);
       }
     }
 
@@ -170,7 +172,6 @@ class App extends Component {
     this.setState({
       image: null
     })
-    console.log(image);
   }
 
   handleRegisterSubmit = async (event) => {
@@ -223,6 +224,7 @@ class App extends Component {
           isLoggedIn: loginResult.data.success,
           me: loginResult.data.me,
           myUsername: loginResult.data.myUsername,
+          token: loginResult.data.token,
         });
         
         socket.emit('newClient', {
@@ -667,6 +669,7 @@ class App extends Component {
               </div>
             }
             <Switch>
+
               {/* Login and register page */}
               <Route exact path="/login" render={() => (
                 this.state.isLoggedIn ? (
@@ -693,6 +696,7 @@ class App extends Component {
               <Route path="/main/:type/:id" render={({match}) =>
                 this.state.isLoggedIn ? (
                   <div id="content">
+
                     {/* Pop ups */}
                     <div id="popupWrapper">
                       {this.state.showNewFriendPopup &&
@@ -720,6 +724,23 @@ class App extends Component {
                       }
                     </div>
 
+                    {/* Chat */}
+                    {this.state.inCall && 
+                      <div id="voiceWrapper">
+                        <audio id="voiceChat" controls/>
+                        <Voice 
+                          callParticipant={this.state.callParticipant}
+                          callMessageId={this.state.callMessageId}
+                          isInitiator={this.state.isInitiator}
+                          peerConnectInfo={this.state.peerConnectInfo}
+                          sendDataToReceiver={this.sendDataToReceiver}
+                          removeConnectInfo={this.removeConnectInfo}
+                          endCall={this.endCall}
+                          token={this.state.token}
+                        />
+                      </div>
+                    }
+
                     {/* Main content */}
                     <Main 
                       match={match} 
@@ -745,21 +766,7 @@ class App extends Component {
                       servers={this.state.servers}
                       messages={this.state.currentlyViewedMessages}
                     />
-                    {this.state.inCall && 
-                      <div id="voiceWrapper">
-                        
-                        <audio id="voiceChat" controls/>
-                        <Voice 
-                          callParticipant={this.state.callParticipant}
-                          callMessageId={this.state.callMessageId}
-                          isInitiator={this.state.isInitiator}
-                          peerConnectInfo={this.state.peerConnectInfo}
-                          sendDataToReceiver={this.sendDataToReceiver}
-                          removeConnectInfo={this.removeConnectInfo}
-                          endCall={this.endCall}
-                        />
-                      </div>
-                    }
+
                   </div>
                 ) : (
                   <Redirect to="/login"/>
@@ -774,6 +781,7 @@ class App extends Component {
             </Switch>
           </div>
         </Router>
+
         {/* Testing Buttons */}
         <button className="test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
         <button className="test" onClick={()=>{console.table(this.state)}}>log state</button>
