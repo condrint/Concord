@@ -1,10 +1,7 @@
 const User = require('../models/user.js');
 const messageController = require('../controllers/message_controller');
-<<<<<<< HEAD
 const Message = require('../models/message.js');
 
-=======
->>>>>>> 7c27096881a8bdf6ae5cdffda880039e19f7ecec
 const userController = {};
 
 userController.registerUser = async (req, res) => {
@@ -233,7 +230,6 @@ userController.lookUp = async (req, res) => {
     return userDocument;
 }
 
-<<<<<<< HEAD
 userController.deleteFriend = async (req, res) => {
     //delete friend from user's friend list
     //delete user from friend's friend list
@@ -305,8 +301,6 @@ userController.deleteFriend = async (req, res) => {
     }
 }
 
-module.exports = userController;
-=======
 userController.uploadImage = async (req, res) => {
     const { image } = req.file
     console.log(image);
@@ -314,4 +308,3 @@ userController.uploadImage = async (req, res) => {
 }
 
 module.exports = userController;
->>>>>>> 7c27096881a8bdf6ae5cdffda880039e19f7ecec

@@ -166,6 +166,36 @@ serverController.deleteServer = async (req, res) => {
     //delete server from database
     //delete server from members' servers list
     //delete message document associated with server
+
+    const { server } = req.body;
+    try{
+        let serverDocument = await Server.findOne({
+            _id: server
+        });
+
+        let messageDocument = await Message.findOne({
+            _id: serverDocument.messageId
+        });
+
+        for (let member of serverDocument.members){
+            let memberDocument = await User.findOne({
+                _id: member
+            });
+
+            await memberDocument.servers.pull(serverDocument._id);
+            await memberDocument.save();
+        }
+
+        await Message.remove(messageDocument);
+    }
+
+    catch(error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
 }
 
 module.exports = serverController;
