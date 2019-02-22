@@ -313,12 +313,15 @@ userController.deleteFriend = async (req, res) => {
         await friendDocument.save();
         await Message.remove(messageDocument);
 
-
+        return res.status(200).json({
+            success: true,
+            message: "Friend deleted"
+        });
     }
 
     catch(error) {
         console.log(error);
-        return res.status(500).json({
+        return res.status(200).json({
             success: false,
             message: error.message,
         });

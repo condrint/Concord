@@ -12,8 +12,7 @@ router.post('/login', userController.loginUser);
 router.post('/register', userController.registerUser);
 router.post('/newFriend', userController.newFriend);
 router.post('/getFriends', userController.getFriends);
-router.post('/deletefriend', userController.deletefriend);
-router.post('/uploadImage',  upload.single('image'), userController.uploadImage);
+router.post('/deletefriend', userController.deleteFriend);
 router.post('/uploadImage/:id',  upload.single('image'), userController.uploadImage);
 
 router.post('/getMessages', messageController.getMessages);
