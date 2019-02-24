@@ -1,3 +1,4 @@
+const socketFunctions = require('../server.js');
 const User = require('../models/user.js');
 const messageController = require('../controllers/message_controller');
 const Message = require('../models/message.js');
@@ -38,7 +39,7 @@ userController.registerUser = async (req, res) => {
     
     catch(error) {
         console.log(error);
-        return res.status(500).json({
+        return res.status(200).json({
             success: false,
             message: error.message,
         })
@@ -209,7 +210,7 @@ userController.newFriend = async (req, res) => {
         }
 
         meDocument.friends.push(newFriendEntry);
-        meDocument.save();
+        await meDocument.save();
 
         //updating user into the friend's friend-list
         let meAsFriend = {
@@ -220,9 +221,10 @@ userController.newFriend = async (req, res) => {
         }
 
         newFriendDocument.friends.push(meAsFriend);
-        newFriendDocument.save();
+        await newFriendDocument.save();
 
-        console.log(meDocument.friends);
+        socketFunctions.refreshUsersFriends(newFriendID);
+
         return res.status(200).json({
             success: true,
             message: 'Friend added',
@@ -343,8 +345,14 @@ userController.uploadImage = async (req, res) => {
         const croppedUrl = url1 + 'upload/h_200,w_200' + url2;
         
         let userDocument = await User.findById(me);
-        userDocument.avatarUrl = croppedUrl;
-        userDocument.save();
+        console.log(userDocument);
+        userDocument.avatarUrl = croppedUrl.toString();
+        await userDocument.save();
+        console.log(userDocument);
+
+        for (let friend of userDocument.friends){
+            socketFunctions.refreshUsersFriends(friend.friendId);
+        }
 
         return res.status(200).json({
             success: true,

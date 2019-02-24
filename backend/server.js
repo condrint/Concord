@@ -68,9 +68,6 @@ socketIo.on('connection', function(socket){
   });
 
   socket.on('messageToServer', async (data) => {
-
-    console.log(clients);
-
     const message = data.message;
     const senderId = data.senderId;
     const senderUsername = data.senderUsername;
@@ -170,3 +167,9 @@ socketIo.on('connection', function(socket){
     });
   })
 });
+
+exports.refreshUsersFriends = (userId) => {
+  console.log('emitting to refresh');
+  socketIo.to(clients[userId]).emit('refreshFriends');
+}
+

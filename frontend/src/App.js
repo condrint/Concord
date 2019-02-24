@@ -596,6 +596,10 @@ class App extends Component {
         this.updateCurrentlyViewedMessages(messageId)
       }
     });
+    
+    socket.on('refreshFriends', () => {
+      this.getFriends();
+    });
 
     socket.on('callPermission', (data) => {
       const initiator = data.initiator;
