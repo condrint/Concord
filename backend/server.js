@@ -143,7 +143,7 @@ socketIo.on('connection', function(socket){
         socketIo.emit('callPermission', {
           initiator: initiator,
           receiver: receiver,
-          messageId: messageIdToLookupReceiver
+          messageId: messageId
         });
       }
     }
