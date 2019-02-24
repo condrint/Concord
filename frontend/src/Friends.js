@@ -11,7 +11,7 @@ class Friends extends Component {
       <ul>
         { this.props.friends && this.props.friends.map((friend, index) => 
           <li key={index} onClick={() => {this.props.redirect('user', friend.messageId)}}> 
-            <button>
+            <button style={{backgroundColor: friend.online ? 'green' : 'red'}}>
               <img src={friend.avatarUrl}/>
               {friend.username}
             </button>

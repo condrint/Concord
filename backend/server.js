@@ -57,13 +57,21 @@ socketIo.on('connection', function(socket){
   socket.on('newClient', (data) => {
     const clientId = data.id;
     clients[clientId] = socket.id.toString();
+    socketIo.emit('userOnlineStatus', {
+      newUser: clientId,
+      onlineStatus: true,
+    })
   });
 
   socket.on('disconnect', () => {
     for (let client in clients){
       if (clients[client] == socket.id){
         delete clients[client];
-        return;
+        socketIo.emit('userOnlineStatus', {
+          newUser: client,
+          onlineStatus: false,
+        })
+        break;
       }
     }
   });
@@ -173,4 +181,13 @@ exports.refreshUsersFriends = (userId) => {
   console.log('emitting to refresh');
   socketIo.to(clients[userId]).emit('refreshFriends');
 }
+
+exports.getOnlineUsers = () => {
+  onlineUsers = []
+  for (let client in clients){
+    onlineUsers.push(client);
+  }
+  return onlineUsers;
+} 
+
 

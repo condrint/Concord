@@ -88,6 +88,19 @@ userController.getFriends = async (req, res) => {
         let meDocument = await User.findById(me);
         let listOfFriendObjects = convertToClientFriendObjects(meDocument.friends);
 
+        let onlineUsers = socketFunctions.getOnlineUsers();
+        for (let friend of listOfFriendObjects){
+            for (let onlineUser of onlineUsers){
+                if (onlineUser == friend.friendId){
+                    friend['online'] = true;
+                    break;
+                }
+            }
+            if (!friend['online']){
+                friend['online'] = false;
+            }
+        }
+
         return res.status(200).json({
             success: true,
             message: 'Friends got.',
@@ -270,13 +283,15 @@ userController.deleteFriend = async (req, res) => {
         let meToBeDeleted = {
             friendId: '',
             username: '',
-            messageId: ''
+            messageId: '',
+            avatarUrl: '',
         }
 
         let friendToBeDeleted = {
             friendId: '',
             username: '',
-            messageId: ''
+            messageId: '',
+            avatarUrl: '',
         }
 
         for (let friend of meDocument.friends){
@@ -284,7 +299,8 @@ userController.deleteFriend = async (req, res) => {
                 friendToBeDeleted = {
                     friendId: friend.friendId,
                     username: friend.username,
-                    messageId: friend.messageId
+                    messageId: friend.messageId,
+                    avatarUrl: friend.avatarUrl,
                 }
                 
             }
@@ -295,7 +311,8 @@ userController.deleteFriend = async (req, res) => {
                 meToBeDeleted = {
                     friendId: friend.friendId,
                     username: friend.username,
-                    messageId: friend.messageId
+                    messageId: friend.messageId,
+                    avatarUrl: friend.avatarUrl,
                 }
                 
             }
@@ -310,6 +327,9 @@ userController.deleteFriend = async (req, res) => {
         await meDocument.save();
         await friendDocument.save();
         await Message.remove(messageDocument);
+
+        socketFunctions.refreshUsersFriends(friendDocument._id);
+        socketFunctions.refreshUsersFriends(meDocument._id);
 
         return res.status(200).json({
             success: true,

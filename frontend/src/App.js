@@ -50,7 +50,9 @@ class App extends Component {
         {
           messageId,
           friendId,
-          username
+          username,
+          avatarUrl,
+          online
         }
        */
       servers: [],
@@ -111,7 +113,6 @@ class App extends Component {
   }
 
   handleChange = (event) => {
-    console.log(event.target.id, event.target.value);
     this.setState({
       [event.target.id]: event.target.value
     });
@@ -119,7 +120,6 @@ class App extends Component {
 
   handleImageChange = (event) => {
     event.preventDefault();
-    console.log(event.target);
     this.setState({
       image: event.target.files[0]
     });
@@ -127,7 +127,6 @@ class App extends Component {
 
   uploadImage = async () => {
     const image = this.state.image;
-    console.log(image)
 
     if (!image){
       alert('No image selected.');
@@ -156,7 +155,6 @@ class App extends Component {
         }
       )
 
-      console.log(uploadImageResult);
       if (uploadImageResult.data.success){
         alert(uploadImageResult.data.message);
       }
@@ -245,7 +243,6 @@ class App extends Component {
   }
   
   clearUsernameAndPasswordFields(){
-    console.log(' i got called ')
     this.setState({
       registerPasswordInput: '',
       registerUsernameInput: '',
@@ -367,8 +364,6 @@ class App extends Component {
   }
 
   async getFriends(){
-    console.log('getFriends');
-
     let me = this.state.me;
     
     try{
@@ -391,7 +386,6 @@ class App extends Component {
   }
 
   async getServers(){
-    console.log('getServers');
 
     let me = this.state.me;
 
@@ -415,7 +409,6 @@ class App extends Component {
   }
 
   redirect(type, ID){
-    console.log('redirect');
     let path = '/main/' + type + '/' +  ID;
     this.setState({
       redirect: true,
@@ -426,7 +419,6 @@ class App extends Component {
   }
 
   sendMessage(type, messageId){
-    console.log('sendMessage');
     if (type != 'server' && type != 'user'){
       alert("You can only send a message to a user or a server.")
       return;
@@ -452,7 +444,6 @@ class App extends Component {
   }
 
   updateCurrentlyViewedMessages(messageId){
-    console.log('getCurrentlyViewedMessages');
     let currentMessages = this.state.messages;
     let currentlyViewedMessages = []
       
@@ -469,7 +460,6 @@ class App extends Component {
   }
 
   async getMessages (messageId){
-    console.log('getMessages');
     let currentMessages = this.state.messages;
     for (let messageObject of currentMessages){
       if (messageObject.messageId == messageId){
@@ -527,7 +517,6 @@ class App extends Component {
   }
 
   callPermissionResponse(permission){
-    console.log(permission);
     this.setState({
       showCallPopup: false,
     })
@@ -560,7 +549,6 @@ class App extends Component {
   }
 
   componentDidUpdate(){
-    console.log('App did update called');
     // when redirect is true, the redirect component will change the URL and rerender the page
     // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
     if (this.state.redirect && (this.state.redirectType == 'server' || this.state.redirectType == 'user')){
@@ -577,7 +565,6 @@ class App extends Component {
 
   componentDidMount(){
     socket.on('messageToClient', (data) => {
-      console.log('client received message')
       let messageId = data.messageId;
       let newMessage = data.message;
       let currentMessages = this.state.messages;
@@ -659,6 +646,23 @@ class App extends Component {
       this.setState({
         peerConnectInfo: data.peerConnectInfo
       })
+    });
+
+    socket.on('userOnlineStatus', (data) => {
+      let friends = this.state.friends;
+      let user = data.newUser;
+      let onlineStatus = data.onlineStatus;
+
+      for (let friend of friends){
+        if (friend.friendId == user){
+          friend['online'] = onlineStatus;
+        }
+        break;
+      }
+
+      this.setState({
+        friends: friends
+      });
     });
   }
 
