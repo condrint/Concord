@@ -116,14 +116,14 @@ socketIo.on('connection', function(socket){
 
   socket.on('initiateCall', async (data) => {
     const initiator = data.initiator;
-    const messageIdToLookupReceiver = data.messageId;
+    const messageId = data.messageId;
 
     // look up receiver by seeing the other userId with the associated messageId
     // this 100% could be avoided by smarter clientside code
     try {
       console.log('new call');
 
-      const participants = await messageController.findOtherParticipant(messageIdToLookupReceiver, initiator);
+      const participants = await messageController.findParticipants(messageId);
       
       if (initiator == participants[0]){
         receiver = participants[1];
