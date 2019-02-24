@@ -129,7 +129,7 @@ socketIo.on('connection', function(socket){
         receiver = participants[1];
       }
       else {
-        receiver = particpants[0];
+        receiver = participants[0];
       }
 
       if (!receiver){
