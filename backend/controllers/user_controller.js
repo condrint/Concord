@@ -27,9 +27,8 @@ userController.registerUser = async (req, res) => {
     const { username, password } = req.body;
     const newUser = new User({username, password});
     try {
-        console.log(newUser._id);
-        
-        let registeredUser = await newUser.save(); 
+        newUser.avatarUrl = 'https://res.cloudinary.com/hu51ij26o/image/upload/h_200,w_200/v1550456252/ioivickyj0denrhwj2wp.jpg';
+        await newUser.save(); 
         return res.status(201).json({
             success: true,
             message: 'Registration successful!',
@@ -87,7 +86,6 @@ userController.getFriends = async (req, res) => {
     const { me } = req.body;
     try {
         let meDocument = await User.findById(me);
-        
         let listOfFriendObjects = convertToClientFriendObjects(meDocument.friends);
 
         return res.status(200).json({
@@ -157,7 +155,7 @@ convertToClientServerObjects = (servers) => {
 userController.newFriend = async (req, res) => {
     try{
         const { newFriend, me } = req.body;
-
+        
         let newFriendDocument = await User.findOne({ 
             username: newFriend,
         });
@@ -178,11 +176,9 @@ userController.newFriend = async (req, res) => {
                 message: "You can't add yourself.",
             });
         };
-
-        let meDocument = await User.findOne({
-            _id: me,
-        });
         
+        let meDocument = await User.findById(me);
+
         for (let friend of meDocument.friends){
             if(friend.friendId == newFriendID){
                 return res.status(200).json({
@@ -337,7 +333,6 @@ userController.uploadImage = async (req, res) => {
     const datauri = new Datauri();
     datauri.format('.jpeg', image.buffer);
     
-
     try{
         uploadResult = await cloudinary.uploader.upload(datauri.content, {});
         const urlForImage = uploadResult.secure_url;
@@ -345,15 +340,25 @@ userController.uploadImage = async (req, res) => {
         const croppedUrl = url1 + 'upload/h_200,w_200' + url2;
         
         let userDocument = await User.findById(me);
-        console.log(userDocument);
+        
         userDocument.avatarUrl = croppedUrl.toString();
         await userDocument.save();
-        console.log(userDocument);
-
+        console.log(croppedUrl);
         for (let friend of userDocument.friends){
+            // this query is bad for making this app scale to lots of users but is okay for here...
+            // the solution is maybe to make another "friends model" where each document in it represents a connection between two users,
+            // exactly like how messages works
+            let friendDocument = await User.findById(friend.friendId);
+            for (let friendOfFriend of friendDocument.friends){
+                if (friendOfFriend.friendId == me){
+                    friendOfFriend.avatarUrl = croppedUrl;
+                    console.log(friendDocument)
+                    break;
+                }
+            }
+            friendDocument.save();
             socketFunctions.refreshUsersFriends(friend.friendId);
         }
-
         return res.status(200).json({
             success: true,
             url: croppedUrl,

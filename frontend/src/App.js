@@ -373,7 +373,7 @@ class App extends Component {
     
     try{
       let friendsResult = await axios.post('/api/getFriends', {
-        me: me
+        me: me,
       });
 
       if (friendsResult.data.success){
@@ -596,7 +596,7 @@ class App extends Component {
         this.updateCurrentlyViewedMessages(messageId)
       }
     });
-    
+
     socket.on('refreshFriends', () => {
       this.getFriends();
     });

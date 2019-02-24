@@ -22,6 +22,7 @@ Message.remove({}, function(err) {
   console.log('Message collection removed') 
 });*/
 
+
 // configure middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true }));

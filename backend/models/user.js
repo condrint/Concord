@@ -21,7 +21,6 @@ var userSchema = new Schema({
     servers: [{servername: String}],
     avatarUrl: {
         type: String,
-        default: 'https://res.cloudinary.com/hu51ij26o/image/upload/h_200,w_200/v1550456252/ioivickyj0denrhwj2wp.jpg' //doggy
     },
 })
 
