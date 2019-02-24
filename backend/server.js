@@ -123,13 +123,21 @@ socketIo.on('connection', function(socket){
     try {
       console.log('new call');
 
-      const receiver = await messageController.findOtherParticipant(messageIdToLookupReceiver, initiator);
+      const participants = await messageController.findOtherParticipant(messageIdToLookupReceiver, initiator);
       
+      if (initiator == participants[0]){
+        receiver = participants[1];
+      }
+      else {
+        receiver = particpants[0];
+      }
+
       if (!receiver){
         socket.emit('messageToClientError', {
           error: 'Could not call user.',
         });
       }
+
       else{
         console.log('trying to call client');
         socketIo.emit('callPermission', {
