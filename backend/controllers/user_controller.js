@@ -33,7 +33,6 @@ userController.registerUser = async (req, res) => {
             success: true,
             message: 'Registration successful!',
         })
-
     } 
     
     catch(error) {
@@ -270,66 +269,23 @@ userController.deleteFriend = async (req, res) => {
     //delete user from friend's friend list
     //delete message document associated with friend
 
-    const { me, friend } = req.body;
+    const { me, friend, messageId } = req.body;
     try{
-        let meDocument = await User.findOne({
-            _id: me
-        });
+        let meDocument = await User.findById(me);
+        let friendDocument = await User.findById(friend);
 
-        let friendDocument = await User.findOne({
-            _id: friend
-        });
-
-        let meToBeDeleted = {
-            friendId: '',
-            username: '',
-            messageId: '',
-            avatarUrl: '',
-        }
-
-        let friendToBeDeleted = {
-            friendId: '',
-            username: '',
-            messageId: '',
-            avatarUrl: '',
-        }
-
-        for (let friend of meDocument.friends){
-            if(friend.friendId == friendDocument._id){
-                friendToBeDeleted = {
-                    friendId: friend.friendId,
-                    username: friend.username,
-                    messageId: friend.messageId,
-                    avatarUrl: friend.avatarUrl,
-                }
-                
-            }
-        }
-
-        for (let friend of friendDocument.friends){
-            if(friend.friendId == meDocument._id){
-                meToBeDeleted = {
-                    friendId: friend.friendId,
-                    username: friend.username,
-                    messageId: friend.messageId,
-                    avatarUrl: friend.avatarUrl,
-                }
-                
-            }
-        }
-
-        let messageDocument = await Message.findOne({
-            _id: friendToBeDeleted.messageId
-        });
-
-        await meDocument.friends.pull(friendToBeDeleted);
-        await friendDocument.friends.pull(meToBeDeleted);
+        let friends = meDocument.friends;
+        meDocument.friends = friends.filter(friendObject => friendObject.friendId != friend);
         await meDocument.save();
-        await friendDocument.save();
-        await Message.remove(messageDocument);
 
-        socketFunctions.refreshUsersFriends(friendDocument._id);
-        socketFunctions.refreshUsersFriends(meDocument._id);
+        friends = friendDocument.friends;
+        friendDocument.friends = friends.filter(friendObject => friendObject.friendId != me);
+        await friendDocument.save();
+        
+        await Message.findByIdAndDelete(messageId);
+
+        socketFunctions.refreshUsersFriends(me);
+        socketFunctions.refreshUsersFriends(friend);
 
         return res.status(200).json({
             success: true,

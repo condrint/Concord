@@ -42,7 +42,7 @@ class Main extends Component {
             ) : (
               <div id="friends">
                 Friends
-                <Friends friends={this.props.friends} redirect={this.props.redirect}/> 
+                <Friends friends={this.props.friends} redirect={this.props.redirect} deleteFriend={this.props.deleteFriend}/> 
                 <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
               </div>
             )}

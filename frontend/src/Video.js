@@ -57,8 +57,13 @@ class Video extends Component {
   }
 
   componentWillUnmount(){
-    this.state.peer.send('destroy')
-    this.state.peer.destroy();
+    try{
+        this.state.peer.send('destroy')
+        this.state.peer.destroy();
+    }
+    catch(error){
+        return;
+    }
   }
 
   render() {

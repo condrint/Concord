@@ -112,6 +112,7 @@ class App extends Component {
     this.uploadImage = this.uploadImage.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
     this.toggleIcons = this.toggleIcons.bind(this);
+    this.deleteFriend = this.deleteFriend.bind(this);
   }
 
   handleChange = (event) => {
@@ -565,6 +566,27 @@ class App extends Component {
     });
   }
 
+  async deleteFriend(friendId, messageId){
+    let me = this.state.me;
+
+    try {
+      let deleteFriendResult = await axios.post('/api/deleteFriend', {
+        'friend': friendId,
+        'me': me,
+        'messageId': messageId
+      });
+      if (deleteFriendResult.data.success) {
+        this.redirect('dashboard', 'me');
+        alert(deleteFriendResult.data.message);
+      }
+      else {
+        alert(deleteFriendResult.data.message);
+      }
+    } catch (error) {
+        alert(error);
+    }
+  }
+
   componentDidUpdate(){
     // when redirect is true, the redirect component will change the URL and rerender the page
     // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
@@ -797,7 +819,8 @@ class App extends Component {
                       uploadImage={this.uploadImage}
                       image={this.state.image}
                       toggleIcons={this.state.toggleIcons}
-                      handleToggleIcons={this.toggleIcons}                      
+                      handleToggleIcons={this.toggleIcons}   
+                      deleteFriend={this.deleteFriend}                   
 
                       // content
                       getFriends={this.getFriends}
