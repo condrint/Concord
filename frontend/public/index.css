@@ -36,6 +36,16 @@ body {
   left: calc(180px + 25%);
 }
 
+#videoWrapper {
+  position: absolute;
+  top: 0px;
+  margin: 10px;
+  padding: 10px;
+  z-index: 2;
+  background-color: rgb(17, 115, 172);
+  left: calc(180px + 25%);
+}
+
 #popupWrapper {
   position: absolute;
   top: 0px;

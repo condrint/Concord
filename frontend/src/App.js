@@ -3,6 +3,7 @@ import Login from './Login.js';
 import Main from './Main.js';
 import Popup  from './Popups.js';
 import Voice from './Voice.js';
+import Video from './Video.js';
 import { BrowserRouter as Router, Route, Link, Redirect, Switch} from 'react-router-dom';
 import io from 'socket.io-client';
 //import './Login.css';
@@ -79,6 +80,7 @@ class App extends Component {
       callMessageId: '',
       isInitiator: false,
       peerConnectInfo: {},
+      callType: '', //video or voice
       token: {},
     }
     
@@ -492,17 +494,31 @@ class App extends Component {
     }
   }
 
-  callUser(messageId){
+  callUser(messageId, type){
     if (this.state.inCall){
       alert('End your current call before starting a new one.');
       return;
     }
+
+    let friends = this.state.friends;
+    for (let friend of friends){
+      if (friend.messageId == messageId){
+        if(!friend.online){
+          alert(friend.username + ' is offline. Try calling later.');
+          return;
+        }
+        break;
+      }
+    }
+
     socket.emit('initiateCall', {
       initiator: this.state.me,
       messageId: messageId,
+      type: type,
     })
     this.setState({
-      isInitiator: true
+      isInitiator: true,
+      callType: type
     })
   }
 
@@ -513,6 +529,7 @@ class App extends Component {
       callMessageId: '',
       isInitiator: false,
       peerConnectInfo: {},
+      callType: '',
     });
   }
 
@@ -525,7 +542,7 @@ class App extends Component {
       permission: permission,
       initiator: this.state.callParticipant,
       receiver: this.state.me,
-      messageId: this.state.callMessageId
+      messageId: this.state.callMessageId,
     })
   }
 
@@ -590,17 +607,12 @@ class App extends Component {
 
     socket.on('callPermission', (data) => {
       const initiator = data.initiator;
-      const receiver = data.receiver;
       const messageId = data.messageId;
-
-      // this should be solved with chatrooms
-      if (this.state.me != receiver){
-        return;
-      }
 
       this.setState({
         showCallPopup: true,
         callParticipant: initiator,
+        callType: data.type,
         callMessageId: messageId,
       });
     });
@@ -610,13 +622,17 @@ class App extends Component {
       if (data.initiator == this.state.me){
         alert('User denied call');
       }
+      this.endCall();
     });
 
     socket.on('startCall', (data) => {
       let [firstParticipant, secondParticipant] = data.participants;
       let me = this.state.me;
 
+      console.log(data.participants, me);
+
       if (firstParticipant == me){
+        console.log('first one');
           this.setState({
             inCall: true,
             callParticipant: secondParticipant,
@@ -624,6 +640,7 @@ class App extends Component {
           });
       }
       else if (secondParticipant == me){
+          console.log('second one');
           this.setState({
             inCall: true,
             callParticipant: firstParticipant,
@@ -631,7 +648,7 @@ class App extends Component {
           });
       }
       else {
-        alert("call started but you're neither participant lmao");
+        this.endCall();
       }
     });
 
@@ -640,9 +657,6 @@ class App extends Component {
     });
 
     socket.on('peerConnectInfoToReceiver', (data) => {
-      if (data.callParticipant != this.state.me){
-        return;
-      }
       this.setState({
         peerConnectInfo: data.peerConnectInfo
       })
@@ -734,9 +748,27 @@ class App extends Component {
 
                     {/* Chat */}
                     {this.state.inCall && 
-                      <div id="voiceWrapper">
-                        <audio id="voiceChat" controls/>
-                        <Voice 
+                       this.state.callType == 'voice' &&
+                          <div id="voiceWrapper">
+                            <audio id="voiceChat" controls/>
+                            <Voice 
+                              callParticipant={this.state.callParticipant}
+                              callMessageId={this.state.callMessageId}
+                              isInitiator={this.state.isInitiator}
+                              peerConnectInfo={this.state.peerConnectInfo}
+                              sendDataToReceiver={this.sendDataToReceiver}
+                              removeConnectInfo={this.removeConnectInfo}
+                              endCall={this.endCall}
+                              token={this.state.token}
+                            />
+                          </div>
+                    }
+
+                    {this.state.inCall && 
+                       this.state.callType == 'video' &&
+                       <div id="videoWrapper">
+                        <video id="videoChat" controls/>
+                        <Video 
                           callParticipant={this.state.callParticipant}
                           callMessageId={this.state.callMessageId}
                           isInitiator={this.state.isInitiator}
@@ -746,7 +778,7 @@ class App extends Component {
                           endCall={this.endCall}
                           token={this.state.token}
                         />
-                      </div>
+                        </div>
                     }
 
                     {/* Main content */}

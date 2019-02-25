@@ -67,7 +67,10 @@ class Main extends Component {
                 <button onClick={() => this.props.sendMessage(urlType, urlMessageId)}> Send </button>
                 
                 {(urlType == 'user' &&
-                  <button onClick={() => this.props.callUser(urlMessageId)}> Call </button>
+                  <div>
+                    <button onClick={() => this.props.callUser(urlMessageId, 'voice')}> Voice Call </button>
+                    <button onClick={() => this.props.callUser(urlMessageId, 'video')}> Video Call </button>
+                  </div>
                 )}
 
               </div>

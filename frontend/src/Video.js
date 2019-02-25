@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 let Peer = require('simple-peer')
 
-
-
-class Voice extends Component {
+class Video extends Component {
   constructor(props) {
     super(props);
 
@@ -28,27 +26,26 @@ class Voice extends Component {
     })
 
     peer.on('connect', () => {
-      this.startVoiceStream();
+      this.startVideoStream();
     });
     
     peer.on('stream', stream => {
-       let audioNode = document.getElementById('voiceChat');
-       audioNode.srcObject = stream;
+       let videoNode = document.getElementById('videoChat');
+       videoNode.srcObject = stream;
     });
 
     peer.on('data', data => {
-      console.log(data.toString());
       if (data.toString() === 'destroy'){
         this.props.endCall();
         peer.destroy();
       }
     });
 
-    this.startVoiceStream = this.startVoiceStream.bind(this);
+    this.startVideoStream = this.startVideoStream.bind(this);
   }
 
-  startVoiceStream = async () => {
-    let audioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+  startVideoStream = async () => {
+    let audioStream = await navigator.mediaDevices.getUserMedia({ video: true })
     this.state.peer.addStream(audioStream);
   }
 
@@ -66,7 +63,7 @@ class Voice extends Component {
 
   render() {
     return(
-        <div id="voice">
+        <div id="Video">
             <h1>Talking to {this.props.callParticipant}</h1>
             <button onClick={this.props.endCall}>End call</button>
         </div>
@@ -74,4 +71,4 @@ class Voice extends Component {
   }
 }
 
-export default Voice;
+export default Video;

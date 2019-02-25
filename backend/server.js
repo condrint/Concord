@@ -121,8 +121,6 @@ socketIo.on('connection', function(socket){
     // look up receiver by seeing the other userId with the associated messageId
     // this 100% could be avoided by smarter clientside code
     try {
-      console.log('new call');
-
       const participants = await messageController.findParticipants(messageId);
       
       if (initiator == participants[0]){
@@ -139,11 +137,11 @@ socketIo.on('connection', function(socket){
       }
 
       else{
-        console.log('trying to call client');
-        socketIo.emit('callPermission', {
+        socketIo.to(clients[receiver]).emit('callPermission', {
           initiator: initiator,
           receiver: receiver,
-          messageId: messageId
+          messageId: messageId,
+          type: data.type
         });
       }
     }
@@ -178,8 +176,7 @@ socketIo.on('connection', function(socket){
   })
 
   socket.on('peerConnectInfoFromInitiator', (data) => {
-    socketIo.emit('peerConnectInfoToReceiver', {
-      callParticipant: data.callParticipant,
+    socketIo.to(clients[data.callParticipant]).emit('peerConnectInfoToReceiver', {
       peerConnectInfo: data.peerConnectInfo,
     });
   })
