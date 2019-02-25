@@ -15,7 +15,7 @@ class Friends extends Component {
               <img src={friend.avatarUrl}/>
               {friend.username}
             </div>
-            <button onClick={() => this.props.deleteFriend(friend.friendId, friend.messageId)}>X</button>
+            <button class="deletebutton" onClick={() => this.props.deleteFriend(friend.friendId, friend.messageId)}>X</button>
           </li>
         )}
       </ul>
