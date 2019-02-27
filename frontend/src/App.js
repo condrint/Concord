@@ -688,6 +688,7 @@ class App extends Component {
       let friends = this.state.friends;
       let user = data.newUser;
       let onlineStatus = data.onlineStatus;
+      console.log(user, onlineStatus);
 
       for (let friend of friends){
         if (friend.friendId == user){
