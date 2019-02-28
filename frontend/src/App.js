@@ -28,7 +28,7 @@ class App extends Component {
       // login 
       loginUsernameInput: '',
       loginPasswordInput: '',
-      isLoggedIn: true, //keep as true for testing using npm run start
+      isLoggedIn: false, //keep as true for testing using npm run start
 
       // register
       registerUsernameInput: '',
@@ -869,7 +869,7 @@ class App extends Component {
 
         {/* Testing Buttons */}
         <button className="test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
-        <button className="test" onClick={()=>{console.table(this.state)}}>log state</button>
+        <button id="test1" className="test" onClick={()=>{console.table(this.state)}}>log state</button>
         <button className="test" onClick={()=>{this.loadTestData()}}>load test state</button>
       
       </div>

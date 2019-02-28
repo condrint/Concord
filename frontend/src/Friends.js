@@ -10,13 +10,14 @@ class Friends extends Component {
     return(
       <ul>
         { this.props.friends && this.props.friends.map((friend, index) => 
-          <li class="icon" style={{backgroundColor: friend.online ? 'green' : 'red'}} key={index} onClick={() => {this.props.redirect('user', friend.messageId)}}> 
-            <div>
-              <img src={friend.avatarUrl}/>
+          <li class="icon" key={index} onClick={() => {this.props.redirect('user', friend.messageId)}}> 
+            
+              <img className={friend.online ? 'online friendImg' : 'offline friendImg'} src={friend.avatarUrl}/>
               <div class="username">
+                <div class="usernameBackground"></div>
                 {friend.username}
               </div>
-            </div>
+            
             <button class="deleteButton" onClick={() => this.props.deleteFriend(friend.friendId, friend.messageId)}>X</button>
           </li>
         )}
