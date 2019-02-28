@@ -29,6 +29,13 @@ class Main extends Component {
 
           <div id="settings">
             <button onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
+
+            <div>
+              {/* This.props.server.map 
+                    <input> ban user
+                    <upload image> 
+              */}
+            </div>
           </div>
 
           <div id="iconsWrapper">
@@ -46,7 +53,6 @@ class Main extends Component {
                 <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
               </div>
             )}
-
           </div>
         </div>
 

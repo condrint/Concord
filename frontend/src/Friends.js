@@ -13,7 +13,9 @@ class Friends extends Component {
           <li class="icon" style={{backgroundColor: friend.online ? 'green' : 'red'}} key={index} onClick={() => {this.props.redirect('user', friend.messageId)}}> 
             <div>
               <img src={friend.avatarUrl}/>
-              {friend.username}
+              <div class="username">
+                {friend.username}
+              </div>
             </div>
             <button class="deleteButton" onClick={() => this.props.deleteFriend(friend.friendId, friend.messageId)}>X</button>
           </li>

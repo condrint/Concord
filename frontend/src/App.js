@@ -28,7 +28,7 @@ class App extends Component {
       // login 
       loginUsernameInput: '',
       loginPasswordInput: '',
-      isLoggedIn: false, //keep as true for testing using npm run start
+      isLoggedIn: true, //keep as true for testing using npm run start
 
       // register
       registerUsernameInput: '',
@@ -113,6 +113,7 @@ class App extends Component {
     this.handleImageChange = this.handleImageChange.bind(this);
     this.toggleIcons = this.toggleIcons.bind(this);
     this.deleteFriend = this.deleteFriend.bind(this);
+    this.loadTestData = this.loadTestData.bind(this);
   }
 
   handleChange = (event) => {
@@ -587,6 +588,27 @@ class App extends Component {
     }
   }
 
+  loadTestData(){
+    this.setState({
+      friends: [
+        {
+          avatarUrl: "https://res.cloudinary.com/hu51ij26o/image/upload/w_400,h_400,c_crop,g_face,r_max/w_200/v1550456252/ioivickyj0denrhwj2wp.jpg",
+          friendId: "5c6a4d655172f200043bc5b5",
+          messageId: "5c6a4d8b5172f200043bc5bb",
+          online: false,
+          username: "p",
+        },
+        {
+          avatarUrl: "https://res.cloudinary.com/hu51ij26o/image/upload/h_200,w_200/v1550456252/ioivickyj0denrhwj2wp.jpg",
+          friendId: "5c747a65a4b9dd000462767c",
+          messageId: "5c747a76a4b9dd000462767e",
+          online: false,
+          username: ";",
+        }
+      ]
+    });
+  }
+
   componentDidUpdate(){
     // when redirect is true, the redirect component will change the URL and rerender the page
     // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
@@ -848,6 +870,7 @@ class App extends Component {
         {/* Testing Buttons */}
         <button className="test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
         <button className="test" onClick={()=>{console.table(this.state)}}>log state</button>
+        <button className="test" onClick={()=>{this.loadTestData()}}>load test state</button>
       
       </div>
     )
