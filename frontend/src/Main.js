@@ -28,7 +28,7 @@ class Main extends Component {
         <div id="leftColumn">
 
           <div id="settings">
-            <button onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
+            <button className="buttonW" onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
 
             <div>
               {/* This.props.server.map 
@@ -39,16 +39,14 @@ class Main extends Component {
           </div>
 
           <div id="iconsWrapper">
-            <button onClick={this.props.handleToggleIcons}>Friends / Servers</button>
+            <button className="buttonW" onClick={this.props.handleToggleIcons}>Friends / Servers</button>
             {this.props.toggleIcons ? (
               <div id="servers">
-                servers
                 <Servers servers={this.props.servers} redirect={this.props.redirect}/>
                 <CreateJoinServer showServerPopup ={this.props.showServerPopup}/>
               </div>
             ) : (
               <div id="friends">
-                Friends
                 <Friends friends={this.props.friends} redirect={this.props.redirect} deleteFriend={this.props.deleteFriend}/> 
                 <NewFriend showNewFriendPopup={this.props.showNewFriendPopup}/>
               </div>
@@ -70,12 +68,12 @@ class Main extends Component {
               <div id="sendMessageForm">
 
                 <input id="sendMessageInput" onChange={this.props.change} value={this.props.sendMessageInput} type="text" placeholder="Send a message!"/>
-                <button onClick={() => this.props.sendMessage(urlType, urlMessageId)}> Send </button>
+                <button className="buttonW" onClick={() => this.props.sendMessage(urlType, urlMessageId)}> Send </button>
                 
                 {(urlType == 'user' &&
                   <div>
-                    <button onClick={() => this.props.callUser(urlMessageId, 'voice')}> Voice Call </button>
-                    <button onClick={() => this.props.callUser(urlMessageId, 'video')}> Video Call </button>
+                    <button className="buttonW" onClick={() => this.props.callUser(urlMessageId, 'voice')}> Voice Call </button>
+                    <button className="buttonW" onClick={() => this.props.callUser(urlMessageId, 'video')}> Video Call </button>
                   </div>
                 )}
 
