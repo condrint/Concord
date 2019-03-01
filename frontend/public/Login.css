@@ -9,20 +9,28 @@
     border-radius: 15px;
 }
 
+.button:hover {
+    background-color: rgb(165, 215, 224);
+    transition: all .1s ease-in;
+}
+
 .button {
-    background-color: lightsteelblue;
+    border-width: 3px;
+    border-color: whitesmoke;
+    background-color: rgb(148, 188, 196);
     color: white;
-    border-color: transparent;
     border-radius: 5px;
     width: 375px;
-    height: 30px;
+    height: 35px;
     margin: 15px auto 10px auto;
     font-family: Arial;
     font-weight: bold;
     font-size: 16px;
+    text-shadow: 1px 1px gray;
 }
 
 .header {
+    text-shadow: 2px 2px gray;
     color: white;
     font-style: bold;
     margin:0 auto;
@@ -44,8 +52,9 @@
 }
 
 #loginPage {
+    box-shadow: 20px 20px rgb(165, 215, 224);
     background-color: rgb(107, 107, 107);
-    margin: 200px auto 0px auto;
+    margin: 125px auto 0px auto;
     padding: 50px 0 0 0;
     width: 425px;
     height: 350px;
@@ -53,7 +62,7 @@
 }
 
 .form {
-    border-color: transparent;
+    border-color: rgba(100, 100, 100, 25);
     background-color: rgb(90, 90, 90);
     border-radius: 3px;
     padding: 5px 0 5px 0;
