@@ -11,7 +11,7 @@
 
 .button:hover {
     background-color: rgb(165, 215, 224);
-    transition: all .1s ease-in;
+    transition: all .1s;
 }
 
 .button {
@@ -22,7 +22,7 @@
     border-radius: 5px;
     width: 375px;
     height: 35px;
-    margin: 15px auto 10px auto;
+    margin: 10px auto 5px auto;
     font-family: Arial;
     font-weight: bold;
     font-size: 16px;
@@ -52,13 +52,16 @@
 }
 
 #loginPage {
-    box-shadow: 20px 20px rgb(165, 215, 224);
+    box-shadow: 0px 0px 20px 5px rgb(165, 215, 224);
     background-color: rgb(107, 107, 107);
     margin: 125px auto 0px auto;
     padding: 50px 0 0 0;
     width: 425px;
-    height: 350px;
+    height: 345px;
     border-radius: 10px;
+    border-style: groove;
+    border-width: 2px;
+    border-color: #ddd;
 }
 
 .form {
