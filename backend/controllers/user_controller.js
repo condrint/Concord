@@ -28,6 +28,7 @@ userController.registerUser = async (req, res) => {
     const newUser = new User({username, password});
     try {
         newUser.avatarUrl = 'https://res.cloudinary.com/hu51ij26o/image/upload/h_200,w_200/v1550456252/ioivickyj0denrhwj2wp.jpg';
+        newUser.theme = 1;
         await newUser.save(); 
         return res.status(201).json({
             success: true,
@@ -59,6 +60,7 @@ userController.loginUser = async (req , res) => {
                 success: true,
                 me: loginUser._id,
                 myUsername: loginUser.username,
+                theme: loginUser.theme,
                 token: twilioToken,
                 message: 'Logged in.',
             })
@@ -349,6 +351,29 @@ userController.uploadImage = async (req, res) => {
          });
     }
     
+}
+
+userController.updateTheme = async (req, res) => {
+    const {me, theme} = req.body;
+
+    try {
+        let userDocument = await User.findById(me);
+
+        userDocument.theme = theme;
+        userDocument.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Theme updated"
+        });
+    }
+    catch(error){
+        console.log(error);
+        return res.status(200).json({
+            success: false,
+            message: "Error updating theme.",
+         });
+    }
 }
 
 module.exports = userController;

@@ -22,6 +22,7 @@ var userSchema = new Schema({
     avatarUrl: {
         type: String,
     },
+    theme: Number,
 })
 
 userSchema.plugin(uniqueValidator);

@@ -67,10 +67,6 @@ body {
   width: 100%;
 }
 
-#dashboard {
-  display: grid;
-  background-color: blue;
-}
 
 #iconsWrapper {
   height: 100%;
@@ -101,13 +97,14 @@ body {
 }
 
 #dashboard {
+  display: grid;
   position: absolute;
   width: calc(100% - 150px);
   height: 100%;
   left: 150px;
   top: 0px;
   background-color: #404040;
-  margin-left: 2px;
+  margin-left: 1px;
   min-width: 930px;
 }
 
@@ -247,9 +244,6 @@ button:hover {
   top: 15px;
 }
 
-#switchColor{
-  background-color: rgb(148, 188, 196);
-}
 
 .newButton{
   position: relative;
@@ -292,14 +286,33 @@ button:hover {
   top: 0px;
   margin-top: 0px;  
   border-bottom-style: solid;
-  border-bottom: white;
+  border-bottom-color: white;
   padding: 10px;
 }
 
-ul{
-
+#settings {
+  margin: 30px;
+  color: rgb(221, 221, 221);
 }
 
-.leftButtons {
+#settings > div > div > h2 {
+  font-size: 18px;
+  margin: 5px;
+}
 
+#themePicker{
+  margin-right: 30%;
+}
+
+#settings > div > div {
+  margin-bottom: 55px;
+}
+
+
+a.switchColor{
+  background-color: rgb(148, 188, 196) !important;
+}
+
+#themePicker > div > label:hover{
+  cursor: pointer;
 }

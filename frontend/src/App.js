@@ -10,6 +10,21 @@ import io from 'socket.io-client';
 const axios = require('axios');
 
 
+let themes = {
+  1: {
+    left: '#2a2a2a',
+    dash: '#404040'
+  },
+  2: {
+    left: '#24B0D5',
+    dash: '#47C8C8'
+  },
+  3: {
+    left: '#FF6C00',
+    dash: '#FF4136'
+  },
+}
+
 //for deploy
 const socket = io();
 
@@ -21,6 +36,7 @@ class App extends Component {
       form: 'login',
       me: '',
       myUsername: '',
+      theme: 1,
       redirect: false,
       redirectTo: '',
       redirectType: '',
@@ -29,7 +45,7 @@ class App extends Component {
       // login 
       loginUsernameInput: '',
       loginPasswordInput: '',
-      isLoggedIn: true, //keep as true for testing using npm run start
+      isLoggedIn: false, //keep as true for testing using npm run start
 
       // register
       registerUsernameInput: '',
@@ -115,6 +131,7 @@ class App extends Component {
     this.toggleIcons = this.toggleIcons.bind(this);
     this.deleteFriend = this.deleteFriend.bind(this);
     this.loadTestData = this.loadTestData.bind(this);
+    this.changeTheme = this.changeTheme.bind(this);
   }
 
   handleChange = (event) => {
@@ -228,7 +245,14 @@ class App extends Component {
           me: loginResult.data.me,
           myUsername: loginResult.data.myUsername,
           token: loginResult.data.token,
+          theme: loginResult.data.theme
         });
+
+        let left = document.getElementById('leftColumn');
+        let dash = document.getElementById('dashboard');
+
+        left.style.backgroundColor = themes[loginResult.data.theme]['left'];
+        dash.style.backgroundColor = themes[loginResult.data.theme]['dash'];
         
         socket.emit('newClient', {
           id: loginResult.data.me
@@ -285,59 +309,59 @@ class App extends Component {
   }
 
   joinServerSubmit = async (event) =>{
-  event.preventDefault();
-  let joinServer = this.state.serverInput;
-  let me = this.state.me;
-  
-  if(!joinServer){
-    alert('Invalid Input');
-    return;
-  }
+    event.preventDefault();
+    let joinServer = this.state.serverInput;
+    let me = this.state.me;
+    
+    if(!joinServer){
+      alert('Invalid Input');
+      return;
+    }
 
-  try {
-    let joinServerResult = await axios.post('/api/joinServer', {
-      'server': joinServer,
-      'newMember': me,
-    });
-    if(joinServerResult.data.success){
-      this.getServers();
-      alert(joinServerResult.data.message)
+    try {
+      let joinServerResult = await axios.post('/api/joinServer', {
+        'server': joinServer,
+        'newMember': me,
+      });
+      if(joinServerResult.data.success){
+        this.getServers();
+        alert(joinServerResult.data.message)
+      }
+      else{
+        alert(joinServerResult.data.message)
+      }
+    } catch (error) {
+      alert(error);
     }
-    else{
-      alert(joinServerResult.data.message)
-    }
-  } catch (error) {
-    alert(error);
-  }
-  this.hideServerPopup();
+    this.hideServerPopup();
   }
 
   createServerSubmit = async (event) =>{
-  event.preventDefault();
-  let createServer = this.state.serverInput;
-  let me = this.state.me;
-  
-  if(!createServer){
-    alert('Invalid Input');
-    return;
-  }
+    event.preventDefault();
+    let createServer = this.state.serverInput;
+    let me = this.state.me;
+    
+    if(!createServer){
+      alert('Invalid Input');
+      return;
+    }
 
-  try {
-    let createServerResult = await axios.post('/api/createServer', {
-      'serverName': createServer,
-      'me': me,
-    });
-    if(createServerResult.data.success){
-      this.getServers();
-      alert(createServerResult.data.message)
+    try {
+      let createServerResult = await axios.post('/api/createServer', {
+        'serverName': createServer,
+        'me': me,
+      });
+      if(createServerResult.data.success){
+        this.getServers();
+        alert(createServerResult.data.message)
+      }
+      else{
+        alert(createServerResult.data.message)
+      }
+    } catch (error) {
+      alert(error);
     }
-    else{
-      alert(createServerResult.data.message)
-    }
-  } catch (error) {
-    alert(error);
-  }
-  this.hideServerPopup();
+    this.hideServerPopup();
   }
 
   showNewFriendPopup(){
@@ -464,6 +488,11 @@ class App extends Component {
       currentlyViewedMessages: currentlyViewedMessages,
       currentlyViewedMessagesId: messageId
     })
+
+    let scroll = document.getElementById('messageList');
+    if (scroll){
+      scroll.scrollTop = scroll.scrollHeight;
+    }
   }
 
   async getMessages (messageId){
@@ -499,7 +528,9 @@ class App extends Component {
     }
   }
 
-  callUser(messageId, type){
+  callUser(event, messageId, type){
+    event.preventDefault();
+
     if (this.state.inCall){
       alert('End your current call before starting a new one.');
       return;
@@ -591,6 +622,34 @@ class App extends Component {
     }
   }
 
+  async changeTheme(theme){
+    let me = this.state.me;
+
+    try {
+      let updateThemeResult = await axios.post('/api/updateTheme', {
+        'theme': theme,
+        'me': me,
+      });
+      if (updateThemeResult.data.success) {
+        this.setState({
+          theme: theme
+        })
+
+        let left = document.getElementById('leftColumn');
+        let dash = document.getElementById('dashboard');
+
+        left.style.backgroundColor = themes[theme]['left'];
+        dash.style.backgroundColor = themes[theme]['dash'];
+
+      }
+      else {
+        alert(updateThemeResult.data.message);
+      }
+    } catch (error) {
+        alert(error);
+    }
+  }
+
   loadTestData(){
     this.setState({
       friends: [
@@ -618,11 +677,6 @@ class App extends Component {
     if (this.state.redirect && (this.state.redirectType == 'server' || this.state.redirectType == 'user')){
       const chatRoomId = this.state.redirectId;
       this.getMessages(chatRoomId);
-
-      let scroll = document.getElementById('messageList');
-      if (scroll){
-        scroll.scrollTop = scroll.scrollHeight;
-      }
 
       this.setState({
         redirect: false,
@@ -856,7 +910,8 @@ class App extends Component {
                       image={this.state.image}
                       toggleIcons={this.state.toggleIcons}
                       handleToggleIcons={this.toggleIcons}   
-                      deleteFriend={this.deleteFriend}                   
+                      deleteFriend={this.deleteFriend}           
+                      changeTheme={this.changeTheme}        
 
                       // content
                       getFriends={this.getFriends}
@@ -864,6 +919,7 @@ class App extends Component {
                       friends={this.state.friends}
                       servers={this.state.servers}
                       messages={this.state.currentlyViewedMessages}
+                      theme={this.state.theme}
                     />
 
                   </div>

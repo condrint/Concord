@@ -29,13 +29,6 @@ class Main extends Component {
 
           <div>
             <button className="buttonW"  id="settingsButton" onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
-
-            <div>
-              {/* This.props.server.map 
-                    <input> ban user
-                    <upload image> 
-              */}
-            </div>
           </div>
 
           <div id="iconsWrapper">
@@ -45,7 +38,7 @@ class Main extends Component {
               <span id="switch" onClick={this.props.handleToggleIcons}>
                 <span>Servers</span>
                 <span>Friends</span>
-                <a id="switchColor"></a>
+                <a className="switchColor"></a>
               </span>
             </label>
 
@@ -69,7 +62,7 @@ class Main extends Component {
 
           {(urlType == 'settings') && 
             <div id="settings">
-              <Settings handleImageChange={this.props.handleImageChange} uploadImage={this.props.uploadImage} image={this.props.image}/>
+              <Settings theme={this.props.theme} handleImageChange={this.props.handleImageChange} uploadImage={this.props.uploadImage} image={this.props.image} changeTheme={this.props.changeTheme}/>
             </div>
           }
 
@@ -82,8 +75,8 @@ class Main extends Component {
                   <button type="submit" className="buttonW messageButton" onClick={(event) => this.props.sendMessage(event, urlType, urlMessageId)}> Send </button>
                   {(urlType == 'user' &&
                     <span>
-                      <button className="buttonW messageButton" onClick={() => this.props.callUser(urlMessageId, 'voice')}> Voice Call </button>
-                      <button className="buttonW messageButton" onClick={() => this.props.callUser(urlMessageId, 'video')}> Video Call </button>
+                      <button className="buttonW messageButton" onClick={(event) => this.props.callUser(event, urlMessageId, 'voice')}> Voice Call </button>
+                      <button className="buttonW messageButton" onClick={(event) => this.props.callUser(event, urlMessageId, 'video')}> Video Call </button>
                     </span>
                   )}
                 </form>
