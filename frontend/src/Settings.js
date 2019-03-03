@@ -20,8 +20,8 @@ class Settings extends Component {
                   <input id="default" name="view" type="radio" checked={this.props.theme == 1}/>
                   <label for="default" onClick={() => this.props.changeTheme(1)}>Default</label>
 
-                  <input id="Tsunami" name="view" type="radio" checked={this.props.theme == 2}/>
-                  <label for="Tsunami" onClick={() => this.props.changeTheme(2)}>Tsunami</label>
+                  <input id="Ocean" name="view" type="radio" checked={this.props.theme == 2}/>
+                  <label for="Ocean" onClick={() => this.props.changeTheme(2)}>Ocean</label>
 
                   <input id="Blaze" name="view" type="radio" checked={this.props.theme == 3}/>
                   <label for="Blaze" onClick={() => this.props.changeTheme(3)}>Blaze</label>

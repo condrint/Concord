@@ -937,10 +937,7 @@ class App extends Component {
           </div>
         </Router>
 
-        {/* Testing Buttons */}
-        <button className="test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
-        <button id="test1" className="test" onClick={()=>{console.table(this.state)}}>log state</button>
-        <button className="test" onClick={()=>{this.loadTestData()}}>load test state</button>
+        <button id="test1" onClick={()=>{console.table(this.state)}}>log state</button>
       
       </div>
     )
