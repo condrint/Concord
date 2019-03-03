@@ -7,8 +7,8 @@ class CreateJoinServer extends Component {
 
   render() {
     return(
-      <div id="createJoinServerWrapper">
-        <button onClick={this.props.showServerPopup}>
+      <div id="createJoinServerWrapper" className="w3-animate-left">
+        <button className="newButton" onClick={this.props.showServerPopup}>
           <span>+</span>
         </button>
       </div>

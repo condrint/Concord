@@ -8,13 +8,13 @@ class Friends extends Component {
 
   render() {
     return(
-      <ul>
+      <ul className="w3-animate-right">
         { this.props.friends && this.props.friends.map((friend, index) => 
-          <li class="icon" key={index} onClick={() => {this.props.redirect('user', friend.messageId)}}> 
+          <li className="icon" key={index} onClick={() => {this.props.redirect('user', friend.messageId)}}> 
             
               <img className={friend.online ? 'online friendImg' : 'offline friendImg'} src={friend.avatarUrl}/>
-              <div class="username">
-                <div class="usernameBackground"></div>
+              <div className="username">
+                <div className="usernameBackground"></div>
                 {friend.username}
               </div>
             

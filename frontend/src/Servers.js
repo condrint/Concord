@@ -8,7 +8,7 @@ class Servers extends Component {
 
   render() {
     return(
-      <ul>
+      <ul className="w3-animate-left">
         { this.props.servers && this.props.servers.map((server, index) => 
           <li key={index} onClick={() => {this.props.redirect('server', server.messageId)}}> 
             <button>

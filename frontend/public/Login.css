@@ -7,11 +7,13 @@
     color: white;
     border-color: transparent;
     border-radius: 15px;
+    transition: all .1s;
 }
 
 .button:hover {
     background-color: rgb(165, 215, 224);
     transition: all .1s;
+    cursor: pointer;
 }
 
 .button {
@@ -59,7 +61,7 @@
     width: 425px;
     height: 345px;
     border-radius: 10px;
-    border-style: groove;
+    border-style: ridge;
     border-width: 2px;
     border-color: #ddd;
 }

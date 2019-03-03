@@ -27,8 +27,8 @@ class Main extends Component {
       <div id="main">
         <div id="leftColumn">
 
-          <div id="settings">
-            <button className="buttonW" onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
+          <div>
+            <button className="buttonW"  id="settingsButton" onClick={() => this.props.redirect('settings', 'me')}> Settings </button>
 
             <div>
               {/* This.props.server.map 
@@ -39,7 +39,18 @@ class Main extends Component {
           </div>
 
           <div id="iconsWrapper">
-            <button className="buttonW" onClick={this.props.handleToggleIcons}>Friends / Servers</button>
+
+            <label class="switch-light switch-candy" >
+              <input type="checkbox"/>
+              <span id="switch" onClick={this.props.handleToggleIcons}>
+                <span>Servers</span>
+                <span>Friends</span>
+                <a id="switchColor"></a>
+              </span>
+            </label>
+
+
+
             {this.props.toggleIcons ? (
               <div id="servers">
                 <Servers servers={this.props.servers} redirect={this.props.redirect}/>

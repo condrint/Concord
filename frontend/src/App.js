@@ -9,6 +9,7 @@ import io from 'socket.io-client';
 //import './Login.css';
 const axios = require('axios');
 
+
 //for deploy
 const socket = io();
 
@@ -28,7 +29,7 @@ class App extends Component {
       // login 
       loginUsernameInput: '',
       loginPasswordInput: '',
-      isLoggedIn: false, //keep as true for testing using npm run start
+      isLoggedIn: true, //keep as true for testing using npm run start
 
       // register
       registerUsernameInput: '',
