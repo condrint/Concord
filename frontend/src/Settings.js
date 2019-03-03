@@ -10,7 +10,7 @@ class Settings extends Component {
         <div>
             <div id="imageUpload">
                 <h1>Avatar Image</h1>
-                <input type="file" onChange={this.props.handleImageChange}/>
+                <input id="imageInput" type="file" onChange={this.props.handleImageChange}/>
                 <button className="buttonW" onClick={this.props.uploadImage}>Upload</button>
             </div>
 
@@ -32,6 +32,18 @@ class Settings extends Component {
             <div id="serverManagement">
                 <h1>Server Management</h1>
                 <h2>Owned servers appear here</h2>
+                <div id="serverManagementList" className="w3-animate-left">
+
+                  { this.props.servers && this.props.servers.filter(server => server.ownerId == this.props.me).map((server, index) => 
+                    <div className="serverManagementRow" key={index}> 
+                      <h2>{server.serverName}</h2>
+                      <button onClick={this.props.deleteServer(server.serverId)}> Delete Server </button>
+                      <input id="serverImageInput" type="file" onChange={this.props.handleServerImageChange}/>
+                      <button className="buttonW" onClick={this.props.uploadServerImage(server.serverId)}>Upload</button>
+                    </div>
+                  )}
+
+                </div>
             </div>
         </div>
     )

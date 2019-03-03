@@ -88,7 +88,8 @@ class App extends Component {
       */
       currentlyViewedMessages: [],
       currentlyViewedMessagesId: '',
-      image: null,
+      image: '',
+      serverImage: '',
 
 
       // calls
@@ -133,6 +134,9 @@ class App extends Component {
     this.loadTestData = this.loadTestData.bind(this);
     this.changeTheme = this.changeTheme.bind(this);
     this.updateTheme = this.updateTheme.bind(this);
+    this.deleteServer = this.deleteServer.bind(this);
+    this.handleServerImageChange = this.handleServerImageChange.bind(this);
+    this.uploadServerImage = this.uploadServerImage.bind(this);
   }
 
   handleChange = (event) => {
@@ -164,7 +168,7 @@ class App extends Component {
     const formData = new FormData()
     formData.append('image', image);
 
-    const url = '/api/uploadImage/' + this.state.me + '/'
+    const url = '/api/uploadServerImage/' + this.state.me + '/';
 
     try{
       let uploadImageResult = await axios.post(
@@ -191,8 +195,69 @@ class App extends Component {
     }
 
     this.setState({
-      image: null
+      image: ''
     })
+    
+    let imageInput = document.getElementById('imageInput');
+    imageInput.value = '';
+  }
+
+  handleServerImageChange = (event) => {
+    event.preventDefault();
+    this.setState({
+      serverImage: event.target.files[0]
+    });
+  }
+
+  uploadServerImage = async (serverId) => {
+    const image = this.state.serverImage;
+
+    if (!image){
+      alert('No image selected.');
+      return;
+    }
+
+    if (image.size > 100 * 1000){
+      alert('Image is too large. It must be smaller than 100KB');
+      return;
+    }
+    
+    const formData = new FormData()
+    formData.append('image', image);
+
+    const url = '/api/uploadImage/' + this.state.me + '/' + serverId + '/'
+
+    try{
+      let uploadImageResult = await axios.post(
+        url, 
+        formData,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      )
+
+      if (uploadImageResult.data.success){
+        alert(uploadImageResult.data.message);
+      }
+      else{
+        alert(uploadImageResult.data.message);
+      }
+    }
+
+    catch (error) {
+      alert(error)
+    }
+
+    this.setState({
+      serverImage: ''
+    })
+    
+    let imageInput = document.getElementById('serverImageInput');
+    imageInput.value = '';
+
   }
 
   handleRegisterSubmit = async (event) => {
@@ -671,6 +736,25 @@ class App extends Component {
     });
   }
 
+  deleteServer = async (serverId) => {
+    let me = this.state.me;
+
+    try {
+      let deleteServerResult = await axios.post('/api/deleteServer', {
+        'me': me,
+        'server': serverId,
+      });
+
+      alert(deleteServerResult.data.message);
+      this.redirect('dashboard', 'me');
+
+    } catch (error) {
+        alert(error);
+    }
+
+  }
+
+
   componentDidUpdate(){
     // when redirect is true, the redirect component will change the URL and rerender the page
     // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
@@ -717,6 +801,10 @@ class App extends Component {
       this.getFriends();
     });
 
+    socket.on('refreshServers', () => {
+      this.getServers();
+    });
+
     socket.on('callPermission', (data) => {
       const initiator = data.initiator;
       const messageId = data.messageId;
@@ -741,10 +829,7 @@ class App extends Component {
       let [firstParticipant, secondParticipant] = data.participants;
       let me = this.state.me;
 
-      console.log(data.participants, me);
-
       if (firstParticipant == me){
-        console.log('first one');
           this.setState({
             inCall: true,
             callParticipant: secondParticipant,
@@ -752,7 +837,6 @@ class App extends Component {
           });
       }
       else if (secondParticipant == me){
-          console.log('second one');
           this.setState({
             inCall: true,
             callParticipant: firstParticipant,
@@ -906,12 +990,15 @@ class App extends Component {
                       redirect={this.redirect}
                       callUser={this.callUser}
                       handleImageChange={this.handleImageChange}
+                      handleServerImageChange={this.handleServerImageChange}
                       uploadImage={this.uploadImage}
+                      uploadServerImage={this.uploadServerImage}
                       image={this.state.image}
                       toggleIcons={this.state.toggleIcons}
                       handleToggleIcons={this.toggleIcons}   
                       deleteFriend={this.deleteFriend}           
-                      changeTheme={this.changeTheme}        
+                      changeTheme={this.changeTheme}     
+                      deleteServer={this.deleteServer}
 
                       // content
                       getFriends={this.getFriends}
@@ -920,6 +1007,7 @@ class App extends Component {
                       servers={this.state.servers}
                       messages={this.state.currentlyViewedMessages}
                       theme={this.state.theme}
+                      me={this.state.me}
                     />
 
                   </div>

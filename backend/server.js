@@ -183,8 +183,11 @@ socketIo.on('connection', function(socket){
 });
 
 exports.refreshUsersFriends = (userId) => {
-  console.log('emitting to refresh');
   socketIo.to(clients[userId]).emit('refreshFriends');
+}
+
+exports.refreshUsersServers = (userId) => {
+  socketIo.to(clients[userId]).emit('refreshServers');
 }
 
 exports.getOnlineUsers = () => {

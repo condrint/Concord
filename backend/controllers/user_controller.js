@@ -2,6 +2,7 @@ const socketFunctions = require('../server.js');
 const User = require('../models/user.js');
 const messageController = require('../controllers/message_controller');
 const Message = require('../models/message.js');
+const Server = require('../models/server.js');
 const cloudinary = require('cloudinary');
 const Datauri = require('datauri');
 
@@ -137,7 +138,12 @@ userController.getServers = async (req, res) => {
     try {
         let meDocument = await User.findById(me);
 
-        let listOfServerObjects = convertToClientServerObjects(meDocument.servers);
+        let listOfServerObjects = []
+
+        for (let server of meDocument.servers){
+            let serverDocument = await Server.findById(server.serverId);
+            listOfServerObjects.push(convertToClientServerObjects(serverDocument));
+        }
 
         return res.status(200).json({
             success: true,
@@ -155,15 +161,9 @@ userController.getServers = async (req, res) => {
     }
 }
 
-convertToClientServerObjects = (servers) => {
-    listOfServerObjects = []
-    for (let server of servers){
-        let serverObject = {
-            servername: server.servername,
-        }
-        listOfServerObjects.push(serverObject);
-    }
-    return listOfServerObjects;
+convertToClientServerObjects = (server) => {
+    server.serverId = server._id;
+    return server;
 }
 
 userController.newFriend = async (req, res) => {
@@ -321,7 +321,6 @@ userController.uploadImage = async (req, res) => {
         
         userDocument.avatarUrl = croppedUrl.toString();
         await userDocument.save();
-        console.log(croppedUrl);
         for (let friend of userDocument.friends){
             // this query is bad for making this app scale to lots of users but is okay for here...
             // the solution is maybe to make another "friends model" where each document in it represents a connection between two users,
@@ -330,7 +329,6 @@ userController.uploadImage = async (req, res) => {
             for (let friendOfFriend of friendDocument.friends){
                 if (friendOfFriend.friendId == me){
                     friendOfFriend.avatarUrl = croppedUrl;
-                    console.log(friendDocument)
                     break;
                 }
             }
@@ -348,7 +346,50 @@ userController.uploadImage = async (req, res) => {
         return res.status(200).json({
             success: false,
             message: "Error uploading image.",
-         });
+        });
+    }
+}
+
+userController.uploadServerImage = async (req, res) => {
+    const image = req.file;
+    const me = req.params.id;
+    const serverId = req.params.serverId;
+    
+    const datauri = new Datauri();
+    datauri.format('.jpeg', image.buffer);
+    
+    try{
+        let serverDocument = await Server.findById(serverId);        
+        if (serverDocument.ownerId != me){
+            return res.status(200).json({
+                success: false,
+                message: "Contact the server owner to make this change.",
+            });
+        }
+
+        uploadResult = await cloudinary.uploader.upload(datauri.content, {});
+        const urlForImage = uploadResult.secure_url;
+        const [url1, url2] = urlForImage.split('upload');
+        const croppedUrl = url1 + 'upload/h_200,w_200' + url2;
+        
+        serverDocument.avatarUrl = croppedUrl.toString();
+        await userDocument.save();
+
+        for (let member of userDocument.friends){
+            socketFunctions.refreshUsersServers(member.memberId);
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Avatar updated"
+        });
+    }
+    catch(error){
+        console.log(error);
+        return res.status(200).json({
+            success: false,
+            message: "Error uploading image.",
+        });
     }
     
 }
