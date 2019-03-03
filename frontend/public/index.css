@@ -234,6 +234,10 @@ button:hover {
   cursor: pointer;
 }
 
+#deleteButton:hover {
+  background-color: rgb(165, 215, 224);
+}
+
 #switch:hover {
   cursor: pointer;
 }

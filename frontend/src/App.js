@@ -29,7 +29,7 @@ class App extends Component {
       // login 
       loginUsernameInput: '',
       loginPasswordInput: '',
-      isLoggedIn: false, //keep as true for testing using npm run start
+      isLoggedIn: true, //keep as true for testing using npm run start
 
       // register
       registerUsernameInput: '',
@@ -620,8 +620,10 @@ class App extends Component {
       this.getMessages(chatRoomId);
 
       let scroll = document.getElementById('messageList');
-      scroll.scrollTop = scroll.scrollHeight;
-      
+      if (scroll){
+        scroll.scrollTop = scroll.scrollHeight;
+      }
+
       this.setState({
         redirect: false,
         redirectTo: '',
@@ -648,7 +650,9 @@ class App extends Component {
       })
 
       let scroll = document.getElementById('messageList');
-      scroll.scrollTop = scroll.scrollHeight;
+      if (scroll){
+        scroll.scrollTop = scroll.scrollHeight;
+      }
 
       if (messageId == this.state.currentlyViewedMessagesId){
         this.updateCurrentlyViewedMessages(messageId)
