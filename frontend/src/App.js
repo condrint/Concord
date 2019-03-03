@@ -29,7 +29,7 @@ class App extends Component {
       // login 
       loginUsernameInput: '',
       loginPasswordInput: '',
-      isLoggedIn: true, //keep as true for testing using npm run start
+      isLoggedIn: false, //keep as true for testing using npm run start
 
       // register
       registerUsernameInput: '',
@@ -423,7 +423,9 @@ class App extends Component {
     })
   }
 
-  sendMessage(type, messageId){
+  sendMessage(event, type, messageId){
+    event.preventDefault();
+
     if (type != 'server' && type != 'user'){
       alert("You can only send a message to a user or a server.")
       return;
@@ -616,6 +618,10 @@ class App extends Component {
     if (this.state.redirect && (this.state.redirectType == 'server' || this.state.redirectType == 'user')){
       const chatRoomId = this.state.redirectId;
       this.getMessages(chatRoomId);
+
+      let scroll = document.getElementById('messageList');
+      scroll.scrollTop = scroll.scrollHeight;
+      
       this.setState({
         redirect: false,
         redirectTo: '',
@@ -640,6 +646,9 @@ class App extends Component {
       this.setState({
         messages: currentMessages
       })
+
+      let scroll = document.getElementById('messageList');
+      scroll.scrollTop = scroll.scrollHeight;
 
       if (messageId == this.state.currentlyViewedMessagesId){
         this.updateCurrentlyViewedMessages(messageId)

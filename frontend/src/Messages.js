@@ -7,12 +7,10 @@ class Messages extends Component {
 
   render() {
     return(
-      <ul>
+      <ul id="messageList">
         { this.props.messages && this.props.messages.map((message, index) => 
           <li key={index}> 
-            <ul>
-              {message.senderUsername} : {message.message}
-            </ul>
+            {message.senderUsername}: {message.message}
           </li>
         )}
       </ul>

@@ -108,6 +108,7 @@ body {
   top: 0px;
   background-color: #404040;
   margin-left: 2px;
+  min-width: 930px;
 }
 
 .test {
@@ -127,7 +128,9 @@ ul {
 }
 
 #sendMessageInput {
-  width: 70%;
+  width: calc(100% - 300px);
+  border-radius: 3px;
+  border-style: groove;
 }
 
 .icon {
@@ -265,6 +268,28 @@ button:hover {
   margin-bottom: 20px;
   top: 15px;
   width: 110px;
+}
+
+.messageButton {
+  margin: 5px;
+}
+
+#chat {
+  position: relative;
+}
+
+#messageList{
+  color: white;
+  font-weight: 700;
+  position: absolute;
+  bottom: 40px;
+  overflow-y: scroll;
+  width: 100%;
+  top: 0px;
+  margin-top: 0px;  
+  border-bottom-style: solid;
+  border-bottom: white;
+  padding: 10px;
 }
 
 ul{

@@ -77,16 +77,16 @@ class Main extends Component {
             <div id="chat">
               <Messages messages={this.props.messages}/>
               <div id="sendMessageForm">
-
-                <input id="sendMessageInput" onChange={this.props.change} value={this.props.sendMessageInput} type="text" placeholder="Send a message!"/>
-                <button className="buttonW" onClick={() => this.props.sendMessage(urlType, urlMessageId)}> Send </button>
-                
-                {(urlType == 'user' &&
-                  <div>
-                    <button className="buttonW" onClick={() => this.props.callUser(urlMessageId, 'voice')}> Voice Call </button>
-                    <button className="buttonW" onClick={() => this.props.callUser(urlMessageId, 'video')}> Video Call </button>
-                  </div>
-                )}
+                <form>
+                  <input id="sendMessageInput" onChange={this.props.change} value={this.props.sendMessageInput} type="text" placeholder="Send a message!"/>
+                  <button type="submit" className="buttonW messageButton" onClick={(event) => this.props.sendMessage(event, urlType, urlMessageId)}> Send </button>
+                  {(urlType == 'user' &&
+                    <span>
+                      <button className="buttonW messageButton" onClick={() => this.props.callUser(urlMessageId, 'voice')}> Voice Call </button>
+                      <button className="buttonW messageButton" onClick={() => this.props.callUser(urlMessageId, 'video')}> Video Call </button>
+                    </span>
+                  )}
+                </form>
 
               </div>
             </div>
