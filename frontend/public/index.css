@@ -28,34 +28,52 @@ body {
   width: 100%;
 }
 
-#voiceWrapper {
-  position: absolute;
-  top: 0px;
-  margin: 10px;
-  padding: 10px;
-  z-index: 2;
-  background-color: rgb(17, 115, 172);
-  left: calc(180px + 25%);
-}
 
-#videoWrapper {
-  position: absolute;
-  top: 0px;
-  margin: 10px;
-  padding: 10px;
-  z-index: 2;
-  background-color: rgb(17, 115, 172);
-  left: calc(150px + 25%);
-}
 
 #popupWrapper {
   position: absolute;
   top: 0px;
   margin: 10px;
   padding: 10px;
-  z-index: 1;
-  background-color: #4e4e4e;
+  z-index: 20;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  left: 50%;
 }
+
+.popup {
+  margin: 20px;
+  padding: 10px;
+  text-align: left;
+  border-radius: 5px;
+  border-style: groove;
+  background-color: #aaa;
+}
+
+.voiceVideo {
+  position: absolute;
+  top: 0px;
+  margin: 10px;
+  padding: 10px;
+  z-index: 20;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  left: 50%;
+  border-radius: 5px;
+  border-style: groove;
+  background-color: #aaa;
+  width: 400px;
+}
+
+.popup > div > form > input {
+  margin: 5px;
+}
+
+.popup > div > form > button {
+  margin: 5px; 
+}
+
+
 #content {
   position: relative;
   height: 100%;

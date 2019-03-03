@@ -132,6 +132,7 @@ class App extends Component {
     this.deleteFriend = this.deleteFriend.bind(this);
     this.loadTestData = this.loadTestData.bind(this);
     this.changeTheme = this.changeTheme.bind(this);
+    this.updateTheme = this.updateTheme.bind(this);
   }
 
   handleChange = (event) => {
@@ -248,11 +249,7 @@ class App extends Component {
           theme: loginResult.data.theme
         });
 
-        let left = document.getElementById('leftColumn');
-        let dash = document.getElementById('dashboard');
-
-        left.style.backgroundColor = themes[loginResult.data.theme]['left'];
-        dash.style.backgroundColor = themes[loginResult.data.theme]['dash'];
+        this.updateTheme(loginResult.data.theme);
         
         socket.emit('newClient', {
           id: loginResult.data.me
@@ -635,12 +632,7 @@ class App extends Component {
           theme: theme
         })
 
-        let left = document.getElementById('leftColumn');
-        let dash = document.getElementById('dashboard');
-
-        left.style.backgroundColor = themes[theme]['left'];
-        dash.style.backgroundColor = themes[theme]['dash'];
-
+        this.updateTheme(theme);
       }
       else {
         alert(updateThemeResult.data.message);
@@ -648,6 +640,14 @@ class App extends Component {
     } catch (error) {
         alert(error);
     }
+  }
+
+  updateTheme(theme){
+    let left = document.getElementById('leftColumn');
+    let dash = document.getElementById('dashboard');
+
+    left.style.backgroundColor = themes[theme]['left'];
+    dash.style.backgroundColor = themes[theme]['dash'];
   }
 
   loadTestData(){
@@ -861,8 +861,8 @@ class App extends Component {
                     {/* Chat */}
                     {this.state.inCall && 
                        this.state.callType == 'voice' &&
-                          <div id="voiceWrapper">
-                            <audio id="voiceChat" controls/>
+                          <div className="voiceVideo">
+                            <audio id="voiceChat" controls autoplay/>
                             <Voice 
                               callParticipant={this.state.callParticipant}
                               callMessageId={this.state.callMessageId}
@@ -878,8 +878,8 @@ class App extends Component {
 
                     {this.state.inCall && 
                        this.state.callType == 'video' &&
-                       <div id="videoWrapper">
-                        <video id="videoChat" controls/>
+                       <div className="voiceVideo">
+                        <video id="videoChat" controls autoplay/>
                         <Video 
                           callParticipant={this.state.callParticipant}
                           callMessageId={this.state.callMessageId}
