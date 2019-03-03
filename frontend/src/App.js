@@ -168,7 +168,7 @@ class App extends Component {
     const formData = new FormData()
     formData.append('image', image);
 
-    const url = '/api/uploadServerImage/' + this.state.me + '/';
+    const url = '/api/uploadImage/' + this.state.me + '/';
 
     try{
       let uploadImageResult = await axios.post(
@@ -1025,7 +1025,7 @@ class App extends Component {
           </div>
         </Router>
 
-        <button id="test1" onClick={()=>{console.table(this.state)}}>log state</button>
+        <button id="test1" className="test" onClick={()=>{console.table(this.state)}}>log state</button>
       
       </div>
     )
