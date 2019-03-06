@@ -1,6 +1,8 @@
 body {
   font-family: sans-serif;
-  background-color: #404040;
+  background-color: rgb(148, 168, 196);
+  background-image: url(https://images.wallpaperscraft.com/image/polygon_low_poly_art_130453_1920x1080.jpg);
+  background-size: cover;
 }
 
 body {
@@ -26,34 +28,50 @@ body {
   width: 100%;
 }
 
-#voiceWrapper {
-  position: absolute;
-  top: 0px;
-  margin: 10px;
-  padding: 10px;
-  z-index: 2;
-  background-color: rgb(17, 115, 172);
-  left: calc(180px + 25%);
-}
-
-#videoWrapper {
-  position: absolute;
-  top: 0px;
-  margin: 10px;
-  padding: 10px;
-  z-index: 2;
-  background-color: rgb(17, 115, 172);
-  left: calc(180px + 25%);
-}
-
 #popupWrapper {
   position: absolute;
   top: 0px;
   margin: 10px;
   padding: 10px;
-  z-index: 1;
-  background-color: #4e4e4e;
+  z-index: 20;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  left: 50%;
 }
+
+.popup {
+  margin: 20px;
+  padding: 10px;
+  text-align: left;
+  border-radius: 5px;
+  border-style: groove;
+  background-color: #aaa;
+}
+
+.voiceVideo {
+  position: absolute;
+  top: 0px;
+  margin: 10px;
+  padding: 10px;
+  z-index: 20;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  left: 50%;
+  border-radius: 5px;
+  border-style: groove;
+  background-color: #aaa;
+  width: 400px;
+}
+
+.popup > div > form > input {
+  margin: 5px;
+}
+
+.popup > div > form > button {
+  margin: 5px; 
+}
+
+
 #content {
   position: relative;
   height: 100%;
@@ -65,10 +83,6 @@ body {
   width: 100%;
 }
 
-#dashboard {
-  display: grid;
-  background-color: blue;
-}
 
 #iconsWrapper {
   height: 100%;
@@ -94,16 +108,20 @@ body {
 #leftColumn {
   background-color: #2a2a2a;
   height: 100%;
-  width: 180px;
+  width: 150px;
+  border-right: 2px groove #ddd;
 }
 
 #dashboard {
+  display: grid;
   position: absolute;
   width: calc(100% - 150px);
   height: 100%;
   left: 150px;
   top: 0px;
   background-color: #404040;
+  margin-left: 1px;
+  min-width: 930px;
 }
 
 .test {
@@ -123,13 +141,15 @@ ul {
 }
 
 #sendMessageInput {
-  width: 70%;
+  width: calc(100% - 300px);
+  border-radius: 3px;
+  border-style: groove;
 }
 
 .icon {
-  right: 35px;
+  right: 20px;
   position: relative;
-  margin: 20px;
+  margin: 10px;
   padding: 2px;
   border-radius: 5px;
   margin-top: 32px;
@@ -167,16 +187,24 @@ ul {
 .icon > img {
   width: 100%;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 25px;
+  transition: all .3s cubic-bezier(0.23, 1, 0.32, 1);
   padding: auto;
 }
 
-.deleteButton {
+.icon > img:hover {
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.deleteButton {    
   position: absolute;
-  bottom: 79px;
+  bottom: 75px;
   left: 66px;
-  background-color: transparent;
+  background-color: #4e4e4e;
   color: #ffffff;
+  border-radius: 10px;
 }
 
 #test1 {
@@ -184,17 +212,26 @@ ul {
 }
 
 .online {
-  -moz-box-shadow:    0px 0px 5px 6px green;
-  -webkit-box-shadow: 0px 0px 5px 6px green;
-  box-shadow:         0px 0px 5px 6px green;
+  -moz-box-shadow:    0px 0px 5px 6px rgb(148, 188, 196);
+  -webkit-box-shadow: 0px 0px 5px 6px rgb(148, 188, 196);
+  box-shadow:         0px 0px 5px 6px rgb(148, 188, 196);
 }
 
 .offline {
-  -moz-box-shadow:    0px 0px 5px 6px red;
-  -webkit-box-shadow: 0px 0px 5px 6px red;
-  box-shadow:         0px 0px 5px 6px red;
+  -moz-box-shadow:    0px 0px 5px 6px rgb(255, 60, 60);
+  -webkit-box-shadow: 0px 0px 5px 6px rgb(255, 60, 60);
+  box-shadow:         0px 0px 5px 6px rgb(255, 60, 60);
 }
 
+.online:hover {
+  box-shadow: rgb(180, 215, 221);
+  transition: all .1s;
+}
+
+.offline:hover {
+  box-shadow: rgb(255, 131, 131);
+  transition: all .1s;
+}
 
 .buttonW {
   background-color: transparent;
@@ -202,4 +239,96 @@ ul {
   border-style: solid;
   border-radius: 4px;
   border-color: white;
+}
+
+button:hover {
+  background-color: rgba(165, 215, 224, 0.376);
+  transition: all .1s;
+  cursor: pointer;
+}
+
+#deleteButton:hover {
+  background-color: rgb(165, 215, 224);
+}
+
+#switch:hover {
+  cursor: pointer;
+}
+
+#switch {
+  margin: 8px;
+  top: 15px;
+}
+
+
+.newButton{
+  position: relative;
+  display: block;
+  margin: auto;
+  height: 60px;
+  width: 60px;
+  background-color: transparent;
+  border-radius: 100px;
+  color: white;
+  font-size: 30px;
+  border-style: dashed;
+  margin-top: 30px;
+}
+
+#settingsButton {
+  position: relative;
+  display: block;
+  margin: auto;
+  margin-bottom: 20px;
+  top: 15px;
+  width: 110px;
+}
+
+.messageButton {
+  margin: 5px;
+}
+
+#chat {
+  position: relative;
+}
+
+#messageList{
+  color: white;
+  font-weight: 700;
+  position: absolute;
+  bottom: 40px;
+  overflow-y: scroll;
+  width: 100%;
+  top: 0px;
+  margin-top: 0px;  
+  border-bottom-style: solid;
+  border-bottom-color: white;
+  padding: 10px;
+}
+
+#settings {
+  margin: 30px;
+  color: rgb(221, 221, 221);
+}
+
+#settings > div > div > h2 {
+  font-size: 18px;
+  margin: 5px;
+}
+
+#themePicker{
+  margin-right: 30%;
+}
+
+#settings > div > div {
+  margin-bottom: 55px;
+}
+
+
+a.switchColor{
+  background-color: rgb(148, 188, 196) !important;
+}
+
+#themePicker > div > label:hover{
+  cursor: pointer;
 }

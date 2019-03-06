@@ -9,6 +9,22 @@ import io from 'socket.io-client';
 //import './Login.css';
 const axios = require('axios');
 
+
+let themes = {
+  1: {
+    left: '#2a2a2a',
+    dash: '#404040'
+  },
+  2: {
+    left: '#24B0D5',
+    dash: '#47C8C8'
+  },
+  3: {
+    left: '#FF6C00',
+    dash: '#FF4136'
+  },
+}
+
 //for deploy
 const socket = io();
 
@@ -20,6 +36,7 @@ class App extends Component {
       form: 'login',
       me: '',
       myUsername: '',
+      theme: 1,
       redirect: false,
       redirectTo: '',
       redirectType: '',
@@ -71,7 +88,8 @@ class App extends Component {
       */
       currentlyViewedMessages: [],
       currentlyViewedMessagesId: '',
-      image: null,
+      image: '',
+      serverImage: '',
 
 
       // calls
@@ -114,6 +132,11 @@ class App extends Component {
     this.toggleIcons = this.toggleIcons.bind(this);
     this.deleteFriend = this.deleteFriend.bind(this);
     this.loadTestData = this.loadTestData.bind(this);
+    this.changeTheme = this.changeTheme.bind(this);
+    this.updateTheme = this.updateTheme.bind(this);
+    this.deleteServer = this.deleteServer.bind(this);
+    this.handleServerImageChange = this.handleServerImageChange.bind(this);
+    this.uploadServerImage = this.uploadServerImage.bind(this);
   }
 
   handleChange = (event) => {
@@ -145,7 +168,7 @@ class App extends Component {
     const formData = new FormData()
     formData.append('image', image);
 
-    const url = '/api/uploadImage/' + this.state.me + '/'
+    const url = '/api/uploadImage/' + this.state.me + '/';
 
     try{
       let uploadImageResult = await axios.post(
@@ -172,8 +195,69 @@ class App extends Component {
     }
 
     this.setState({
-      image: null
+      image: ''
     })
+    
+    let imageInput = document.getElementById('imageInput');
+    imageInput.value = '';
+  }
+
+  handleServerImageChange = (event) => {
+    event.preventDefault();
+    this.setState({
+      serverImage: event.target.files[0]
+    });
+  }
+
+  uploadServerImage = async (serverId) => {
+    const image = this.state.serverImage;
+
+    if (!image){
+      alert('No image selected.');
+      return;
+    }
+
+    if (image.size > 100 * 1000){
+      alert('Image is too large. It must be smaller than 100KB');
+      return;
+    }
+    
+    const formData = new FormData()
+    formData.append('image', image);
+
+    const url = '/api/uploadImage/' + this.state.me + '/' + serverId + '/'
+
+    try{
+      let uploadImageResult = await axios.post(
+        url, 
+        formData,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      )
+
+      if (uploadImageResult.data.success){
+        alert(uploadImageResult.data.message);
+      }
+      else{
+        alert(uploadImageResult.data.message);
+      }
+    }
+
+    catch (error) {
+      alert(error)
+    }
+
+    this.setState({
+      serverImage: ''
+    })
+    
+    let imageInput = document.getElementById('serverImageInput');
+    imageInput.value = '';
+
   }
 
   handleRegisterSubmit = async (event) => {
@@ -227,7 +311,10 @@ class App extends Component {
           me: loginResult.data.me,
           myUsername: loginResult.data.myUsername,
           token: loginResult.data.token,
+          theme: loginResult.data.theme
         });
+
+        this.updateTheme(loginResult.data.theme);
         
         socket.emit('newClient', {
           id: loginResult.data.me
@@ -284,59 +371,59 @@ class App extends Component {
   }
 
   joinServerSubmit = async (event) =>{
-  event.preventDefault();
-  let joinServer = this.state.serverInput;
-  let me = this.state.me;
-  
-  if(!joinServer){
-    alert('Invalid Input');
-    return;
-  }
+    event.preventDefault();
+    let joinServer = this.state.serverInput;
+    let me = this.state.me;
+    
+    if(!joinServer){
+      alert('Invalid Input');
+      return;
+    }
 
-  try {
-    let joinServerResult = await axios.post('/api/joinServer', {
-      'server': joinServer,
-      'newMember': me,
-    });
-    if(joinServerResult.data.success){
-      this.getServers();
-      alert(joinServerResult.data.message)
+    try {
+      let joinServerResult = await axios.post('/api/joinServer', {
+        'server': joinServer,
+        'newMember': me,
+      });
+      if(joinServerResult.data.success){
+        this.getServers();
+        alert(joinServerResult.data.message)
+      }
+      else{
+        alert(joinServerResult.data.message)
+      }
+    } catch (error) {
+      alert(error);
     }
-    else{
-      alert(joinServerResult.data.message)
-    }
-  } catch (error) {
-    alert(error);
-  }
-  this.hideServerPopup();
+    this.hideServerPopup();
   }
 
   createServerSubmit = async (event) =>{
-  event.preventDefault();
-  let createServer = this.state.serverInput;
-  let me = this.state.me;
-  
-  if(!createServer){
-    alert('Invalid Input');
-    return;
-  }
+    event.preventDefault();
+    let createServer = this.state.serverInput;
+    let me = this.state.me;
+    
+    if(!createServer){
+      alert('Invalid Input');
+      return;
+    }
 
-  try {
-    let createServerResult = await axios.post('/api/createServer', {
-      'serverName': createServer,
-      'me': me,
-    });
-    if(createServerResult.data.success){
-      this.getServers();
-      alert(createServerResult.data.message)
+    try {
+      let createServerResult = await axios.post('/api/createServer', {
+        'serverName': createServer,
+        'me': me,
+      });
+      if(createServerResult.data.success){
+        this.getServers();
+        alert(createServerResult.data.message)
+      }
+      else{
+        alert(createServerResult.data.message)
+      }
+    } catch (error) {
+      alert(error);
     }
-    else{
-      alert(createServerResult.data.message)
-    }
-  } catch (error) {
-    alert(error);
-  }
-  this.hideServerPopup();
+    this.hideServerPopup();
   }
 
   showNewFriendPopup(){
@@ -422,7 +509,9 @@ class App extends Component {
     })
   }
 
-  sendMessage(type, messageId){
+  sendMessage(event, type, messageId){
+    event.preventDefault();
+
     if (type != 'server' && type != 'user'){
       alert("You can only send a message to a user or a server.")
       return;
@@ -461,6 +550,11 @@ class App extends Component {
       currentlyViewedMessages: currentlyViewedMessages,
       currentlyViewedMessagesId: messageId
     })
+
+    let scroll = document.getElementById('messageList');
+    if (scroll){
+      scroll.scrollTop = scroll.scrollHeight;
+    }
   }
 
   async getMessages (messageId){
@@ -496,7 +590,9 @@ class App extends Component {
     }
   }
 
-  callUser(messageId, type){
+  callUser(event, messageId, type){
+    event.preventDefault();
+
     if (this.state.inCall){
       alert('End your current call before starting a new one.');
       return;
@@ -588,6 +684,37 @@ class App extends Component {
     }
   }
 
+  async changeTheme(theme){
+    let me = this.state.me;
+
+    try {
+      let updateThemeResult = await axios.post('/api/updateTheme', {
+        'theme': theme,
+        'me': me,
+      });
+      if (updateThemeResult.data.success) {
+        this.setState({
+          theme: theme
+        })
+
+        this.updateTheme(theme);
+      }
+      else {
+        alert(updateThemeResult.data.message);
+      }
+    } catch (error) {
+        alert(error);
+    }
+  }
+
+  updateTheme(theme){
+    let left = document.getElementById('leftColumn');
+    let dash = document.getElementById('dashboard');
+
+    left.style.backgroundColor = themes[theme]['left'];
+    dash.style.backgroundColor = themes[theme]['dash'];
+  }
+
   loadTestData(){
     this.setState({
       friends: [
@@ -609,12 +736,32 @@ class App extends Component {
     });
   }
 
+  deleteServer = async (serverId) => {
+    let me = this.state.me;
+
+    try {
+      let deleteServerResult = await axios.post('/api/deleteServer', {
+        'me': me,
+        'server': serverId,
+      });
+
+      alert(deleteServerResult.data.message);
+      this.redirect('dashboard', 'me');
+
+    } catch (error) {
+        alert(error);
+    }
+
+  }
+
+
   componentDidUpdate(){
     // when redirect is true, the redirect component will change the URL and rerender the page
     // whenever we mount the app, we set redirect to false to prevent an infinite loop of redirects
     if (this.state.redirect && (this.state.redirectType == 'server' || this.state.redirectType == 'user')){
       const chatRoomId = this.state.redirectId;
       this.getMessages(chatRoomId);
+
       this.setState({
         redirect: false,
         redirectTo: '',
@@ -640,6 +787,11 @@ class App extends Component {
         messages: currentMessages
       })
 
+      let scroll = document.getElementById('messageList');
+      if (scroll){
+        scroll.scrollTop = scroll.scrollHeight;
+      }
+
       if (messageId == this.state.currentlyViewedMessagesId){
         this.updateCurrentlyViewedMessages(messageId)
       }
@@ -647,6 +799,10 @@ class App extends Component {
 
     socket.on('refreshFriends', () => {
       this.getFriends();
+    });
+
+    socket.on('refreshServers', () => {
+      this.getServers();
     });
 
     socket.on('callPermission', (data) => {
@@ -673,10 +829,7 @@ class App extends Component {
       let [firstParticipant, secondParticipant] = data.participants;
       let me = this.state.me;
 
-      console.log(data.participants, me);
-
       if (firstParticipant == me){
-        console.log('first one');
           this.setState({
             inCall: true,
             callParticipant: secondParticipant,
@@ -684,7 +837,6 @@ class App extends Component {
           });
       }
       else if (secondParticipant == me){
-          console.log('second one');
           this.setState({
             inCall: true,
             callParticipant: firstParticipant,
@@ -793,8 +945,8 @@ class App extends Component {
                     {/* Chat */}
                     {this.state.inCall && 
                        this.state.callType == 'voice' &&
-                          <div id="voiceWrapper">
-                            <audio id="voiceChat" controls/>
+                          <div className="voiceVideo">
+                            <audio id="voiceChat" controls autoplay/>
                             <Voice 
                               callParticipant={this.state.callParticipant}
                               callMessageId={this.state.callMessageId}
@@ -810,8 +962,8 @@ class App extends Component {
 
                     {this.state.inCall && 
                        this.state.callType == 'video' &&
-                       <div id="videoWrapper">
-                        <video id="videoChat" controls/>
+                       <div className="voiceVideo">
+                        <video id="videoChat" controls autoplay/>
                         <Video 
                           callParticipant={this.state.callParticipant}
                           callMessageId={this.state.callMessageId}
@@ -838,11 +990,15 @@ class App extends Component {
                       redirect={this.redirect}
                       callUser={this.callUser}
                       handleImageChange={this.handleImageChange}
+                      handleServerImageChange={this.handleServerImageChange}
                       uploadImage={this.uploadImage}
+                      uploadServerImage={this.uploadServerImage}
                       image={this.state.image}
                       toggleIcons={this.state.toggleIcons}
                       handleToggleIcons={this.toggleIcons}   
-                      deleteFriend={this.deleteFriend}                   
+                      deleteFriend={this.deleteFriend}           
+                      changeTheme={this.changeTheme}     
+                      deleteServer={this.deleteServer}
 
                       // content
                       getFriends={this.getFriends}
@@ -850,6 +1006,8 @@ class App extends Component {
                       friends={this.state.friends}
                       servers={this.state.servers}
                       messages={this.state.currentlyViewedMessages}
+                      theme={this.state.theme}
+                      me={this.state.me}
                     />
 
                   </div>
@@ -867,10 +1025,7 @@ class App extends Component {
           </div>
         </Router>
 
-        {/* Testing Buttons */}
-        <button className="test" onClick={()=>{this.setState({haha:'hehe'}) /* update state to rerender component */}}>rerender component app.js</button>
         <button id="test1" className="test" onClick={()=>{console.table(this.state)}}>log state</button>
-        <button className="test" onClick={()=>{this.loadTestData()}}>load test state</button>
       
       </div>
     )

@@ -20,8 +20,8 @@ Server.remove({}, function(err) {
 });
 Message.remove({}, function(err) { 
   console.log('Message collection removed') 
-});
-*/
+});*/
+
 
 // configure middleware
 app.use(bodyParser.json());
@@ -183,8 +183,11 @@ socketIo.on('connection', function(socket){
 });
 
 exports.refreshUsersFriends = (userId) => {
-  console.log('emitting to refresh');
   socketIo.to(clients[userId]).emit('refreshFriends');
+}
+
+exports.refreshUsersServers = (userId) => {
+  socketIo.to(clients[userId]).emit('refreshServers');
 }
 
 exports.getOnlineUsers = () => {

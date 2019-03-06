@@ -14,6 +14,8 @@ router.post('/newFriend', userController.newFriend);
 router.post('/getFriends', userController.getFriends);
 router.post('/deletefriend', userController.deleteFriend);
 router.post('/uploadImage/:id',  upload.single('image'), userController.uploadImage);
+router.post('/uploadServerImage/:id/:serverId',  upload.single('image'), userController.uploadServerImage);
+router.post('/updateTheme', userController.updateTheme);
 
 router.post('/getMessages', messageController.getMessages);
 

@@ -18,10 +18,13 @@ var userSchema = new Schema({
         messageId: String,
         avatarUrl: String,
     }],
-    servers: [{servername: String}],
+    servers: [{
+        serverId: String
+    }],
     avatarUrl: {
         type: String,
     },
+    theme: Number,
 })
 
 userSchema.plugin(uniqueValidator);

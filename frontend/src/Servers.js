@@ -8,12 +8,14 @@ class Servers extends Component {
 
   render() {
     return(
-      <ul>
+      <ul className="w3-animate-left">
         { this.props.servers && this.props.servers.map((server, index) => 
-          <li key={index} onClick={() => {this.props.redirect('server', server.messageId)}}> 
-            <button>
+          <li className="icon" key={index} onClick={() => {this.props.redirect('server', server.messageId)}}> 
+            <img src={server.avatarUrl}/>
+            <div className="username">
+              <div className="usernameBackground"></div>
               {server.serverName}
-            </button>
+            </div>
           </li>
         )}
       </ul>
@@ -22,3 +24,5 @@ class Servers extends Component {
 }
 
 export { Servers };
+
+

@@ -69,8 +69,7 @@ class Video extends Component {
   render() {
     return(
         <div id="Video">
-            <h1>Talking to {this.props.callParticipant}</h1>
-            <button onClick={this.props.endCall}>End call</button>
+            <button className="buttonW" onClick={this.props.endCall}>End call</button>
         </div>
     )
   }

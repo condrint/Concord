@@ -1,3 +1,4 @@
+const socketFunctions = require('../server.js');
 const Server = require('../models/server.js');
 const User = require('../models/user.js');
 const messageController = require('../controllers/message_controller');
@@ -173,6 +174,8 @@ serverController.deleteServer = async (req, res) => {
             _id: server
         });
 
+        let membersToRefresh = serverDocument.members;
+
         let messageDocument = await Message.findOne({
             _id: serverDocument.messageId
         });
@@ -187,6 +190,15 @@ serverController.deleteServer = async (req, res) => {
         }
 
         await Message.remove(messageDocument);
+
+        for (let member of membersToRefresh){
+            socketFunctions.refreshUsersServers(member.memberId);
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Server deleted',
+        });
     }
 
     catch(error) {
