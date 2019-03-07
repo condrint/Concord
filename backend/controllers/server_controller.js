@@ -1,4 +1,3 @@
-const socketFunctions = require('../server.js');
 const Server = require('../models/server.js');
 const User = require('../models/user.js');
 const messageController = require('../controllers/message_controller');
@@ -39,8 +38,8 @@ serverController.createServer = async (req, res) => {
         await newServer.save();
         
         console.log(newServer.ownerName);
-        //console.log(newServer.ownerId);
-        //console.log(newServer.members);
+        console.log(newServer.ownerId);
+        console.log(newServer.members);
         console.log(newMessageId);
         
         //adds new server to user's servers
@@ -168,36 +167,25 @@ serverController.deleteServer = async (req, res) => {
     //delete server from members' servers list
     //delete message document associated with server
 
-    const { server } = req.body;
+    const { server, messageId } = req.body;
     try{
-        let serverDocument = await Server.findOne({
-            _id: server
-        });
-
-        let membersToRefresh = serverDocument.members;
-
-        let messageDocument = await Message.findOne({
-            _id: serverDocument.messageId
-        });
-
-        for (let member of serverDocument.members){
-            let memberDocument = await User.findOne({
-                _id: member
-            });
-
-            await memberDocument.servers.pull(serverDocument._id);
+        let serverDocument = await Server.findById(server);
+        
+        await Message.findbyIdAndDelete(messageId);
+        // delete the server from each members' server list
+        for (member of serverDocument.members){
+            let memberDocument = await User.findById(member);
+            let servers = memberDocument.servers;
+            memberDocument.servers = servers.filter(serverObject => serverObject.serverId != server);
             await memberDocument.save();
+            socketFunctions.refreshUsersServers(member);
         }
 
-        await Message.remove(messageDocument);
-
-        for (let member of membersToRefresh){
-            socketFunctions.refreshUsersServers(member.memberId);
-        }
+        await Server.findByIdAndDelete(server);
 
         return res.status(200).json({
             success: true,
-            message: 'Server deleted',
+            message: "Server deleted"
         });
     }
 
