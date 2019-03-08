@@ -157,8 +157,11 @@ serverController.joinServer = async (req, res) => {
         console.log(messageDocument.participants);
         console.log(serverDocument.members);
 
-        //updating server into new member's server list
-        newMemberDocument.servers.push(serverDocument._id);
+        //adds new server to user's servers
+        let serverObject = {
+            serverId: serverDocument._id
+        }
+        newMemberDocument.servers.push(serverObject);
         await newMemberDocument.save();
         //console.log(newMemberDocument.servers);
 
