@@ -736,12 +736,12 @@ class App extends Component {
     });
   }
 
-  deleteServer = async (serverId) => {
+  deleteServer = async (serverId, messageId) => {
     let me = this.state.me;
 
     try {
       let deleteServerResult = await axios.post('/api/deleteServer', {
-        'me': me,
+        'messageId': messageId,
         'server': serverId,
       });
 

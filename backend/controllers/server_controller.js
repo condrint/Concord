@@ -31,10 +31,17 @@ serverController.createServer = async (req, res) => {
             serverName: serverName,
             ownerName: meDocument.username,
             ownerId: meDocument._id,
-            //members: [ meDocument._id ],
+            members: [],
             messageId: newMessageId
         })
-        await newServer.members.push(meDocument._id);
+
+        let firstMember = {
+            memberName: meDocument.username,
+            memberId: meDocument._id 
+        }
+
+
+        newServer.members.push(firstMember);
         await newServer.save();
         
         console.log(newServer.ownerName);
@@ -43,7 +50,7 @@ serverController.createServer = async (req, res) => {
         console.log(newMessageId);
         
         //adds new server to user's servers
-        meDocument.servers.push(newServer);
+        meDocument.servers.push(newServer._id);
         await meDocument.save();
         console.log(meDocument.servers);
 
@@ -122,7 +129,7 @@ serverController.joinServer = async (req, res) => {
         
         //checks if user is already member of server
         for (let member of serverDocument.members){
-            if(member._id == newMemberID){
+            if(member.memberId == newMemberID){
                 return res.status(200).json({
                     success: false,
                     message: "You are already a member of this server."
@@ -131,19 +138,25 @@ serverController.joinServer = async (req, res) => {
         }
         
         //updating new member into server's member list
-        serverDocument.members.push(newMemberID);
+        let memberObject = {
+            memberName: newMemberDocument.username,
+            memberId: newMemberID
+        }
+
+        serverDocument.members.push(memberObject);
         let messageDocument = await Message.findOne({
             _id: serverDocument.messageId
         });
-        await messageDocument.participants.push(newMemberID);
-        messageDocument.save();
-        serverDocument.save();
+        
+        messageDocument.participants.push(newMemberID);
+        await messageDocument.save();
+        await serverDocument.save();
         console.log(messageDocument.participants);
         console.log(serverDocument.members);
 
         //updating server into new member's server list
         newMemberDocument.servers.push(serverDocument._id);
-        newMemberDocument.save();
+        await newMemberDocument.save();
         //console.log(newMemberDocument.servers);
 
         return res.status(200).json({
