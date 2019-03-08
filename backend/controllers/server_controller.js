@@ -203,7 +203,7 @@ serverController.deleteServer = async (req, res) => {
             let servers = memberDocument.servers;
             memberDocument.servers = servers.filter(serverObject => serverObject.serverId != server);
             await memberDocument.save();
-            socketFunctions.refreshUsersServers(member);
+            socketFunctions.refreshUsersServers(member.memberId);
         }
 
         await Server.findByIdAndDelete(server);
