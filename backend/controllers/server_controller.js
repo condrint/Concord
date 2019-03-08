@@ -151,7 +151,11 @@ serverController.joinServer = async (req, res) => {
             _id: serverDocument.messageId
         });
         
-        messageDocument.participants.push(newMemberID);
+        let newParticipant = {
+            participantId: newMemberID
+        }
+
+        messageDocument.participants.push(newParticipant);
         await messageDocument.save();
         await serverDocument.save();
         console.log(messageDocument.participants);
