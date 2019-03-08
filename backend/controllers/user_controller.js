@@ -141,6 +141,7 @@ userController.getServers = async (req, res) => {
         let listOfServerObjects = []
 
         for (let server of meDocument.servers){
+            console.log(server);
             let serverDocument = await Server.findById(server.serverId);
             listOfServerObjects.push(convertToClientServerObjects(serverDocument));
         }

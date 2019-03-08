@@ -15,7 +15,7 @@ class Main extends Component {
 
   componentDidMount(){
     this.props.getFriends();
-    //this.props.getServers();
+    this.props.getServers();
   }
 
 
