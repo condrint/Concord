@@ -481,7 +481,7 @@ class App extends Component {
     let me = this.state.me;
 
     try{
-      let serversResult = await axios.post('api/getServers', {
+      let serversResult = await axios.post('/api/getServers', {
         me: me
       });
 
