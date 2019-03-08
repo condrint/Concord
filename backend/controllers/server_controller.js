@@ -50,7 +50,10 @@ serverController.createServer = async (req, res) => {
         console.log(newMessageId);
         
         //adds new server to user's servers
-        meDocument.servers.push(newServer._id);
+        let serverObject = {
+            serverId: newServer._id
+        }
+        meDocument.servers.push(serverObject);
         await meDocument.save();
         console.log(meDocument.servers);
 
