@@ -62,7 +62,7 @@ class Main extends Component {
 
           {(urlType == 'settings') && 
             <div id="settings">
-              <Settings me={this.props.me} handleServerImageChange={this.props.handleServerImageChange} uploadServerImage={this.props.uploadServerImage} deleteServer={this.props.deleteServer} theme={this.props.theme} handleImageChange={this.props.handleImageChange} uploadImage={this.props.uploadImage} image={this.props.image} changeTheme={this.props.changeTheme}/>
+              <Settings me={this.props.me} handleServerImageChange={this.props.handleServerImageChange} uploadServerImage={this.props.uploadServerImage} deleteServer={this.props.deleteServer} theme={this.props.theme} handleImageChange={this.props.handleImageChange} uploadImage={this.props.uploadImage} image={this.props.image} changeTheme={this.props.changeTheme} servers={this.props.servers}/>
             </div>
           }
 

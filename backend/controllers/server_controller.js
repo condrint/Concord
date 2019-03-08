@@ -2,6 +2,7 @@ const Server = require('../models/server.js');
 const User = require('../models/user.js');
 const messageController = require('../controllers/message_controller');
 const Message = require('../models/message.js');
+const socketFunctions = require('../server.js');
 
 const serverController = {};
 
@@ -192,12 +193,13 @@ serverController.deleteServer = async (req, res) => {
 
     const { server, messageId } = req.body;
     try{
+        console.log(server);
         let serverDocument = await Server.findById(server);
         
-        await Message.findbyIdAndDelete(messageId);
+        await Message.findByIdAndDelete(messageId);
         // delete the server from each members' server list
         for (member of serverDocument.members){
-            let memberDocument = await User.findById(member);
+            let memberDocument = await User.findById(member.memberId);
             let servers = memberDocument.servers;
             memberDocument.servers = servers.filter(serverObject => serverObject.serverId != server);
             await memberDocument.save();
