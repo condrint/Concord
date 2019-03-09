@@ -223,4 +223,44 @@ serverController.deleteServer = async (req, res) => {
     }
 }
 
+serverController.leaveServer = async (req, res) => {
+    // delete server from user server list
+    // delete user from server member list
+    // delete user from server message participants
+
+    const { me, server } = req.body;
+    try{
+        let meDocument = User.findById(me);
+        let serverDocument = Server.findById(server);
+        let messageDocument = Message.findById(serverDocument.messageId);
+
+        let myServers = meDocument.servers;
+        let serverMembers = serverDocument.members;
+        let messageParticipants = messageDocument.participants;
+
+        meDocument.servers = myServers.filter(serverObject => serverObject.serverId != server); // removes server from user's server list
+        serverDocument.members = serverMembers.filter(memberObject => memberObject.memberId != me); // removes user from server's member list
+        messageDocument.participants = messageParticipants.filter(participantObject => participantObject.participantId != me); // removes user as participant in server messaging
+
+        await meDocument.save();
+        await serverDocument.save();
+        await messageDocument.save();
+
+        socketFunctions.refreshUsersServers(me);
+
+        return res.status(200).json({
+            success: true,
+            message: 'You have left the server: ' + server + '.',
+        });
+    }
+
+    catch(error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
 module.exports = serverController;
