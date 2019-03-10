@@ -6,7 +6,6 @@ class Settings extends Component {
   }
 
   render() {
-    console.table(this.props.servers)
     return(
         <div>
             <div id="imageUpload">
@@ -38,9 +37,10 @@ class Settings extends Component {
                   { this.props.servers && this.props.servers.filter(server => server.ownerId == this.props.me).map((server, index) => 
                     <div className="serverManagementRow" key={index}> 
                       <h2>{server.serverName}</h2>
-                      <button onClick={() => this.props.deleteServer(server._id, server.messageId)}> Delete Server </button>
+                      <button className="buttonW deleteServer" onClick={() => this.props.deleteServer(server._id, server.messageId)}> Delete Server </button>
+                      Upload Image
                       <input id="serverImageInput" type="file" onChange={this.props.handleServerImageChange}/>
-                      <button className="buttonW" onClick={() => this.props.uploadServerImage(server.serverId)}>Upload</button>
+                      <button className="buttonW" onClick={() => this.props.uploadServerImage(server._isd)}>Upload</button>
                     </div>
                   )}
 

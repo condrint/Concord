@@ -332,3 +332,19 @@ a.switchColor{
 #themePicker > div > label:hover{
   cursor: pointer;
 }
+
+.deleteServer {
+  margin-right: 75px;
+}
+
+.serverManagementRow{
+  width: 90%;
+  height: 90%;
+  border-style: groove;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+#serverImageInput {
+  margin-left: 5px;
+}

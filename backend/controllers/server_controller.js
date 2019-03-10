@@ -45,18 +45,12 @@ serverController.createServer = async (req, res) => {
         newServer.members.push(firstMember);
         await newServer.save();
         
-        console.log(newServer.ownerName);
-        console.log(newServer.ownerId);
-        console.log(newServer.members);
-        console.log(newMessageId);
-        
         //adds new server to user's servers
         let serverObject = {
             serverId: newServer._id
         }
         meDocument.servers.push(serverObject);
         await meDocument.save();
-        console.log(meDocument.servers);
 
         return res.status(201).json({
             success: true,
@@ -159,8 +153,6 @@ serverController.joinServer = async (req, res) => {
         messageDocument.participants.push(newParticipant);
         await messageDocument.save();
         await serverDocument.save();
-        console.log(messageDocument.participants);
-        console.log(serverDocument.members);
 
         //adds new server to user's servers
         let serverObject = {

@@ -141,7 +141,6 @@ userController.getServers = async (req, res) => {
         let listOfServerObjects = []
 
         for (let server of meDocument.servers){
-            console.log(server);
             let serverDocument = await Server.findById(server.serverId);
             listOfServerObjects.push(convertToClientServerObjects(serverDocument));
         }
@@ -374,9 +373,9 @@ userController.uploadServerImage = async (req, res) => {
         const croppedUrl = url1 + 'upload/h_200,w_200' + url2;
         
         serverDocument.avatarUrl = croppedUrl.toString();
-        await userDocument.save();
+        await serverDocument.save();
 
-        for (let member of userDocument.friends){
+        for (let member of serverDocument.members){
             socketFunctions.refreshUsersServers(member.memberId);
         }
 
