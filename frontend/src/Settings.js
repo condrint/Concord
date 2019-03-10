@@ -40,7 +40,7 @@ class Settings extends Component {
                       <button className="buttonW deleteServer" onClick={() => this.props.deleteServer(server._id, server.messageId)}> Delete Server </button>
                       Upload Image
                       <input id="serverImageInput" type="file" onChange={this.props.handleServerImageChange}/>
-                      <button className="buttonW" onClick={() => this.props.uploadServerImage(server._isd)}>Upload</button>
+                      <button className="buttonW" onClick={() => this.props.uploadServerImage(server._id)}>Upload</button>
                     </div>
                   )}
 

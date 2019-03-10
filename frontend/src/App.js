@@ -137,6 +137,7 @@ class App extends Component {
     this.deleteServer = this.deleteServer.bind(this);
     this.handleServerImageChange = this.handleServerImageChange.bind(this);
     this.uploadServerImage = this.uploadServerImage.bind(this);
+    this.leaveServer = this.leaveServer.bind(this);
   }
 
   handleChange = (event) => {
@@ -452,6 +453,27 @@ class App extends Component {
       showServerPopup: false,
       serverInput: '',
     });
+  }
+
+  async leaveServer(serverId){
+    let me = this.state.me;
+    
+    try{
+      let leaveServerResult = await axios.post('/api/leaveServer', {
+        me: me,
+        server: serverId
+      });
+
+      if (leaveServerResult.data.success){
+        return;
+      }
+      else {
+        alert(leaveServerResult.data.message);
+      }
+    }
+    catch (error) {
+      alert(error);
+    }
   }
 
   async getFriends(){
@@ -999,6 +1021,7 @@ class App extends Component {
                       deleteFriend={this.deleteFriend}           
                       changeTheme={this.changeTheme}     
                       deleteServer={this.deleteServer}
+                      leaveServer={this.leaveServer}
 
                       // content
                       getFriends={this.getFriends}

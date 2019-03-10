@@ -222,9 +222,9 @@ serverController.leaveServer = async (req, res) => {
 
     const { me, server } = req.body;
     try{
-        let meDocument = User.findById(me);
-        let serverDocument = Server.findById(server);
-        let messageDocument = Message.findById(serverDocument.messageId);
+        let meDocument = await User.findById(me);
+        let serverDocument = await Server.findById(server);
+        let messageDocument = await Message.findById(serverDocument.messageId);
 
         let myServers = meDocument.servers;
         let serverMembers = serverDocument.members;

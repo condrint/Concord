@@ -24,6 +24,7 @@ router.post('/createServer', serverController.createServer);
 router.post('/joinServer', serverController.joinServer);
 router.post('/getMembers', serverController.getMembers);
 router.post('/deleteServer', serverController.deleteServer);
+router.post('/leaveServer', serverController.leaveServer);
 
 module.exports = router;
 

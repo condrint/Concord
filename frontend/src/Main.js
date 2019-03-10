@@ -46,7 +46,7 @@ class Main extends Component {
 
             {this.props.toggleIcons ? (
               <div id="servers">
-                <Servers servers={this.props.servers} redirect={this.props.redirect}/>
+                <Servers leaveServer={this.props.leaveServer} servers={this.props.servers} redirect={this.props.redirect}/>
                 <CreateJoinServer showServerPopup ={this.props.showServerPopup}/>
               </div>
             ) : (

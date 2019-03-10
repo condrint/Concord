@@ -16,6 +16,8 @@ class Servers extends Component {
               <div className="usernameBackground"></div>
               {server.serverName}
             </div>
+
+            <button class="deleteButton" onClick={() => this.props.leaveServer(server._id)}>X</button>
           </li>
         )}
       </ul>
